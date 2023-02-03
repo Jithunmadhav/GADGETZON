@@ -123,7 +123,6 @@ module.exports={
             low="low";
             if(data==high){
                 let result= await db.get().collection(collection.PRODUCT_DETAILS).find({}).sort({price:-1}).toArray()
-            //    let result= await db.get().collection(collection.PRODUCT_DETAILS).aggregate([{$group:{_id:'$price'}},{$sort:{price:-1}}]).toArray()
                resolve(result)
             }else if(data==low){
                let result= await db.get().collection(collection.PRODUCT_DETAILS).find().sort({price:1}).toArray()

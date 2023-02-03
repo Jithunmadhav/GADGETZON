@@ -239,11 +239,9 @@ module.exports={
 
     //Add to cart
     getAddCart:(req,res)=>{
-        console.log(req.session.userID);
-        console.log(req.params.id);
         user.productAddCart(req.session.userID,req.params.id).then((result)=>{
             console.log(result);
-            res.send("added")
+            res.redirect('/shop-page')
         })
        
 
@@ -251,7 +249,11 @@ module.exports={
     getCart:(req,res)=>{
         user.cartProducts(req.session.userID).then((result)=>{
           user.viewCart(result).then((result)=>{
-            res.render('cart',{result})
+            const calcAmount = result.reduce((acc, item) => {
+                return acc += item.price;
+            }, 0);
+            const totalPrice=calcAmount;
+            res.render('cart',{result,totalPrice})
           })
         })
        
@@ -260,11 +262,10 @@ module.exports={
         console.log(req.params.id);
         user.deleteCartProduct(req.session.userID,req.params.id).then((result) => {
             console.log(result);
+            res.redirect('/cart')
         }).catch((err) => {
             console.log(err);
         });
-
-        res.send("deleted")
     }
    
 }
