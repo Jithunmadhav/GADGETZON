@@ -258,6 +258,12 @@ module.exports={
     },
     getDeleteCart:(req,res)=>{
         console.log(req.params.id);
+        user.deleteCartProduct(req.session.userID,req.params.id).then((result) => {
+            console.log(result);
+        }).catch((err) => {
+            console.log(err);
+        });
+
         res.send("deleted")
     }
    
