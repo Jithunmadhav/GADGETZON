@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/user/wishlist.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css">
+    {{!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"> --}}
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+</head>
+<body style="background-color: #F5F5F5;">
+  <nav  class="navbar navbar-expand-md   navbar-dark bg-dark main-menu sticky-top" style=" box-shadow:none;;
+  width: 100%; z-index:100;">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <h4 class="font-weight-bold"><h3>Gadget<font color="#FFD523">Zon</font></h3></h4>
+    </a>
+
+    <ul class="navbar-nav ml-auto d-block d-md-none">
+      <li class="nav-item">
+        <a class="btn btn-link" href="#"><i class="bx bxs-cart icon-single"></i> <span class="badge badge-danger">3</span></a>
+      <a class="btn btn-warning" href="/login"><i class="bx bxs-user-circle mr-1"></i> Log In</a>
+    </li>
+    </ul>
+
+    <div class="collapse navbar-collapse">
+      <form class="form-inline my-2 my-lg-0 mx-auto">
+        <input class="form-control" type="search" placeholder="Search for products..." aria-label="Search" style="width: 354px;">
+        <button style="background-color: #F26522;" class="btn my-2 my-sm-0" type="submit"><i class="bx bx-search"></i></button>
+      </form>
+
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a style="color: white;" class="btn btn-link" href="#"><i class="bx bxs-cart icon-single"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-warning" href="/login"><i class="bx bxs-user-circle mr-1"></i> Log In</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<div class="search-bar d-block d-md-none bg-dark">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <form class="form-inline mb-3 mx-auto">
+          <input class="form-control" type="search" placeholder="Search for products..." aria-label="Search"  style="width: 318px;">
+          <button  style="background-color: #F26522;" class="btn " type="submit"><i class="bx bx-search"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="container">
+
+
+
+	<div class="cart-wrap">
+		<div class="container">
+	        <div class="row">
+			    <div class="col-md-12">
+			        <div class="main-heading mb-10">My wishlist</div>
+			        <div class="table-wishlist">
+				        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+				        	<thead>
+					        	<tr>
+					        		<th width="45%">Product Name</th>
+					        		<th width="15%">Price</th>
+					        		<th width="15%">Stock Status</th>
+					        		<th width="15%"></th>
+					        		<th width="10%"></th>
+					        	</tr>
+					        </thead>
+					        <tbody>
+								{{#each product}}
+					        	<tr>
+					        		<td width="45%">
+					        			<div class="display-flex align-center">
+		                                    <div class="img-product">
+                                            <img src="{{this.img}}">
+		                                    </div>
+		                                    <div class="name-product">
+		                                       {{this.name}}
+		                                    </div>
+	                                    </div>
+	                                </td>
+					        		<td width="15%" class="price">{{this.price}}</td>
+					        		<td width="15%"><span class="in-stock-box">{{this.status}}</span></td>
+					        		<td width="15%"><button class="round-black-btn small-btn">Add to Cart</button></td>
+					        		<td width="10%" class="text-center"><a href="#" class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
+					        	</tr>
+								{{/each}}
+				        	</tbody>
+				        </table>
+				    </div>
+			    </div>
+			</div>
+		</div>
+	</div>
+	     <a style="text-decoration: none; display: flex;" href="/home"><i style="    margin-top: 6px;" class="fas fa-arrow-left mr-2"></i> Continue Shopping</a>
+
+</section>
+
+
+
+
+{{!-- <footer style="margin-top: -4px;">
+   <div style="width: 100%; height: 100px; background-color: #EDB84E; display: flex; justify-content: center; margin-top: 5px; padding-top: 16px;"><h3 style="color: white;">Gadget<font color="black">Zon</font></h3><hr>
+   </div>
+  
+  <div class="flex-Container">
+  <div style="background-color: #EDB84E; height: 200px;" class="flex-item-left">
+  <h2>About</h2></div>
+  <div style="background-color: #EDB84E; height: 200px;" class="flex-item-left">
+  <h2>Help</h2></div>
+  <div style="background-color: #EDB84E; height: 200px;" class="flex-item-left">
+  <h2>Policy</h2></div>
+  
+</div>
+</footer> --}}
+
+
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ 
+</body>
+</html>

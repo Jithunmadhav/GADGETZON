@@ -1,0 +1,115 @@
+body{
+    margin: 0;
+}
+*{
+  margin: 0;
+}
+a{
+  text-decoration: none;
+}
+
+
+
+  .searchsize{
+    width: 650px;
+    height: 40px;
+    border-radius: 5px;
+  }
+  @media(max-width:1200px) {
+    .searchsize{
+      width: 384px;
+      height: 40px;
+    border-radius: 5px;
+    }
+  }
+  
+  @media(max-width:1000px) {
+    .searchsize{
+      width: 250px;
+      height: 40px;
+    border-radius: 5px;
+    }
+  }
+
+  .flex-container {
+    display: flex;
+   
+  }
+  .flex-container > div {
+    
+    margin: 10px;
+    padding: 20px;
+    
+  }
+
+
+  .flex-Container {
+    display: flex;
+    flex-direction: row;
+    
+    font-size: 30px;
+    text-align: center;
+  }
+  
+  .flex-item-left {
+   
+    padding: 10px;
+    flex: 50%;
+  }
+  
+  .flex-item-right {
+   
+    padding: 10px;
+    flex: 50%;
+  }
+  
+  @media (max-width: 900px) {
+    .flex-Container {
+      flex-direction: column;
+    }
+    .flex-item-left {
+      flex: 50%;
+      max-width: 100%;
+    }
+    .flex-item-right {
+      flex: 50%;
+    max-width: 100%;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .flex-Container {
+      flex-direction: column;
+    }
+    .flex-item-left {
+      flex: 50%;
+      max-width: 100%;
+      margin-top: 40px;
+    }
+    .flex-item-right {
+      flex: 50%;
+    max-width: 100%;
+    }
+}
+.txt-align{
+  text-align: left;
+}
+
+.starrating > input {  
+  display: none;  
+  }  /* Remove radio buttons */  
+  .starrating > label:before {   
+    content: "\f005"; /* Star */  
+    margin: 2px;  
+    font-size: 20px;  
+    font-family: FontAwesome;  
+    display: inline-block;   
+  }  
+  .starrating > label  
+  {  
+    color: #ece8e8; /* Start color when not clicked */  
+  }  
+  .starrating > input:checked ~ label  
+  { color: #ffca08 ; } /* Set yellow color when star checked */  
+  .starrating > input:hover ~ label  
+  { color: #ffca08 ;  }  

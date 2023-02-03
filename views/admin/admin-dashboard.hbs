@@ -1,0 +1,157 @@
+<! DOCTYPE html>  
+<html>  
+<head>  
+<title>  Bootstrap Rating widget  
+</title>  
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+<link rel="stylesheet" href="css/furniture-styles.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="/stylesheets/admin/admin-home.css">
+<body>
+  
+<!-- Top menu -->
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container">
+   <h4 style="color: rgb(195, 191, 191);">Admin</h4>
+    <form class="form-inline my-2 my-lg-0 search-style">
+      <input  class="form-control mr-sm-2 search-size" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+      <a class="navbar-brand" href="index.html">Bootstrap Hamburger Menu</a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                  <a class="nav-link scroll-link active" href="#">Dashboard</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/productDetails">Product Details</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/productCategory">Category</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="#section-3">Order Details</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/userManagement">User Details</a>
+              </li>
+          </ul>
+      </div>
+
+  </div>
+</nav>
+<div class="row mt-5">
+  <div class="container mt-5">
+  <h3>Dashboard</h3>
+  </div>
+</div>
+<div class="container">
+<div id="chart"></div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+   var options = {
+          series: [{
+          name: 'Inflation',
+          data: [2.3, 3.1, 4.0, 10, 4.0, 3.6, 3.2, 2.3, 8, 0.8, 0.5, 0.2]
+        }],
+          chart: {
+          height: 350,
+          type: 'bar',
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 10,
+            dataLabels: {
+              position: 'top', // top, center, bottom
+            },
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: function (val) {
+            return val + "%";
+          },
+          offsetY: -20,
+          style: {
+            fontSize: '12px',
+            colors: ["#304758"]
+          }
+        },
+        
+        xaxis: {
+          categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          position: 'top',
+          axisBorder: {
+            show: false
+          },
+          axisTicks: {
+            show: false
+          },
+          crosshairs: {
+            fill: {
+              type: 'gradient',
+              gradient: {
+                colorFrom: '#D8E3F0',
+                colorTo: '#BED1E6',
+                stops: [0, 100],
+                opacityFrom: 0.4,
+                opacityTo: 0.5,
+              }
+            }
+          },
+          tooltip: {
+            enabled: true,
+          }
+        },
+        yaxis: {
+          axisBorder: {
+            show: false
+          },
+          axisTicks: {
+            show: false,
+          },
+          labels: {
+            show: false,
+            formatter: function (val) {
+              return val + "%";
+            }
+          }
+        
+        },
+        title: {
+          text: 'Monthly revenue of GadgetZon',
+          floating: true,
+          offsetY: 330,
+          align: 'center',
+          style: {
+            color: '#444'
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+</script>
+
+
+<!-- continues the page content ... -->
+ 
+ 
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</body>  
+</html>  
