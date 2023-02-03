@@ -75,30 +75,33 @@
 				        <table cellpadding="0" cellspacing="0" border="0" width="100%">
 				        	<thead>
 					        	<tr>
+                      
 					        		<th width="45%">Product Name</th>
 					        		<th width="15%">Price</th>
-					        		<th width="15%">Stock Status</th>
+					        		{{!-- <th width="15%">Stock Status</th> --}}
 					        		<th width="15%"></th>
 					        		<th width="10%"></th>
 					        	</tr>
 					        </thead>
 					        <tbody>
-								{{#each product}}
+								{{#each result}}
 					        	<tr>
 					        		<td width="45%">
 					        			<div class="display-flex align-center">
 		                                    <div class="img-product">
-                                            <img src="{{this.img}}">
+                                         <img style="width: 70px; height: 70px;" src="/product_img/{{this.main_image.[0].filename}}" alt="" class="img-fluid">
+
 		                                    </div>
 		                                    <div class="name-product">
-		                                       {{this.name}}
+		                                       {{this.productname}}
 		                                    </div>
 	                                    </div>
 	                                </td>
 					        		<td width="15%" class="price">{{this.price}}</td>
-					        		<td width="15%"><span class="in-stock-box">{{this.status}}</span></td>
-					        		<td width="15%"><button class="round-black-btn small-btn">Add to Cart</button></td>
-					        		<td width="10%" class="text-center"><a href="#" class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
+					        		{{!-- <td width="15%"><span class="in-stock-box">{{this.status}}</span></td> --}}
+					        		<td width="15%">
+                        <a href="/addToCart/{{this._id}}"><button class="round-black-btn small-btn">Add to Cart</button></a></td>
+					        		<td width="10%" class="text-center"><a href="/deleteWishlist/{{this._id}}" onclick="return confirm('Are you sure to unlist {{this.productname}}')" class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
 					        	</tr>
 								{{/each}}
 				        	</tbody>

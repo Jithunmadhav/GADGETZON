@@ -193,5 +193,40 @@ module.exports={
             console.log(err);
           });
         });
-      }
+      },
+
+      // Wishlist
+
+      productAddWishlist:(userId,productId)=>{
+        return new Promise(async(resolve, reject) => {
+          await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userId)},{$addToSet:{wishlist:objectid(productId)}}).then((result) => {
+            resolve(result)
+          }).catch((err) => {
+            console.log(err);
+          });
+        });
+      },
+
+      wishlistProducts:(userID)=>{
+        return new Promise(async(resolve, reject) => {
+         const {wishlist} = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userID)},{wishlist:1})
+         resolve(wishlist)
+        
+        });
+      },
+      viewWishlist:(productID)=>{
+        return new Promise(async(resolve, reject) => {
+        let result=  await db.get().collection(collection.PRODUCT_DETAILS).find({_id:{$in:productID}}).toArray()
+        resolve(result)
+        });
+      },
+      deleteWishlistProduct:(userID,productID)=>{
+        return new Promise((resolve, reject) => {
+          db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userID)},{$pull:{wishlist:objectid(productID)}}).then((result) => {
+            resolve(result)
+          }).catch((err) => {
+            console.log(err);
+          });
+        });
+      },
 }

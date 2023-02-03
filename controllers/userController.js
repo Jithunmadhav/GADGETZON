@@ -241,7 +241,7 @@ module.exports={
     getAddCart:(req,res)=>{
         user.productAddCart(req.session.userID,req.params.id).then((result)=>{
             console.log(result);
-            res.redirect('/shop-page')
+            res.redirect('back')
         })
        
 
@@ -263,6 +263,36 @@ module.exports={
         user.deleteCartProduct(req.session.userID,req.params.id).then((result) => {
             console.log(result);
             res.redirect('/cart')
+        }).catch((err) => {
+            console.log(err);
+        });
+    },
+    
+    // Wishlist
+
+    getAddWishlist:(req,res)=>{
+        user.productAddWishlist(req.session.userID,req.params.id).then((result) => {
+            res.redirect('/shop-page')
+        }).catch((err) => {
+           console.log(err); 
+        });
+    },
+    getWishlist:(req,res)=>{
+        user.wishlistProducts(req.session.userID).then((result) => {
+            user.viewWishlist(result).then((result) => {
+                res.render('wishlist',{result})
+            }).catch((err) => {
+                console.log(err);
+            });
+        }).catch((err) => {
+            console.log(err);
+        });
+
+    },
+    getDeleteWishlist:(req,res)=>{
+        // console.log(req.session.userID);
+        user.deleteWishlistProduct(req.session.userID,req.params.id).then((result) => {
+            res.redirect('/wishlist')
         }).catch((err) => {
             console.log(err);
         });

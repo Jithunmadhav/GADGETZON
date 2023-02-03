@@ -71,12 +71,13 @@ router.get('/brandList/:name',userController.getBrandList)
 router.get('/productDetails/:id',userController.getProductDetails)
 
 //wishlist
-let product=[{img:"/images/laptop.png" ,name:"apple",price:12000,status:"stock"},
-{img:"/images/tab.png" ,name:"tab",price:12000,status:"stock"}]
 
-router.get('/wishlist',(req,res)=>{
-    res.render('wishlist',{product})
-})
+
+router.get('/addToWishlist/:id',userController.getAddWishlist)
+
+router.get('/wishlist',userController.getWishlist)
+
+router.get('/deleteWishlist/:id',userController.getDeleteWishlist)
 
 //cart
 
@@ -87,6 +88,7 @@ router.get('/addToCart/:id',userController.getAddCart)
 router.get('/cart',userController.getCart)
 
 router.get('/cartProductDelete/:id',userController.getDeleteCart)
+
 
 
 
