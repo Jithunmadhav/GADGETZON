@@ -188,7 +188,7 @@ module.exports={
 
       deleteCartProduct:(userID,productID)=>{
         return new Promise((resolve, reject) => {
-          db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userID)},{$pop:{cart:objectid(productID)}}).then((result) => {
+          db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userID)},{$pull:{cart:objectid(productID)}}).then((result) => {
             resolve(result)
           }).catch((err) => {
             console.log(err);
