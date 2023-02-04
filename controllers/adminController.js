@@ -236,6 +236,36 @@ postUpdateCategory:(req,res)=>{
   }).catch((err)=>{
     console.log(err);
   })
+},
+
+           // ****** COUPON MANAGEMENT **********
+getCouponManagement:(req,res)=>{
+  admin.getCouponDetails().then((result) => {
+     res.render('coupon',{result})
+  }).catch((err) => {
+    console.log(err);
+  });
+
+},
+
+getAddCoupon:(req,res)=>{
+  res.render('addCoupon',{result:req.session.couponStatus})
+},
+postAddCoupon:(req,res)=>{
+  admin.validateCoupon(req.body).then((result)=>{
+    if(result.status){
+      req.session.couponStatus=result.status;
+      res.redirect('/admin/addCoupon')
+    }else{
+      admin.addCoupon(req.body).then((result) => {
+        console.log(result);
+        res.redirect('/admin/couponManagement')
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+  })
+  
 }
     
 }

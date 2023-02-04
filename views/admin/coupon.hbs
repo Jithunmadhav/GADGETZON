@@ -47,7 +47,7 @@
               <li class="nav-item">
                   <a class="nav-link scroll-link active" href="/admin/userManagement">User Details</a>
               </li>
-               <li class="nav-item">
+              <li class="nav-item">
                   <a class="nav-link scroll-link active" href="/admin/couponManagement">Coupon management</a>
               </li>
           </ul>
@@ -56,38 +56,32 @@
   </div>
 </nav>
 <div style="padding-left: 20px; padding-right: 20px; margin-top: 80px;">
-   <div style="float: right;"><a href="/admin/bannedUser" class="btn btn-outline-dark mb-2">Banned User</a></div>
-
+<div style="float: right;"><a href="/admin/addcoupon" class="btn btn-outline-dark mb-2">Add coupon</a></div>
 <table class="table table-top">
   <thead class="thead-dark">
     <tr>
-      <th scope="col">First name</th>
-      <th scope="col">Last name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Phone</th>
-      {{!-- <th scope="col">Address</th>
-      <th scope="col">City</th>
-      <th scope="col">State</th>
-      <th scope="col">Zip</th> --}}
-      <th scope="col"></th>
+      <th scope="col">Coupon name</th>
+      <th scope="col">Coupon code</th>
+      <th scope="col">Discount amt</th>
+      <th scope="col">Min purchace amt</th>
+      <th scope="col">Created date</th>
+      <th scope="col">Expiry date</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
-    {{#each data}}
-    {{#unless this.Boolean }}
+    {{#each result}}
     <tr style="height: 80px; ">
-      <td>{{this.fname}}</td>
-      <td>{{this.lname}}</td>
-      <td>{{this.email}}</td>
-      <td>{{this.phone}}</td>
-      {{!-- <td>{{this.address}}</td>
-      <td>{{this.city}}</td>
-      <td>{{this.state}}</td>
-      <td>{{this.zip}}</td> --}}
-      <td><a href="/admin/banUser/{{this._id}}" onclick="return confirm('Are you sure to ban {{this.fname}}')"><button class="btn btn-outline-dark">Ban <i style="color: red;" class="fa fa-ban "></i></button></a></td>
+      <td>{{this.couponName}}</td>
+      <td>{{this.couponCode}}</td>
+      <td>{{this.discountAmt}}</td>
+      <td>{{this.minPurchaseAmt}}</td>
+      <td style="width: 200px;">{{this.createdDate}}</td>
+      <td  style="width: 200px;">{{this.expDate}}</td>
+      <td><a href="/admin/listCoupon/{{this._id}}" onclick="return confirm('Are you sure to list {{this.fname}}')"><button class="btn btn-outline-dark">List coupon <i style="color: red;" ></i></button></a></td>
+
      
     </tr>
-     {{/unless}}
    {{/each}}
   </tbody>
 

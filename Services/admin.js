@@ -278,6 +278,53 @@ updateCategory:(data,id)=>{
     })
   });
 
+},
+
+// *****COUPON MANAGEMENT *****
+
+validateCoupon:(data)=>{
+
+  return new Promise(async(resolve, reject) => {
+   let response={}
+    let couponName= await db.get().collection(collection.COUPON).findOne({couponCode:data.couponCode})
+    let couponCode= await db.get().collection(collection.COUPON).findOne({couponCode:data.couponCode})
+    if(couponName){
+      response.status=true;
+      resolve(response)
+    }else if(couponCode){
+      response.status=true;
+      resolve(response)
+    }
+    else{
+      response.status=false;
+      resolve(response)
+    }
+   
+  });
+},
+
+addCoupon:(data)=>{
+  return new Promise(async(resolve, reject) => {
+    await db.get().collection(collection.COUPON).insertOne({
+      couponName:data.couponName,
+      couponCode:data.couponCode,
+      discountAmt:parseInt(data.discountAmt),
+      minPurchaseAmt:parseInt(data.minPurchaseAmt),
+      createdDate:new Date(),
+      expDate:new Date(data.expDate),
+      couponStatus:false
+    }).then((result) => {
+      resolve(result)
+    }).catch((err) => {
+      console.log(err);
+    });
+  });
+},
+getCouponDetails:()=>{
+  return new Promise(async(resolve, reject) => {
+    let result=await db.get().collection(collection.COUPON).find().toArray()
+    resolve(result)
+  });
 }
 
 }

@@ -76,4 +76,14 @@ router.get('/editCategory/:id',adminController.getEditCategory)
 
 router.post('/updateCategory/:id',adminController.postUpdateCategory)
 
+
+           // ****** COUPON MANAGEMENT **********
+
+router.get('/couponManagement',adminController.getCouponManagement)
+
+router.get('/addcoupon',adminController.getAddCoupon)
+
+router.post('/postCoupon',adminController.postAddCoupon)
+
+
 module.exports=router;

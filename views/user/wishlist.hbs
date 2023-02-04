@@ -101,7 +101,7 @@
 					        		{{!-- <td width="15%"><span class="in-stock-box">{{this.status}}</span></td> --}}
 					        		<td width="15%">
                         <a href="/addToCart/{{this._id}}"><button class="round-black-btn small-btn">Add to Cart</button></a></td>
-					        		<td width="10%" class="text-center"><a href="/deleteWishlist/{{this._id}}" onclick="return confirm('Are you sure to unlist {{this.productname}}')" class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
+					        		<td width="10%" class="text-center"><a href="/deleteWishlist/{{this._id}}" onclick="return confirm('Are you sure to delete {{this.productname}}')" class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
 					        	</tr>
 								{{/each}}
 				        	</tbody>
