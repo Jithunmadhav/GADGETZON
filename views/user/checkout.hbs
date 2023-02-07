@@ -23,46 +23,83 @@
    <section class="container">
    <div class="flex-Container">
   <div  class="flex-item-left">
-  <div style="width: 400px;">
-    <h2 style="padding-top: 40px;" class="txt-align mb-3">Delivery address</h2>
-    <h5 class="txt-align">Jithun madhav CT Chozhathala House Ugrapuram Post Malappuram Kerala 673639</h5><hr>
+  <div style="width: 400px; display: flex;">
+    <h5 style="padding-top: 40px;" class="txt-align mb-3">Delivery address</h5>
   </div>
-    <h2 style="padding-top: 40px;" class="txt-align mb-3">Payment method</h2>
+   <div class="card mb-2" style="width: 380px;">
+          <div class="card-body" >
+            {{#if status}}
+            <div class="row" >
+              <div style="text-align: left;" class="col-sm-9">
+                <h6 class="mb-0">{{result.fname}} {{result.lname}}</h6>
+                <h6 class="mb-0">{{result.phone}}</h6>
+                <h6 class="mb-0">{{result.address}},{{result.city}},{{result.state}}</h6>
+                <h6 class="mb-0">{{result.zip}}</h6>
+              </div>
+              <div class="col-sm-3">
+               <a href="/userProfile" class=" btn btn-outline-dark">change</a>
+              </div>
+              
+            </div>
+            {{else}}
+                <a style="font-size: 25px;
+    text-decoration: none;
+    margin-top: 39px;
+    margin-left: 33px;
+    font-family: emoji;" id="test" href="/userProfile" >Add  <i   class="fa fa-address-card " aria-hidden="true"></i></a>
+
+
+            {{/if}}
+          </div>
+        </div>
+  <div>
+        <h2 style="padding-top: 40px;" class="txt-align mb-3">Payment method</h2>
      <form style="    font-size: 17px;text-align: left;" action="#">
         <input type="radio" name="fav_language" value="pay on delivery">
         <label for="html">Pay on Delivery</label><br>
         <input type="radio" id="css" name="fav_language" value="online">
         <label for="css">Online payment</label>
      </form> <br> 
-     <a style="text-decoration: none; display: flex;" href="/home"><i style="    margin-top: 10px;" class="fas fa-arrow-left mr-2"></i> Continue Shopping</a>
+          <div class="card mb-2"  >
+          <div class="card-body" >
+            <div class="row" >
+              <div style="text-align: center;" class="col-sm-12">
+                {{!-- <h6 class="mb-0">Coupon</h6> --}}
+                <form action="/redeemCoupon" method="post">
+                  <div style="display: flex;">
+                    <label style="font-size: 20px; margin-top: 4px;">Coupon code &nbsp;</label>                 
+                  <input style="height: 40px; width:200px;" type="text" name="redeemCoupon" placeholder="Enter" class="form-control" >
+                   <input type="submit" value="Enter" class="btn btn-dark">
+                  </div>
+                  
+                </form>
+               
+              </div>
+            
+            </div>     
+          </div>
+        </div>
+     <a style="text-decoration: none; display: flex; font-size: 20px; margin-top: 63px;" href="/home"><i style="    margin-top: 10px;" class="fas fa-arrow-left mr-2"></i> Continue Shopping</a>
+
+  </div>
+  
   </div>
 
 
-  <div  class="flex-item-right mb-3">
-  <div><h3 style="padding-top: 40px; ">Order Summary</h3>
-  <table style="    display: flex; justify-content: center;">
-    <tbody style="display: flex; flex-direction: column; font-size: 22px;">
- <tr>
-    <td>items :</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;86,260.00</td>
+  <div  class="flex-item-right mb-5">
     
-  </tr>
-  <tr>
-    <td>Delivery:</td>
-    <td>&nbsp;80.00</td>
-  </tr>
- 
-  <tr>
-    <td>Total :</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;86,340.00</td>
-  </tr>
-    </tbody>
- 
-</table>
-<hr>
-<h3 style="color: red;">Order Total :  <i style="font-size: 20px; position: relative; top: -7px; color: black;" class="bi bi-currency-rupee"></i> 86,340.00</h3><hr>
-  <input type="submit" class="btn btn-warning" value="Place Your Order" style="width: 40%;height: 50px;font-size: 20px; font-family: cursive;">
-  </div>
+
+   <div class="row" style="margin-top: 30px;">
+              <div style="text-align: center;" class="col-sm-12">
+                <h3 class="mb-2">Order Summary</h3><hr>
+                <h4 class="mb-2">items :&nbsp;&nbsp;{{Price}}.00</h4>
+                <h4 style="padding-right:29px" class="mb-2">Delivery:&nbsp; 80.00</h4>
+                <h4 style="padding-right:29px" class="mb-2">Discount:&nbsp; {{discount}}.00</h4>
+           
+               <h3 class="mb-0" style="color: red;">Order Total :  <i style="font-size: 20px; position: relative; top: -7px; color: black;" class="bi bi-currency-rupee"></i>{{totalPrice}}.00</h3><hr>
+               <input type="submit" class="btn btn-warning" value="Place Your Order" style="width: 40%;height: 50px;font-size: 20px; font-family: cursive;">     
+              </div> 
+    </div>
   </div>
 </div>
 </section>

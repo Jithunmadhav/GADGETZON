@@ -6,10 +6,12 @@ module.exports={
 
   getLogin:(req,res)=>{
     if(req.session.status){
+      
       res.render('admin-login',{result:'invalid user name or password'})
       req.session.status=false
     }else{
       res.render('admin-login')
+     
     }
         
     },
@@ -222,7 +224,8 @@ getSearchCategory:(req,res)=>{
 
 getEditCategory:(req,res)=>{
   admin.editCategory(req.params.id).then((result) => {
-    res.render('edit-category',{result})
+    res.render('edit-category',{result,status:req.session.categStatus})
+    req.session.categStatus=false
     
   }).catch((err) => {
     console.log(err);
@@ -230,13 +233,35 @@ getEditCategory:(req,res)=>{
   
 },
 
+
 postUpdateCategory:(req,res)=>{
-  admin.updateCategory(req.body,req.params.id).then(()=>{
-    res.redirect('/admin/productCategory')
-  }).catch((err)=>{
-    console.log(err);
-  })
+  admin.validateEditCatgy(req.body.categoryname).then((result)=>{
+    if(result.status){
+      req.session.categStatus=result.status;
+      res.redirect('/admin/editCategory')
+    }else{
+      admin.updateCategory(req.body,req.params.id).then(()=>{
+        res.redirect('/admin/productCategory')
+      }).catch((err)=>{
+        console.log(err);
+      })
+    }
+  });
+  
 },
+// List and Unlist Category
+
+getListCategory:(req,res)=>{
+   
+  admin.listCatgy(req.params.id).then((result)=>{
+      res.redirect('/admin/productCategory')
+  })
+  },
+getUnlistCategory:(req,res)=>{
+  admin.unlistCatgy(req.params.id).then((result)=>{
+       res.redirect('/admin/productCategory')
+  })
+  },  
 
            // ****** COUPON MANAGEMENT **********
 getCouponManagement:(req,res)=>{
@@ -266,6 +291,24 @@ postAddCoupon:(req,res)=>{
     }
   })
   
-}
+},
+getListCoupon:(req,res)=>{
+  admin.listCoupon(req.params.id).then((result)=>{
+    res.redirect('/admin/couponManagement')
+})
+
+},
+getUnlistCoupon:(req,res)=>{
+  admin.unlistCoupon(req.params.id).then((result)=>{
+    res.redirect('/admin/couponManagement')
+})
+},
+getSearchCoupon:(req,res)=>{
+  admin.searchCoupon(req.query).then((result)=>{
+    res.render('coupon',{result})
+  }).catch((err)=>{
+    console.log(err);
+  })
+},
     
 }

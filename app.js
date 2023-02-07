@@ -27,6 +27,11 @@ app.use(session({
   saveUninitialized:true
 }));
 
+app.use(function cache1(req, res, next) { 
+  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+   next();
+ });
+
 //database connection
 db.connect((err)=>{
     if(err) console.log("connection error");

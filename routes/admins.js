@@ -73,8 +73,14 @@ router.get('/deleteCategory/:id',adminController.getDeleteCategory)
 router.get('/searchCategory',adminController.getSearchCategory)
 
 router.get('/editCategory/:id',adminController.getEditCategory)
+router.get('/editCategory',adminController.getEditCategory)
 
 router.post('/updateCategory/:id',adminController.postUpdateCategory)
+
+router.get('/listCategory/:id',adminController.getListCategory)
+
+router.get('/unlistCategory/:id',adminController.getUnlistCategory)
+
 
 
            // ****** COUPON MANAGEMENT **********
@@ -84,6 +90,12 @@ router.get('/couponManagement',adminController.getCouponManagement)
 router.get('/addcoupon',adminController.getAddCoupon)
 
 router.post('/postCoupon',adminController.postAddCoupon)
+
+router.get('/listCoupon/:id',adminController.getListCoupon)
+
+router.get('/unlistCoupon/:id',adminController.getUnlistCoupon)
+
+router.get('/searchCoupon',adminController.getSearchCoupon)
 
 
 module.exports=router;

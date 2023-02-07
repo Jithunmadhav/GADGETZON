@@ -30,8 +30,11 @@
               <div class="card-body p-5 text-center">
 
                 <div class="mb-md-5 h-100 mt-md-1 pb-5">
-                  <form action="#" method="POST">
-                    <h1 style="color: black;">Manage Profile</h1><br />
+                  <form action="/addedAddress" method="POST">
+                    <h1 style="color: black;">Address</h1><br />
+                      {{#if result}}
+                     <h6 style="color: red;">Address already exsist</h6>
+                      {{/if}}
     
                     <div class="row">
                       <label style="color: black; display: flex;font-family: emoji;">Name :</label>
@@ -41,7 +44,6 @@
                           type="text"
                           class="form-control mb-3"
                           placeholder="First name"
-                          value="Jithun"
                           name="fname"
                           aria-label="First name"
                         />
@@ -51,24 +53,12 @@
                           type="text"
                           class="form-control mb-3"
                           placeholder="Last name"
-                          name="lname"
-                          value="Madhav CT"
+                          name="lname"      
                           aria-label="Last name"
                         />
                       </div>
                     </div>
-                    <label style="color: black; display: flex;font-family: emoji;">Email :</label>
-                    <input
-                      class="form-control mb-3"
-                      type="email"
-                      name="email"
-                      value="jithunmadhav1@gmail.com"
-                      id="email"
-                      placeholder="E-Mail "
-                    />
-                    {{!-- <label style="color: rgb(81, 79, 79); font-size: 15px; margin-left: -230px;"><font color="red">*</font>Password at least 6 charecters</label> --}}
-                    
-                    
+                                        
                    <label style="color: black; display: flex; font-family: emoji;">phone :</label>
 
                     <input
@@ -78,7 +68,6 @@
                       minlength="10" maxlength="10"
                       id="phonenum"
                       placeholder="Phone Number "
-                      value="9446244318"
                       required
                     />
                     <label style="color: black; display: flex; font-family: emoji;">Address :</label>
@@ -88,7 +77,6 @@
                       class="form-control mb-3"
                       type="text"
                       name="address"
-                      value="Chozhathala House Ugrapuram post"
                       placeholder="Address"
                       required
                     />
@@ -99,7 +87,6 @@
                           class="form-control "
                           placeholder="City"
                           aria-label="City"
-                          value="Malappuram"
                           name="city"
                           required
                         />
@@ -110,7 +97,6 @@
                           class="form-control "
                           placeholder="State"
                           aria-label="State"
-                          value="Kerala"
                           name="state"
                           required
                         />
@@ -121,7 +107,6 @@
                           class="form-control"
                           placeholder="Zip"
                           aria-label="Zip"
-                          value="673639"
                           name="zip"
                           required
                         />

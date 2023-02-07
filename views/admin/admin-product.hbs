@@ -91,8 +91,6 @@
         <td><a href="/admin/editProduct/{{this._id}}"><i class="bi bi-pencil-square pdtDelete"></i></a></td>
 
         {{#unless this.Boolean }}
-
-
         <td><a href="/admin/listProduct/{{this._id}}" onclick="return confirm('Are you sure to list {{this.fname}}')"><button class="btn btn-outline-dark">List product <i style="color: red;" ></i></button></a></td>
         {{else}}
         <td><a href="/admin/unlistProduct/{{this._id}}" onclick="return confirm('Are you sure to unlist {{this.fname}}')"><button class="btn btn-outline-dark">Unlist product <i style="color: red;" ></i></button></a></td>

@@ -2,6 +2,7 @@ const db=require('../config/connection')
 const bcrypt=require('bcrypt');
 const collection = require('../models/collection');
 const { response } = require('express');
+const e = require('express');
 const objectid=require('mongodb').ObjectID
 module.exports={
     checkSignup:(userData)=>{
@@ -33,7 +34,7 @@ module.exports={
         return new Promise(async(resolve, reject) => {
                 let Email=userData.email;
                  userData.password=await bcrypt.hash(userData.password,10)
-                db.get().collection(collection.USER_COLLECTION).insertOne({...userData,Boolean:false,wishlist:[],cart:[],address:[]}).then((data)=>{
+                db.get().collection(collection.USER_COLLECTION).insertOne({...userData,Boolean:false,wishlist:[],cart:[],address:[],checkout:[]}).then((data)=>{
                   resolve(data)
                       
               })
@@ -229,4 +230,65 @@ module.exports={
           });
         });
       },
+
+
+      verifyAddress:(userId,data)=>{
+        console.log(data);
+        return new Promise(async(resolve, reject) => {
+          const {address} = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userId)},{address:1})
+          let addressStatus=address.find(e=>e.address==data.address)
+          let cityStatus=address.find(e=>e.city==data.city)
+          
+          if(addressStatus==undefined || cityStatus==undefined){
+            console.log("not excist");
+            stat=false
+            resolve(stat)
+          }else{
+            console.log("already excist");
+            stat=true
+            resolve(stat)
+          }
+        });
+
+      },
+
+      addAddress:(userId,data)=>{
+        return new Promise(async(resolve, reject) => {
+          id=Math.floor(Math.random()*1000000)
+          await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userId)},{$addToSet:{address:{$each:[{...data,id}]}}}).then((result) => {
+            resolve(result)
+          }).catch((err) => {
+            console.log(err);
+          });
+        });
+      },
+      getAddress:(userId)=>{
+        return new Promise(async(resolve, reject) => {
+          const {address} = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userId)},{address:1})
+          resolve(address)
+        });
+    },
+    selectedAddress:(userId,Id)=>{
+     let ID=parseInt(Id)
+      console.log(typeof ID);
+      return new Promise(async(resolve, reject) => {
+      let {address}=await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userId)},{address:1})
+      let found=address.find(e=>e.id==ID)
+        resolve(found)
+      });
+    }, 
+     deletedAddress:(userId,Id)=>{
+      let ID=parseInt(Id)
+       return new Promise(async(resolve, reject) => {
+      await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userId)},{$pull:{address:{id:ID}}}).then((result)=>{
+        resolve(result)
+      })  
+       });
+     },
+     redeemCoupon:(coupon)=>{
+      return new Promise(async(resolve, reject) => {
+      let result=await db.get().collection(collection.COUPON).find({couponCode:coupon}).toArray()
+      resolve(result[0])
+      });
+     }
 }

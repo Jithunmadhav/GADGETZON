@@ -15,9 +15,12 @@ router.get('/login',userController.getLogin)
 
 router.post('/loginpost',userController.postLogin)
 
-// router.get('/loginVerify',userController.getLoginVerify)
+router.get('/loginVerify',userController.getLoginVerify)
 
-// router.post('/postLoginVerify',userController.postLoginVerify)
+router.get('/resendOTP',userController.getResendOTP)
+
+router.post('/postLoginVerify',userController.postLoginVerify)
+
 // user-signup-page
 router.get('/signup',userController.getSignup)
 
@@ -25,6 +28,8 @@ router.post('/signUP',userController.postSignup)
 
 // Signup-verification-page
 router.get('/signupVerify',userController.getSignupVerify)
+
+router.get('/resendOtp',userController.getResendOtp)
 
 router.post('/postSignup',userController.postSignupVerify)
 
@@ -34,7 +39,7 @@ router.get('/forgotPasword',userController.getForgotPassword)
 
 router.post('/forgotpwd',userController.postForgotPassword)
 
-// Verify-password-page
+// Verify-password-page 
 router.get('/verifyPassword',userController.getVerifyPassword)
 
 router.post('/verifypwd',userController.postVerifyPassword)
@@ -92,20 +97,27 @@ router.get('/cartProductDelete/:id',userController.getDeleteCart)
 
 
 
-//manageProfile
-
-router.get('/manageProfile',(req,res)=>{
-    res.render('manageProfile')
-})
-
 //checkOut-page
-router.get('/checkout',(req,res)=>{
-    res.render('checkout')
-})
+router.get('/checkout/',userController.getCheckout)
+
+router.get('/addAddress',userController.getAddAdress)
+
+router.post('/addedAddress',userController.postAddedAddress)
+
+router.get('/userProfile',userController.getUserProfile)
+
+router.get('/selectAddress/:id',userController.getSelectedAddress)
+
+router.get('/deleteAddress/:id',userController.getDeletedAddress)
+
+router.post('/redeemCoupon',userController.getRedeemCoupon)
+
 
 //order-details
 router.get('/ordered-product',(req,res)=>{
     res.render('orderedProduct')
 })
+
+router.get('/logout',userController.getLogout)
 
 module.exports=router;

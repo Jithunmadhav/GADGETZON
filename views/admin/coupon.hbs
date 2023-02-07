@@ -16,8 +16,8 @@
 <nav class="navbar navbar-dark fixed-top">
   <div class="container">
    <h4 style="color: rgb(195, 191, 191);">Admin</h4>
-    <form class="form-inline my-2 my-lg-0 search-style" action="/admin/searchUser" role="search">
-      <input  class="form-control mr-sm-2 search-size" type="search" name="name" placeholder="Search" aria-label="Search">
+    <form class="form-inline my-2 my-lg-0 search-style" action="/admin/searchCoupon" role="search">
+      <input  class="form-control mr-sm-2 search-size" type="search" name="couponName" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
 
@@ -78,8 +78,11 @@
       <td>{{this.minPurchaseAmt}}</td>
       <td style="width: 200px;">{{this.createdDate}}</td>
       <td  style="width: 200px;">{{this.expDate}}</td>
-      <td><a href="/admin/listCoupon/{{this._id}}" onclick="return confirm('Are you sure to list {{this.fname}}')"><button class="btn btn-outline-dark">List coupon <i style="color: red;" ></i></button></a></td>
-
+       {{#unless this.couponStatus }}
+        <td><a href="/admin/listCoupon/{{this._id}}" onclick="return confirm('Are you sure to list {{this.couponName}}')" class="btn btn-dark">List coupon</a></td>
+        {{else}}
+        <td><a href="/admin/unlistCoupon/{{this._id}}" onclick="return confirm('Are you sure to unlist {{this.couponName}}')" class="btn btn-dark"> Unlist coupon</a></td>
+        {{/unless}}
      
     </tr>
    {{/each}}

@@ -70,8 +70,12 @@
     <tr >
       <td>{{this.categoryname}}</td>
       <td><a href="/admin/editCategory/{{this._id}}"><i class="bi bi-pencil-square pdtDelete"></i></a></td>
-      <td><a href="/admin/deleteCategory/{{this._id}}" onclick="return confirm('Are you want to delete ')"><i class="bi bi-trash3-fill pdtDelete"></a></td>
 
+     {{#unless this.categoryStatus }}
+      <td><a href="/admin/listCategory/{{this._id}}" onclick="return confirm('Are you sure to list {{this.categoryname}}')"><button class="btn btn-outline-dark">List  <i style="color: red;" ></i></button></a></td>
+      {{else}}
+      <td><a href="/admin/unlistCategory/{{this._id}}" onclick="return confirm('Are you sure to unlist {{this.categoryname}}')"><button class="btn btn-outline-dark">Unlist  <i style="color: red;" ></i></button></a></td>
+      {{/unless}}
     </tr>
     {{/each}}
   </tbody>

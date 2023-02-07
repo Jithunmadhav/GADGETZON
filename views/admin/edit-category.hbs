@@ -19,6 +19,9 @@
           <div class="card-body p-4 p-md-5">
             </form>
             <h3 class="mb-4 pb-2 pb-md-0 mb-md-5" style="text-align: center;">Edit Category</h3>
+            {{#if status}}
+            <h6 style="color: red; text-align: center;">Category already exsist</h6>
+            {{/if}}
             <form action="/admin/updateCategory/{{result._id}}" method="post">
 
               <div class="row">

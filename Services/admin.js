@@ -236,7 +236,7 @@ validateCategory:(data)=>{
 
 addCategory:(data)=>{
   return new Promise( async(resolve, reject) => {
-    await db.get().collection(collection.PRODUCT_CATEGORY).insertOne(data).then((data)=>{
+    await db.get().collection(collection.PRODUCT_CATEGORY).insertOne({categoryname:data.categoryname,categoryStatus:false}).then((data)=>{
       resolve(data)
     })
   });
@@ -268,16 +268,49 @@ editCategory:(id)=>{
     })
   });
 },
+validateEditCatgy:(data)=>{
+  return new Promise(async(resolve, reject) => {
+    console.log(data);
+   let response={}
+    let catg= await db.get().collection(collection.PRODUCT_CATEGORY).findOne({categoryname:data})
+    if(catg){
+      response.status=true;
+      resolve(response)
+    }else{
+      response.status=false;
+      resolve(response)
+    }
+   
+  });v
+},
 
 updateCategory:(data,id)=>{
   return new Promise(async(resolve, reject) => {
     await db.get().collection(collection.PRODUCT_CATEGORY).updateOne({_id:objectid(id)},{$set:{
       categoryname:data.categoryname
+      
     }}).then((result)=>{
       resolve(result)
     })
   });
 
+},
+
+// List and unlist Category
+
+listCatgy:(id)=>{
+  return new Promise(async(resolve, reject) => {
+    await db.get().collection(collection.PRODUCT_CATEGORY).updateOne({_id:objectid(id)},{$set:{categoryStatus:true}}).then((result)=>{
+      resolve(result)
+    })
+  });
+},
+unlistCatgy:(id)=>{
+  return new Promise(async(resolve, reject) => {
+    await db.get().collection(collection.PRODUCT_CATEGORY).updateOne({_id:objectid(id)},{$set:{categoryStatus:false}}).then((result)=>{
+      resolve(result)
+    })
+  });
 },
 
 // *****COUPON MANAGEMENT *****
@@ -325,6 +358,26 @@ getCouponDetails:()=>{
     let result=await db.get().collection(collection.COUPON).find().toArray()
     resolve(result)
   });
-}
+},
+listCoupon:(id)=>{
+  return new Promise(async(resolve, reject) => {
+    await db.get().collection(collection.COUPON).updateOne({_id:objectid(id)},{$set:{couponStatus:true}}).then((result)=>{
+      resolve(result)
+    })
+  });
+},
+unlistCoupon:(id)=>{
+  return new Promise(async(resolve, reject) => {
+    await db.get().collection(collection.COUPON).updateOne({_id:objectid(id)},{$set:{couponStatus:false}}).then((result)=>{
+      resolve(result)
+    })
+  });
+},
+searchCoupon:({couponName})=>{
+  return new Promise(async(resolve, reject) => {
+    let result=await db.get().collection(collection.COUPON).find({couponName:new RegExp(couponName,'i')}).toArray()
+   resolve(result)
+  });
+},
 
 }
