@@ -1,169 +1,74 @@
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css">
+ 
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css" />
-  <link rel="stylesheet" href="/stylesheets/user/productDetails.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
-  <title>Hello, world!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
-
 <body>
-
-  <header class="sticky-top">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark main-menu sticky-top"
-      style=" box-shadow:none; width: 100%; z-index:100;">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <h4 class="font-weight-bold">
-            <h3>Gadget<font color="#FFD523">Zon</font>
-            </h3>
-          </h4>
-        </a>
-
-        <ul class="navbar-nav ml-auto d-block d-md-none">
-          <li class="nav-item">
-            <a style="color: white;" class="btn btn-link" href="#"><i class="bx bxs-cart icon-single"></i></a>
-            <a style="color: white;" class="btn btn-link" href="/wishlist"><i class="bi bi-bag-heart-fill"></i></a>
-            <a class="btn btn-warning" href="/login"><i class="bx bxs-user-circle mr-1"></i>
-              Log In</a>
-          </li>
-        </ul>
-
-        <div class="collapse navbar-collapse">
-          <form class="form-inline my-2 my-lg-0 mx-auto">
-            <input class="form searchsize" type="search" placeholder="  Search for products..." aria-label="Search" />
-            <button style="background-color: #F26522;" class="btn my-2 my-sm-0" type="submit"><i
-                class="bx bx-search"></i></button>
-          </form>
-
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a style="color: white;" class="btn btn-link" href="/cart"><i style="font-size: 25px;"
-                  class="bx bxs-cart icon-single"></i></a>
+    <section  style="background-color: #eee; height: 745px;">
+  <div class="container py-5">
+    <div class="row" >
+      <div class="col">
+        <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+          <ol class="breadcrumb mb-0" style="display: flex;  justify-content: space-between;">
+            {{!-- <li class="breadcrumb-item"><a href="/checkOut">Back</a></li> --}}
+            <li class="breadcrumb-item"><h4>Address</h4></li>
+            <li><a style="font-size: 19px;
+            text-decoration: none;
+             margin-top: 4px; margin-left: 33px;font-family: emoji;" class="btn btn-dark"  href="/addAddress"  >Add </a>
             </li>
-
-            <li class="nav-item">
-              <a style="color: white;" class="btn btn-link" href="/wishlist"><i class="bi bi-bag-heart-fill"></i></a>
-            </li>
-
-            <li class="nav-item">
-              <a class="btn btn-warning" href="/login"><i class="bx bxs-user-circle mr-1"></i>
-                Log In</a>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-    </nav>
-    <div style="position: fixed; width: 100%; z-index: 50;" class="search-bar d-block d-md-none bg-dark">
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <form class="form-inline mb-3 mx-auto">
-              <input class="form-control" type="search" placeholder="Search for products..." aria-label="Search"
-                style="width: 318px;" />
-              <button style="background-color: #F26522;" class="btn" type="submit"><i class="bx bx-search"></i></button>
-            </form>
-          </div>
-        </div>
+          </ol>
+        </nav>
       </div>
     </div>
-  </header>
 
-  <section>
-    <div class="flex-Container">
-      <div class="flex-item-left">
+    <div class="row">
+    
+      <div class="col-lg-12">
+        
 
-        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img class="d-block w-100 img-fluid" src="/images/mac-product.jpg" alt="First slide" />
+        <div class="card mb-4">
+          <div class="card-body">
+            {{#each result}}
+            <div class="row">
+                
+              <div class="col-sm-8">
+                <p class="mb-0">{{this.fname}} {{this.lname}}</p>
+                <p class="mb-0">{{this.phone}}</p>
+                <p class="mb-0">{{this.address}},{{this.city}},{{this.state}}</p>
+                <p class="mb-0">{{this.zip}}</p>
+              </div>
+               <div class="col-sm-4">
+              <a href="/selectAddress/{{this.id}}" class=" btn btn-primary">select</a>
+
+               <a href="/deleteAddress/{{this.id}}"  onclick="return confirm('Are you sure to delete this address')" class=" btn btn-danger">Delete</a>
+             
+
+              </div>
+              
             </div>
-            <div class="carousel-item">
-              <img class="d-block w-100 img-fluid" src="/images/mac-product-2.jpg" alt="Second slide" />
-            </div>
-            <div class="carousel-item">
-              <img class="d-block w-100 img-fluid" src="/images/mac-product-3.jpg" alt="Third slide" />
-            </div>
+            <hr>
+            {{/each}}
+            
+           
           </div>
-          {{! <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a> }}
         </div>
-
-      </div>
-
-      <div style="overflow:hidden; overflow-y: scroll; max-height: 658px;" class="flex-item-right mb-3">
-        <div style="padding-top: 40px; ">
-          <h2 class="txt-align">Apple MacBook
-            Air Laptop:<h4 class="txt-align">
-              Apple M1 chip, 13.3-inch/33.74 cm Retina Display, 8GB RAM, 256GB
-              SSD Storage, Backlit Keyboard, FaceTime HD Camera, Touch ID.
-              Works with iPhone/iPad; Space Grey</h4>
-          </h2><br>
-          <h4 class="text-left">order status : <span style="color: rgb(142, 142, 37);">pending</span></h4>
-          <h6 style="text-align: left;">Expected delivery on 26 Jan 2023</h6>
-          <h4 class="text-left">Address</h4>
-          <h6 class="txt-align">
-            Jithun Madhav CT<br> Areacode Malappuram Kerala 673639</h6><br>
-          <h2 class="txt-align">
-            <i style="font-size: 20px; position: relative; top: -7px;" class="bi bi-currency-rupee"></i>86,990 /-
-          </h2>
-          <hr />
-          <h4 class="text-left">Add rating</h4>
-          <div class="container">
-            <div class="starrating risingstar d-flex justify-content: flex-end; flex-row-reverse"
-              style="padding-right: 196px; justify-content: flex-end;">
-
-              <input type="radio" id="star5" name="rating" value="5" />
-              <label for="star5" title="5 star"></label>
-              <input type="radio" id="star4" name="rating" value="4" />
-              <label for="star4" title="4 star"></label>
-              <input type="radio" id="star3" name="rating" value="3" />
-              <label for="star3" title="3 star"></label>
-              <input type="radio" id="star2" name="rating" value="2" />
-              <label for="star2" title="2 star"></label>
-              <input type="radio" id="star1" name="rating" value="1" />
-              <label for="star1" title="1 star"></label>
-            </div>
-          </div>
-          <a class="btn btn-dark text-white text-left">Save</a>
-          <hr />
-          <h4 class="text-left">Add review</h4>
-          <input type="text" class="form-input">
-          <a class="btn btn-dark text-white text-left">Save</a>
-
-        </div>
-
+       
       </div>
     </div>
-  </section>
+  </div>
+</section>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
 </body>
-
 </html>

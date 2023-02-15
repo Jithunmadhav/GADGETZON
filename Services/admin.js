@@ -1,19 +1,28 @@
 const { response } = require('express');
-const db=require('../config/connection')
 const collection = require('../models/collection');
-const objectid=require('mongodb').ObjectID
+const productModel=require('../models/productModel')
+const adminModel=require('../models/adminModel')
+const categoryModel=require('../models/categoryModel')
+const couponModel=require('../models/couponModel')
+const userModel=require('../models/userModel')
+const orderModel=require('../models/orderModel')
+const bannerModel=require('../models/bannerModel')
 module.exports={
 
   //***** ADMIN LOGIN ******
 
     adminLogin:(data)=>{
-        console.log("data"+data.password);
+      let response={
+
+       }
         return new Promise( async(resolve, reject) => {
-          let status=  await db.get().collection(collection.ADMIN_LOGIN).findOne({username:data.username})
-          
+          let status=  await adminModel.findOne({username:data.username})
+       
           if(status){
             if(data.password==status.password){
-                resolve({status:true})
+              response.username=status.username;
+              response.stat=true
+                resolve(response)
                 console.log("Login successfull");
             }
             else{
@@ -33,30 +42,29 @@ module.exports={
     
     productData:(pdtData,fname)=>{
       return new Promise(async(resolve, reject) => {
-   
-        await db.get().collection(collection.PRODUCT_DETAILS).insertOne({
+      
+   await productModel.create({
             productname:pdtData.productname,
             price:parseInt(pdtData.price),
             category:pdtData.category,
             quandity:parseInt(pdtData.quandity),
             brand:pdtData.brand,
             discription:pdtData.discription,
+            discription2:pdtData.discription2,
             main_image:fname.main_image,
-            sub_image:fname.sub_image
-          }).then((result) => {
-            resolve(result)
-
-
-        }).catch((err) => {
-          console.log("error",err);
-        });
+            sub_image:fname.sub_image,
+            productStatus:false,
+            wlStatus:false,
+            stockStatus:false
+   })
+   resolve()
       });
     },
     // List category
 
     listCategory:()=>{
       return new Promise(async(resolve, reject) => {
-       let result= await db.get().collection(collection.PRODUCT_CATEGORY).find().toArray()
+       let result= await categoryModel.find().lean()
        resolve(result)
       });
     },
@@ -64,18 +72,15 @@ module.exports={
     //Get product Details
     getProduct:()=>{
       return new Promise(async(resolve, reject) => {
-        let data= await db.get().collection(collection.PRODUCT_DETAILS).find().toArray()
+        let data= await productModel.find().lean()
         resolve(data)
       });
     },
     //Edit product
     editProduct:(id)=>{
       return new Promise( async(resolve, reject) => {
-        await db.get().collection(collection.PRODUCT_DETAILS).findOne({_id:objectid(id)}).then((result) => {
-          resolve(result)
-        }).catch((err) => {
-          console.log(err);
-        });
+       let result= await productModel.findOne({_id:id}).lean()
+        resolve(result)
       });
     },
     //Update Product
@@ -83,7 +88,7 @@ module.exports={
       return new Promise(async(resolve, reject) => {
         console.log(fname);
         if(fname.main_image && fname.sub_image){
-          await db.get().collection(collection.PRODUCT_DETAILS).updateOne({_id:objectid(id)},
+        let result=  await productModel.updateOne({_id:id},
           {$set:{
             productname:pdtData.productname,
             price:parseInt(pdtData.price),
@@ -91,15 +96,15 @@ module.exports={
             quandity:parseInt(pdtData.quandity),
             brand:pdtData.brand,
             discription:pdtData.discription,
+            discription2:pdtData.discription2,
             main_image:fname.main_image,
             sub_image:fname.sub_image
            
-          }}).then((result)=>{
-            resolve(result)
-          })
+          }})
+          resolve(result)
         }
         if(fname.main_image && !fname.sub_image){
-          await db.get().collection(collection.PRODUCT_DETAILS).updateOne({_id:objectid(id)},
+         let result= await productModel.updateOne({_id:id},
           {$set:{
             productname:pdtData.productname,
             price:parseInt(pdtData.price),
@@ -107,13 +112,13 @@ module.exports={
             quandity:parseInt(pdtData.quandity),
             brand:pdtData.brand,
             discription:pdtData.discription,
+            discription2:pdtData.discription2,
             main_image:fname.main_image
-          }}).then((result)=>{
-            resolve(result)
-          })
+          }})
+          resolve(result)
         }
         if(!fname.main_image && fname.sub_image){
-          await db.get().collection(collection.PRODUCT_DETAILS).updateOne({_id:objectid(id)},
+        let result = await productModel.updateOne({_id:id},
           {$set:{
             productname:pdtData.productname,
             price:parseInt(pdtData.price),
@@ -121,14 +126,14 @@ module.exports={
             quandity:parseInt(pdtData.quandity),
             brand:pdtData.brand,
             discription:pdtData.discription,
+            discription2:pdtData.discription2,
             sub_image:fname.sub_image
-          }}).then((result)=>{
-            resolve(result)
-          })
+          }})
+          resolve(result)
 
         }
         if(!fname.main_image && !fname.sub_image){
-          await db.get().collection(collection.PRODUCT_DETAILS).updateOne({_id:objectid(id)},
+         let result= await productModel.updateOne({_id:id},
           {$set:{
             productname:pdtData.productname,
             price:parseInt(pdtData.price),
@@ -136,44 +141,48 @@ module.exports={
             quandity:parseInt(pdtData.quandity),
             brand:pdtData.brand,
             discription:pdtData.discription,
-            
-          }}).then((result)=>{
-            resolve(result)
-          })
+            discription2:pdtData.discription2,
+           
+          }})
+          resolve(result)
         }
+      });
+    },
+    deleteSubImage:(pdtId,name)=>{
+      return new Promise(async(resolve, reject) => {
+      let result=  await productModel.updateOne({_id:pdtId},{$pull:{sub_image:{filename:name}}})
+      resolve(result)
+        // await userModel.updateOne({_id:userID},{$pull:{cart:{productId:productID}}})
       });
     },
 //  List and unlist products
 
     listProduct:(id)=>{
       return new Promise(async(resolve, reject) => {
-        await db.get().collection(collection.PRODUCT_DETAILS).updateOne({_id:objectid(id)},{$set:{Boolean:true}}).then((result)=>{
-          resolve(result)
-        })
+      let result=  await productModel.updateOne({_id:id},{$set:{productStatus:true}})
+      resolve(result)
       });
     },
 
     unlistProduct:(id)=>{
-      return new Promise(async(resolve, reject) => {
-        await db.get().collection(collection.PRODUCT_DETAILS).updateOne({_id:objectid(id)},{$set:{Boolean:false}}).then((result)=>{
-          resolve(result)
-        })
+           return new Promise(async(resolve, reject) => {
+        let result=  await productModel.updateOne({_id:id},{$set:{productStatus:false}})
+        resolve(result)
       });
     },
 
     //Delete Product
     deleteProduct:(id)=>{
       console.log(id);
-      return new Promise((resolve, reject) => {
-          db.get().collection(collection.PRODUCT_DETAILS).deleteOne({_id:objectid(id)}).then((result)=>{
-            resolve(result)
-          })
+      return new Promise(async(resolve, reject) => {
+         let result=await productModel.deleteOne({_id:id})
+          resolve(result)
       });
   },
   //Search Product
   searchProduct:({productname})=>{
     return new Promise(async(resolve, reject) => {
-      let result=await db.get().collection(collection.PRODUCT_DETAILS).find({productname:new RegExp(productname,'i')}).toArray()
+      let result=await productModel.find({productname:new RegExp(productname,'i')}).lean()
       resolve(result)
     });
   },
@@ -183,8 +192,8 @@ module.exports={
 
   getUserdata:()=>{
     return new Promise(async(resolve, reject) => {
-     let user= await db.get().collection(collection.USER_COLLECTION).find().toArray()
-     resolve(user)
+     let result= await userModel.find().lean()
+     resolve(result)
     });
   },
  
@@ -192,25 +201,23 @@ module.exports={
 //Ban User
 banUser:(id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(id)},{$set:{Boolean:true}}).then((result)=>{
+  let result=  await userModel.updateOne({_id:id},{$set:{ban:true}})
       resolve(result)
-    })
   });
 },
 
 //Remove Ban
 removeBan:(id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(id)},{$set:{Boolean:false}}).then((result)=>{
+   let result= await userModel.updateOne({_id:id},{$set:{ban:false}})
       resolve(result)
-    })
   });
 },
 
  //Search user
  searchUser:({name})=>{
   return new Promise(async(resolve, reject) => {
-    let result=await db.get().collection(collection.USER_COLLECTION).find({fname:new RegExp(name,'i')}).toArray()
+    let result=await userModel.find({fname:new RegExp(name,'i')}).lean()
     resolve(result)
   });
 },
@@ -222,7 +229,7 @@ validateCategory:(data)=>{
   return new Promise(async(resolve, reject) => {
     console.log(data);
    let response={}
-    let catg= await db.get().collection(collection.PRODUCT_CATEGORY).findOne({categoryname:data})
+    let catg= await categoryModel.findOne({categoryname:data})
     if(catg){
       response.status=true;
       resolve(response)
@@ -236,43 +243,43 @@ validateCategory:(data)=>{
 
 addCategory:(data)=>{
   return new Promise( async(resolve, reject) => {
-    await db.get().collection(collection.PRODUCT_CATEGORY).insertOne({categoryname:data.categoryname,categoryStatus:false}).then((data)=>{
-      resolve(data)
-    })
+   let result= await categoryModel.create({categoryname:data.categoryname,categoryStatus:false})
+      resolve(result)
+    
   });
 },
 allCategory:()=>{
   return new Promise(async(resolve, reject) => {
-    let result=await db.get().collection(collection.PRODUCT_CATEGORY).find().toArray()
+    let result=await categoryModel.find().lean()
     resolve(result)
   });
 },
 deleteCategory:(id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.PRODUCT_CATEGORY).deleteOne({_id:objectid(id)}).then((data)=>{
-      resolve(data)
-    })
+   let result= await categoryModel.deleteOne({_id:id})
+      resolve(result)
+    
   });
 },
 searchCategory:({category})=>{
-  return new Promise(async(resolve, reject) => {
-    let result=await db.get().collection(collection.PRODUCT_CATEGORY).find({categoryname:new RegExp(category,'i')}).toArray()
+  return new Promise((resolve, reject) => {
+    let result=categoryModel.find({categoryname:new RegExp(category,'i')}).lean()
     // console.log(result);
    resolve(result)
   });
 },
 editCategory:(id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.PRODUCT_CATEGORY).findOne({_id:objectid(id)}).then((result)=>{
+  let result=  await categoryModel.findOne({_id:id})
       resolve(result)
-    })
+  
   });
 },
 validateEditCatgy:(data)=>{
   return new Promise(async(resolve, reject) => {
     console.log(data);
    let response={}
-    let catg= await db.get().collection(collection.PRODUCT_CATEGORY).findOne({categoryname:data})
+    let catg= await categoryModel.findOne({categoryname:data})
     if(catg){
       response.status=true;
       resolve(response)
@@ -281,17 +288,16 @@ validateEditCatgy:(data)=>{
       resolve(response)
     }
    
-  });v
+  });
 },
 
 updateCategory:(data,id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.PRODUCT_CATEGORY).updateOne({_id:objectid(id)},{$set:{
+   let result= await categoryModel.updateOne({_id:id},{$set:{
       categoryname:data.categoryname
       
-    }}).then((result)=>{
+    }})
       resolve(result)
-    })
   });
 
 },
@@ -300,16 +306,15 @@ updateCategory:(data,id)=>{
 
 listCatgy:(id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.PRODUCT_CATEGORY).updateOne({_id:objectid(id)},{$set:{categoryStatus:true}}).then((result)=>{
+  let result=  await categoryModel.updateOne({_id:id},{$set:{categoryStatus:true}})
       resolve(result)
-    })
   });
 },
 unlistCatgy:(id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.PRODUCT_CATEGORY).updateOne({_id:objectid(id)},{$set:{categoryStatus:false}}).then((result)=>{
+  let result=  await categoryModel.updateOne({_id:id},{$set:{categoryStatus:false}})
       resolve(result)
-    })
+   
   });
 },
 
@@ -319,8 +324,8 @@ validateCoupon:(data)=>{
 
   return new Promise(async(resolve, reject) => {
    let response={}
-    let couponName= await db.get().collection(collection.COUPON).findOne({couponCode:data.couponCode})
-    let couponCode= await db.get().collection(collection.COUPON).findOne({couponCode:data.couponCode})
+    let couponName= await couponModel.findOne({couponCode:data.couponCode})
+    let couponCode= await couponModel.findOne({couponCode:data.couponCode})
     if(couponName){
       response.status=true;
       resolve(response)
@@ -338,7 +343,7 @@ validateCoupon:(data)=>{
 
 addCoupon:(data)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.COUPON).insertOne({
+  let result=  await couponModel.create({
       couponName:data.couponName,
       couponCode:data.couponCode,
       discountAmt:parseInt(data.discountAmt),
@@ -346,38 +351,67 @@ addCoupon:(data)=>{
       createdDate:new Date(),
       expDate:new Date(data.expDate),
       couponStatus:false
-    }).then((result) => {
-      resolve(result)
-    }).catch((err) => {
-      console.log(err);
-    });
+    })
+    resolve(result)
   });
 },
 getCouponDetails:()=>{
   return new Promise(async(resolve, reject) => {
-    let result=await db.get().collection(collection.COUPON).find().toArray()
+    let result=await couponModel.find().lean()
     resolve(result)
   });
 },
 listCoupon:(id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.COUPON).updateOne({_id:objectid(id)},{$set:{couponStatus:true}}).then((result)=>{
+  let result=  await couponModel.updateOne({_id:id},{$set:{couponStatus:true}}).then((result)=>{
       resolve(result)
     })
   });
 },
 unlistCoupon:(id)=>{
   return new Promise(async(resolve, reject) => {
-    await db.get().collection(collection.COUPON).updateOne({_id:objectid(id)},{$set:{couponStatus:false}}).then((result)=>{
+  let result=await couponModel.updateOne({_id:id},{$set:{couponStatus:false}})
       resolve(result)
-    })
+    
   });
 },
 searchCoupon:({couponName})=>{
   return new Promise(async(resolve, reject) => {
-    let result=await db.get().collection(collection.COUPON).find({couponName:new RegExp(couponName,'i')}).toArray()
+    let result=await couponModel.find({couponName:new RegExp(couponName,'i')}).lean()
    resolve(result)
   });
 },
+productOrderDetail:()=>{
+  return new Promise(async(resolve, reject) => {
+   let result= await orderModel.find().lean()
+   resolve(result)
+  });
+},
+bannerAdd:(data,file)=>{
+  return new Promise(async(resolve, reject) => {
+    await bannerModel.create({
+      bannerName:data.bannerName,
+      main_image:file.main_image,
+      bannerStatus:false
+    }).then((result)=>{
+      resolve(result)
+    })
+  });
+},
+getBannerDetails:()=>{
+  return new Promise(async(resolve, reject) => {
+    let result=await bannerModel.find().lean()
+    resolve(result)
+  });
+},
+deleteBanner:(id)=>{
+  return new Promise(async(resolve, reject) => {
+    await bannerModel.deleteOne({_id:id}).then((result)=>{
+      resolve(result)
+    })
+  });
+}
+
+
 
 }

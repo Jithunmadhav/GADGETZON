@@ -1,29 +1,32 @@
-const db=require('../config/connection')
+
 const bcrypt=require('bcrypt');
-const collection = require('../models/collection');
 const { response } = require('express');
 const e = require('express');
-const objectid=require('mongodb').ObjectID
+const userModel = require('../models/userModel');
+const productModel=require('../models/productModel')
+const categoryModel=require('../models/categoryModel')
+const couponModel=require('../models/couponModel')
+const orderModel=require('../models/orderModel')
 module.exports={
     checkSignup:(userData)=>{
         return new Promise(async(resolve, reject) => {
            
             let resp={}
-            let user=await db.get().collection(collection.USER_COLLECTION).findOne({email:userData.email})
-            console.log(user);
+            let user=await userModel.findOne({email:userData.email})
+            
             if(user){
                 console.log("user excist");
                 // console.log(user.email);
                 // console.log(user.Boolean);
                 resp.status=true;
-                resp.Boolean=user.Boolean;
+                resp.ban=user.ban;
                 resolve(resp)
             }
             else{
                 
                 console.log("user not excist");
                 resp.status=false;
-                resp.Boolean=false;
+                resp.ban=false;
                 resolve(resp)
            
             }
@@ -34,16 +37,9 @@ module.exports={
         return new Promise(async(resolve, reject) => {
                 let Email=userData.email;
                  userData.password=await bcrypt.hash(userData.password,10)
-                db.get().collection(collection.USER_COLLECTION).insertOne({...userData,Boolean:false,wishlist:[],cart:[],address:[],checkout:[]}).then((data)=>{
-                  resolve(data)
-                      
-              })
-            
-
-        });
-
-       
-       
+               let result=await userModel.create({...userData,ban:false,wishlist:[],cart:[],address:[]})
+                  resolve(result)
+        }); 
     },
 
     //User Login
@@ -51,18 +47,19 @@ module.exports={
     userLogin:(userData)=>{
         return new Promise(async(resolve, reject) => {
             let response={}
-            let user=await db.get().collection(collection.USER_COLLECTION).findOne({email:userData.email})
+            let user=await userModel.findOne({email:userData.email})
             if(user){
-              // let userid={
-
-              // }
+              
+              
              
               let status= await bcrypt.compare(userData.password,user.password)
               if(status){
+                
                response.status=status;
-               response.Boolean=user.Boolean;
+               response.ban=user.ban;
                response.user=user
                console.log("Login successfull");
+               
                resolve(response)
               }else{
                 console.log("Login Denied");
@@ -77,12 +74,8 @@ module.exports={
     passwordUpdate:(email,userpwd)=>{
         return new Promise(async(resolve, reject) => {
             userpwd.confirmPassword=await bcrypt.hash(userpwd.confirmPassword,10)
-            db.get().collection(collection.USER_COLLECTION).updateOne({email},{$set:{password:userpwd.confirmPassword}}).then((result) => {
+           let result=await userModel.updateOne({email},{$set:{password:userpwd.confirmPassword}})
                 resolve(result)
-                
-            }).catch((err) => {
-                console.log(err);
-            });
         });
         
 
@@ -90,15 +83,15 @@ module.exports={
      //Get product Details
      getProduct:()=>{
         return new Promise(async(resolve, reject) => {
-          let data= await db.get().collection(collection.PRODUCT_DETAILS).find().toArray()
-          resolve(data)
+          let result= await productModel.find({productStatus:false}).lean()
+          resolve(result)
         });
       },
 
     //   list category
     listCategory:()=>{
         return new Promise(async(resolve, reject) => {
-         let result= await db.get().collection(collection.PRODUCT_CATEGORY).find().toArray()
+         let result= await categoryModel.find({categoryStatus:false}).lean()
          resolve(result)
         });
       },
@@ -107,12 +100,12 @@ module.exports={
         let val="all"
         if(categy==val){
             return new Promise(async(resolve, reject) => {
-                let data= await db.get().collection(collection.PRODUCT_DETAILS).find().toArray()
-                resolve(data)
+                let result= await productModel.find().lean()
+                resolve(result)
               });
         }else{
             return new Promise(async(resolve, reject) => {
-                let result= await db.get().collection(collection.PRODUCT_DETAILS).find({category:categy}).toArray()
+                let result= await productModel.find({category:categy}).lean()
                 resolve(result)
               });
         }
@@ -123,39 +116,37 @@ module.exports={
             high="high";
             low="low";
             if(data==high){
-                let result= await db.get().collection(collection.PRODUCT_DETAILS).find({}).sort({price:-1}).toArray()
+                let result= await productModel.find({}).sort({price:-1}).lean()
                resolve(result)
             }else if(data==low){
-               let result= await db.get().collection(collection.PRODUCT_DETAILS).find().sort({price:1}).toArray()
+               let result= await productModel.find().sort({price:1}).lean()
                resolve(result)  
             }
         });
     } ,  //Search Product
     searchProduct:({productname})=>{
       return new Promise(async(resolve, reject) => {
-        let result=await db.get().collection(collection.PRODUCT_DETAILS).find({productname:new RegExp(productname,'i')}).toArray()
+        let result=await productModel.find({productname:new RegExp(productname,'i')}).lean()
         resolve(result)
       });
     },
+   
     listBrand:()=>{
         return new Promise(async(resolve, reject) => {
-         let result= await db.get().collection(collection.PRODUCT_DETAILS).aggregate([{$group:{_id:'$brand'}}]).toArray()
+         let result= await productModel.aggregate([{$group:{_id:'$brand'}}])
          resolve(result)
         });
       },
     brandDetails:(data)=>{
         return new Promise(async(resolve, reject) => {
-            let result=await db.get().collection(collection.PRODUCT_DETAILS).find({brand:data}).toArray()
+            let result=await productModel.find({brand:data}).lean()
             resolve(result)
         });
     },
     productDetails:(id)=>{
         return new Promise( async(resolve, reject) => {
-          await db.get().collection(collection.PRODUCT_DETAILS).findOne({_id:objectid(id)}).then((result) => {
+         let result= await productModel.findOne({_id:id})
             resolve(result)
-          }).catch((err) => {
-            console.log(err);
-          });
         });
       },
 
@@ -163,36 +154,121 @@ module.exports={
 
       productAddCart:(userId,productId)=>{
         return new Promise(async(resolve, reject) => {
-          await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userId)},{$addToSet:{cart:objectid(productId)}}).then((result) => {
+          // let quantity=1;
+          await userModel.findByIdAndUpdate({_id:userId},{$addToSet:{cart:{
+            productId:productId,
+            quantity:1
+          }}}).then((result)=>{
             resolve(result)
-          }).catch((err) => {
-            console.log(err);
-          });
+          })           
         });
+        
       },
 
       cartProducts:(userID)=>{
         return new Promise(async(resolve, reject) => {
-         const {cart} = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userID)},{cart:1})
+         const {cart} = await userModel.findOne({_id:userID},{cart:1})
+        
+        
          resolve(cart)
+        });
+      },
+      quantityInc:(userId,productId)=>{
+        return new Promise(async(resolve, reject) => {
+          // let quantity=2;
+          let result= await productModel.findOne({_id:productId},{quandity:1})
+         
+          
+          if(result.quandity>1){
+            await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
+              $inc:{
+                  "cart.$.quantity":1
+              }
+          }).then((result)=>{
+              resolve(result)
+            })
+            await productModel.updateOne({_id:productId},{$inc:{"quandity":-1}})
+          }else{
+           
+            await productModel.updateOne({_id:productId},{$set:{stockStatus:true}}).then((result)=>{
+              resolve(result)
+            })
+          }
+        //   await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
+        //     $inc:{
+        //         "cart.$.quantity":1
+        //     }
+        // }).then((result)=>{
+        //     resolve(result)
+        //   })
+        //   let quan= await productModel.updateOne({_id:productId},{$inc:{"quandity":-1}})
+        //  console.log(quan);
+        });
+      },
+      checkQty:(userId,productId)=>{
+        return new Promise(async(resolve, reject) => {
+          let {cart}= await userModel.findOne({"cart.productId":productId},{_id:0,cart:{$elemMatch:{productId:productId}} })
+          resolve(cart)
+        });
+      },
+
+      quantityDec:(userId,productId)=>{
+        return new Promise(async(resolve, reject) => {
+
+          let result= await productModel.findOne({_id:productId},{quandity:1})
+          console.log(result.quandity);
+          
+          if(result.quandity>=0){
+            await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
+              $inc:{
+                  "cart.$.quantity":-1
+              }
+          }).then((result)=>{
+              resolve(result)
+            })
+            await productModel.updateOne({_id:productId},{$inc:{"quandity":1}})
+          }
+          // let quantity= await productModel.updateOne({_id:productId},{$inc:{"quandity":1}})
+          //    console.log(quantity);
+          
+        
+         
         
         });
       },
-      viewCart:(productID)=>{
+      cartStockStatus:(productId)=>{
         return new Promise(async(resolve, reject) => {
-        let result=  await db.get().collection(collection.PRODUCT_DETAILS).find({_id:{$in:productID}}).toArray()
-        resolve(result)
+          await productModel.updateOne({_id:productId},{$set:{stockStatus:true}}).then((result)=>{
+            resolve(result)
+          })
         });
+      },
+      cartStockUpdate:(productId)=>{
+        return new Promise(async(resolve, reject) => {
+          await productModel.updateOne({_id:productId},{$set:{stockStatus:false}}).then((result)=>{
+            resolve(result)
+          })
+        });
+      },
+
+      viewCart:(productID)=>{
+     
+        const cartItems=productID.map(item=>{
+          return item.productId
+         })
+         
+        return new Promise(async(resolve, reject) => {
+        let result=  await productModel.find({_id:{$in:cartItems}}).lean()
+        resolve(result)
+         });
       },
       // Delete cart product
 
       deleteCartProduct:(userID,productID)=>{
-        return new Promise((resolve, reject) => {
-          db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userID)},{$pull:{cart:objectid(productID)}}).then((result) => {
+        return new Promise(async(resolve, reject) => {
+      
+       let result=  await userModel.updateOne({_id:userID},{$pull:{cart:{productId:productID}}})
             resolve(result)
-          }).catch((err) => {
-            console.log(err);
-          });
         });
       },
 
@@ -200,34 +276,31 @@ module.exports={
 
       productAddWishlist:(userId,productId)=>{
         return new Promise(async(resolve, reject) => {
-          await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userId)},{$addToSet:{wishlist:objectid(productId)}}).then((result) => {
-            resolve(result)
-          }).catch((err) => {
-            console.log(err);
-          });
+          
+         await productModel.updateOne({_id:productId},{$set:{wlStatus:true}})
+        let result= await userModel.updateOne({_id:userId},{$addToSet:{wishlist:productId}})        
+        resolve(result) 
         });
       },
 
       wishlistProducts:(userID)=>{
         return new Promise(async(resolve, reject) => {
-         const {wishlist} = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userID)},{wishlist:1})
+         const {wishlist} = await userModel.findOne({_id:userID},{wishlist:1})
          resolve(wishlist)
         
         });
       },
       viewWishlist:(productID)=>{
         return new Promise(async(resolve, reject) => {
-        let result=  await db.get().collection(collection.PRODUCT_DETAILS).find({_id:{$in:productID}}).toArray()
+        let result=  productModel.find({_id:{$in:productID}}).lean()
         resolve(result)
         });
       },
       deleteWishlistProduct:(userID,productID)=>{
-        return new Promise((resolve, reject) => {
-          db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userID)},{$pull:{wishlist:objectid(productID)}}).then((result) => {
-            resolve(result)
-          }).catch((err) => {
-            console.log(err);
-          });
+        return new Promise(async(resolve, reject) => {
+           await productModel.updateOne({_id:productID},{$set:{wlStatus:false}})
+         let result=  await userModel.updateOne({_id:userID},{$pull:{wishlist:productID}})
+         resolve(result)
         });
       },
 
@@ -235,7 +308,7 @@ module.exports={
       verifyAddress:(userId,data)=>{
         console.log(data);
         return new Promise(async(resolve, reject) => {
-          const {address} = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userId)},{address:1})
+          const {address} = await userModel.findOne({_id:userId},{address:1})
           let addressStatus=address.find(e=>e.address==data.address)
           let cityStatus=address.find(e=>e.city==data.city)
           
@@ -255,24 +328,20 @@ module.exports={
       addAddress:(userId,data)=>{
         return new Promise(async(resolve, reject) => {
           id=Math.floor(Math.random()*1000000)
-          await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userId)},{$addToSet:{address:{$each:[{...data,id}]}}}).then((result) => {
+         let result=   await userModel.updateOne({_id:userId},{$addToSet:{address:{$each:[{...data,id}]}}})
             resolve(result)
-          }).catch((err) => {
-            console.log(err);
-          });
         });
       },
       getAddress:(userId)=>{
         return new Promise(async(resolve, reject) => {
-          const {address} = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userId)},{address:1})
+          const {address} = await userModel.findOne({_id:userId},{address:1})
           resolve(address)
         });
     },
     selectedAddress:(userId,Id)=>{
      let ID=parseInt(Id)
-      console.log(typeof ID);
       return new Promise(async(resolve, reject) => {
-      let {address}=await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectid(userId)},{address:1})
+      let {address}=await userModel.findOne({_id:userId},{address:1})
       let found=address.find(e=>e.id==ID)
         resolve(found)
       });
@@ -280,15 +349,40 @@ module.exports={
      deletedAddress:(userId,Id)=>{
       let ID=parseInt(Id)
        return new Promise(async(resolve, reject) => {
-      await db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectid(userId)},{$pull:{address:{id:ID}}}).then((result)=>{
-        resolve(result)
-      })  
+     let result= await userModel.updateOne({_id:userId},{$pull:{address:{id:ID}}})
+        resolve(result)  
        });
      },
      redeemCoupon:(coupon)=>{
       return new Promise(async(resolve, reject) => {
-      let result=await db.get().collection(collection.COUPON).find({couponCode:coupon}).toArray()
+      let result=await couponModel.find({couponCode:coupon}).lean()
       resolve(result[0])
+      });
+     },
+     orderCheckout:(order,products,userID)=>{
+      return new Promise(async(resolve, reject) => {
+        for(let i=0;i<products.length;i++){
+          let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
+          await orderModel.create({
+            orderId:orderId,
+            orderDate:new Date,
+            orderStatus:false,
+            address:order.address,
+            paymentStatus:false,
+            payment:order.payment,
+            products:products[i],
+            couponStat:Boolean(order.couponStat),
+            totalPrice:parseInt(order.totalPrice)
+          }).then((result)=>{
+            
+             
+            resolve(result)
+          })
+        }
+        return new Promise(async(resolve, reject) => {
+         
+          await userModel.updateOne(({_id:userID},{$set:{cart:[]}}))
+        });
       });
      }
 }

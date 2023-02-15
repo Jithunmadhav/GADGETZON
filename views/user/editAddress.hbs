@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css">
+ 
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <section  style="background-color: #eee; height: 745px;">
+  <div class="container py-5">
+    <div class="row" >
+      <div class="col">
+        <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+          <ol class="breadcrumb mb-0" style="display: flex;  justify-content: space-between;">
+            {{!-- <li class="breadcrumb-item"><a href="/checkOut">Back</a></li> --}}
+            <li class="breadcrumb-item"><h4>Address</h4></li>
+            <li><a style="font-size: 19px;
+            text-decoration: none;
+             margin-top: 4px; margin-left: 33px;font-family: emoji;" class="btn btn-dark"  href="/addAddress"  >Add </a>
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <div class="row">
+    
+      <div class="col-lg-12">
+        
+
+        <div class="card mb-4">
+             {{#each result}}
+          <div class="card-body mb-2">
+           
+            <div class="row">
+                
+              <div class="col-sm-8">
+                <p class="mb-0">{{this.fname}} {{this.lname}}</p>
+                <p class="mb-0">{{this.phone}}</p>
+                <p class="mb-0">{{this.address}},{{this.city}},{{this.state}}</p>
+                <p class="mb-0">{{this.zip}}</p>
+              </div>
+               <div class="col-sm-4">
+              <a href="/selectAddress/{{this.id}}" class=" btn btn-primary">select</a>
+
+               <button
+                            type="button"
+                            class=" btn btn-danger"
+                            data-toggle="modal"
+                            data-target="#exampleModalCenter"
+                          >
+                          Delete
+                          </button>
+
+                          <!-- Modal -->
+                          <div
+                            class="modal fade"
+                            id="exampleModalCenter"
+                            tabindex="-1"
+                            role="dialog"
+                            aria-labelledby="exampleModalCenterTitle"
+                            aria-hidden="true"
+                          >
+                            <div
+                              class="modal-dialog modal-dialog-centered"
+                              role="document"
+                            >
+                              <div class="modal-content">
+
+                                <div
+                                  class="modal-body"
+                                  style="display: flex; justify-content: center;"
+                                >
+                                  Are you sure to delete
+                                </div>
+                                <div
+                                  style="display: flex; justify-content: center;"
+                                  class="modal-footer"
+                                >
+                                  <button
+                                    type="button"
+                                    class="btn btn-dark"
+                                    data-dismiss="modal"
+                                  >Close</button>
+                                  <a
+                                    href="/deleteAddress/{{this.id}}"
+                                  ><button
+                                      type="button"
+                                      class="btn btn-danger"
+                                      data-toggle="modal"
+                                      data-target="#exampleModalCenter"
+                                    >Delete</button></a>
+                                  {{! <button type="button" class="btn btn-primary">Save changes</button> }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+              </div>
+              
+            </div>
+            
+           
+            
+           
+          </div>
+          <div style="width: 100%; height: 8px; background-color: #eee;"></div>
+           {{/each}}
+        </div>
+       
+      </div>
+    </div>
+  </div>
+</section>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+
+</body>
+</html>

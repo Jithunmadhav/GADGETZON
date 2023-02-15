@@ -1,12 +1,14 @@
 const express = require('express')
 require('dotenv').config()
 const path = require('path')
-const db=require('./config/connection')
+
 const app=express()
 const userRoute=require('./routes/users')
 const adminRoute=require('./routes/admins')
 const session=require('express-session')
-const multer=require('multer')
+const adminVerify = require('./middlewares/adminSession')
+const dbConnect = require('./config/dbConfig')
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -19,28 +21,38 @@ app.set('view engine', 'hbs');
 
 //session
 const oneDay=1000*60*60*24;
+// app.get("/check",async(req, res)=>{
+//   const users = await userModel.find().lean()
+//   console.log(users)
+// })
+
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(session({
   secret:'thisismysecrctekeyfhrgfgrfrty84fwir767',
   resave:false,
   cookie:{maxAge:oneDay},
   saveUninitialized:true
 }));
-
-app.use(function cache1(req, res, next) { 
-  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-   next();
- });
-
-//database connection
-db.connect((err)=>{
-    if(err) console.log("connection error");
-    else console.log("Database connected");
-  })
-
-app.use('/',userRoute)
 app.use('/admin',adminRoute)
+app.use(function(req, res, next) {
+  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+next();
+});
+
+dbConnect();
+// app.get("/check", (req, res)=>{
+//   console.log(req.query);
+//   res.json({success:true})
+// })
+// app.get("/sample", (req, res)=>{
+//   res.render("sample")
+// })
+app.use('/',userRoute)
+
 // app.use(express.static(__dirname + '/public'));
+
+
 
 app.listen(4000,()=>{
     console.log('Server running  on http://localhost:4000/admin/adminLogin');

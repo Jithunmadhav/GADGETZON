@@ -41,13 +41,16 @@
                   <a class="nav-link scroll-link" href="/admin/productCategory">Category</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link scroll-link" href="#section-3">Order Details</a>
+                  <a class="nav-link scroll-link" href="/admin/orderManagement">Order Details</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link scroll-link" href="/admin/userManagement">User Details</a>
               </li>
                <li class="nav-item">
-                  <a class="nav-link scroll-link active" href="/admin/couponManagement">Coupon management</a>
+                  <a class="nav-link scroll-link " href="/admin/couponManagement">Coupon management</a>
+              </li>
+               <li class="nav-item">
+                  <a class="nav-link scroll-link " href="/admin/bannerManagement">Banner Management</a>
               </li>
           </ul>
       </div>
@@ -70,10 +73,10 @@
       <th scope="col">Category</th>
       <th scope="col">Quantity</th>
       <th scope="col">brand</th>
-      <th scope="col">Discription</th>
        <th scope="col">Image</th>
        <th scope="col"></th>
        <th scope="col"></th>
+       
     </tr>
   </thead>
   <tbody>
@@ -85,12 +88,12 @@
        <td>{{this.category}}</td>
       <td>{{this.quandity}}</td>
        <td>{{this.brand}}</td>
-        <td style="width: 300px;">{{this.discription}}</td>
+        {{!-- <td style="width: 300px;">{{this.discription}}</td> --}}
        
        <td><img style="width: 70px; height: 70px;" src="/product_img/{{this.main_image.[0].filename}}" alt=""></td>
         <td><a href="/admin/editProduct/{{this._id}}"><i class="bi bi-pencil-square pdtDelete"></i></a></td>
 
-        {{#unless this.Boolean }}
+        {{#unless this.productStatus }}
         <td><a href="/admin/listProduct/{{this._id}}" onclick="return confirm('Are you sure to list {{this.fname}}')"><button class="btn btn-outline-dark">List product <i style="color: red;" ></i></button></a></td>
         {{else}}
         <td><a href="/admin/unlistProduct/{{this._id}}" onclick="return confirm('Are you sure to unlist {{this.fname}}')"><button class="btn btn-outline-dark">Unlist product <i style="color: red;" ></i></button></a></td>

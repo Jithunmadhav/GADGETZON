@@ -4,6 +4,7 @@ const helper=require('../helpers/sentOTP')
 const { use } = require('../routes/admins')
 const admin = require('../Services/admin')
 const user = require('../Services/user')
+const successMail=require('../helpers/successMail')
 
 const router=express.Router()
 
@@ -11,35 +12,53 @@ module.exports={
     // Home-page
 
     getHome:(req,res)=>{
-        let userstatus= req.session.userStatus;
-        let username=req.session.username;
-        
-            res.render('homepage',{userstatus,username})
-            // req.session.userStatus=false;
+        if(req.session.userID){
+            // res.redirect('/home')
+            let userstatus= req.session.userStatus;
+            let username=req.session.username;
+            
+                res.render('homepage',{userstatus,username})
+        }else{
+            // let userstatus= req.session.userStatus;
+            // let username=req.session.username;
+            
+                res.render('homepage')
+                // req.session.userStatus=false;
+        }
+       
         
     },
 
     // user-login-page
     getLogin:(req,res)=>{
+
+        if(req.session.userID){
+            res.redirect('/home')
+        }else{
+            let resultBan=req.session.ban
+            let resultInvalid=req.session.status
+          
+            res.render('userLogin',{resultBan,resultInvalid})
+        
+            req.session.Boolean=false;
+            req.session.status=false;
+        }
       
-        let resultBan=req.session.Boolean
-        let resultInvalid=req.session.status
-      
-        res.render('userLogin',{resultBan,resultInvalid})
-    
-        req.session.Boolean=false;
-        req.session.status=false;
+        
     },
  
     postLogin:(req,res)=>{
         
         user.userLogin(req.body).then((response)=>{
-            console.log(response.status);
-            if(response.status == true && response.Boolean==false){ 
+            
+            if(response.status == true && response.ban==false){ 
+            
             req.session.user=response.user.email
             req.session.username=response.user.fname
             req.session.userID=response.user._id;
+            req.session.ban=response.user.ban;
             req.session.userStatus=true;
+            
             //    let Otp=Math.floor(Math.random()*1000000)
             //    console.log(Otp);
             //    req.session.loginOTP=Otp;
@@ -50,6 +69,7 @@ module.exports={
 
                     res.redirect('/home')
             }else{
+             
                 req.session.status=true;
                 req.session.Boolean=response.Boolean;
                 res.redirect('/login')
@@ -74,7 +94,7 @@ module.exports={
         res.render('forgotPassword')
     },
     postForgotPassword:(req,res)=>{
-        console.log(req.body);
+        
         let Otp=Math.floor(Math.random()*1000000)
         req.session.forgotPassOTP=Otp;
         req.session.forgotPassEmail=req.body.email;
@@ -83,27 +103,26 @@ module.exports={
 
     },
     getVerifyPassword:(req,res)=>{
-        res.render('verifyPassword')
+        res.render('verifyPassword',{result: req.session.forgotPassEmail,status:req.session.OTPstat})
     },
 
     postVerifyPassword:(req,res)=>{
         if( req.session.forgotPassOTP==req.body.otp){
             res.redirect('/passwordSetting')
         }else{
-            res.send("invalid OTP")
+            req.session.OTPstat=true;
+            res.redirect('/verifyPassword')
         }
     },
     getpasswordSetting:(req,res)=>{
         res.render('passwordSetting')
     },
     postPasswordSetting:(req,res)=>{
-        console.log(req.body);
+    
         if(req.body.newpassword==req.body.confirmPassword){
-            console.log(req.session.forgotPassEmail);
-            console.log(req.body.confirmPassword);
             user.passwordUpdate(req.session.forgotPassEmail,req.body).then((result) => {
                 console.log(result);
-                res.redirect('/home')
+                res.redirect('/login')
             }).catch((err) => {
                 console.log(err);
                 
@@ -132,8 +151,8 @@ module.exports={
 
 
         user.checkSignup(req.body).then((resp)=>{
-            console.log(resp);
-            if(resp.status==false && resp.Boolean==false){
+            
+            if(resp.status==false && resp.ban==false){
                 let otp=Math.floor(Math.random()*1000000)
                 req.session.signupOTP=otp
                
@@ -142,9 +161,9 @@ module.exports={
               req.session.userStatus=true;
                res.redirect('/signupVerify')
             }else{
-                console.log(req.session.signupEmail);
+                
                 req.session.userexcist=resp.status
-                req.session.ban=resp.Boolean
+                req.session.ban=resp.ban
               res.redirect('/signup')
             }
     
@@ -152,11 +171,13 @@ module.exports={
         
     }, 
     getResendOtp:(req,res)=>{
+     
         let otp=Math.floor(Math.random()*1000000)
             req.session.signupOTP=otp
             helper.sentOTP(req.session.signupEmail,otp)
             req.session.userStatus=true;
                res.redirect('/signupVerify')
+ 
 
     },
     getResendOTP:(req,res)=>{
@@ -168,14 +189,22 @@ module.exports={
                res.redirect('/loginVerify')
 
     },
+    getResendOTp:(req,res)=>{
+        let otp=Math.floor(Math.random()*1000000)
+        req.session.forgotPassOTP=otp
+        helper.sentOTP( req.session.forgotPassEmail,otp)
+        req.session.userStat=true;
+           res.redirect('/verifyPassword')
+    },
+
     getSignupVerify:(req,res)=>{
         
-        res.render('signupVerify',{result:req.session.signupEmail,status:req.session.OTPstatus})
+        res.render('otpVerify',{result:req.session.signupEmail,status:req.session.OTPstatus})
         req.session.OTPstatus=false;
     },
     postSignupVerify:(req,res)=>{
 
-        console.log(req.body);
+       
         if(req.session.signupOTP==req.body.Otp){
             user.userSignup(req.session.userData).then((data)=>{
                 res.redirect('/home')
@@ -188,23 +217,27 @@ module.exports={
 
     },
     getShopPage:(req,res)=>{
+        let count=req.session.cartCount;
         user.getProduct().then((result) => {
             user.listCategory().then((catg)=>{
                 user.listBrand().then((brand)=>{
                     if(req.session.catgStatus){
-                        res.render('shop-page',{result:req.session.catgData,catg,brand})  
+                        res.render('shop-page',{result:req.session.catgData,catg,brand,count})  
     
                     }else if(req.session.sortStatus){
-                        res.render('shop-page',{result:req.session.sortData,catg,brand})  
+                        res.render('shop-page',{result:req.session.sortData,catg,brand,count})  
                     }else if( req.session.brandStatus){
-                        res.render('shop-page',{result:req.session.brandData,catg,brand}) 
+                        res.render('shop-page',{result:req.session.brandData,catg,brand,count}) 
+                    }else if(req.session.searchStatus){
+                        res.render('shop-page',{result:req.session.searchData,catg,brand,count}) 
                     }
                     else{
-                        res.render('shop-page',{result,catg,brand})
+                        res.render('shop-page',{result,catg,brand,count})
                     }
                     req.session.catgStatus=false
                     req.session.sortStatus=false
                     req.session.brandStatus=false
+                    req.session.searchStatus=false;
                 })
                 
             })
@@ -218,7 +251,7 @@ module.exports={
         user.getCategoryProducts(req.params.name).then((result) => {
             req.session.catgStatus=true;
             req.session.catgData=result;
-            res.redirect('/shop-page')     
+            res.redirect('back')     
         }).catch((err) => {
             console.log(err);
         });
@@ -228,14 +261,17 @@ module.exports={
         user.sortProduct(req.params.sort).then((result) => {
             req.session.sortStatus=true;
             req.session.sortData=result;
-            res.redirect('/shop-page')  
+            res.redirect('back')  
         }).catch((err) => {
             console.log(err);
         });
     },
     getSearchProduct:(req,res)=>{
         user.searchProduct(req.query).then((result) => {
-            res.render('shop-page',{result})
+            req.session.searchStatus=true;
+           
+            req.session.searchData=result;
+            res.redirect('back')  
         }).catch((err) => {
             console.log(err);
         });
@@ -245,7 +281,7 @@ module.exports={
         user.brandDetails(req.params.name).then((brand) => {
             req.session.brandStatus=true;
             req.session.brandData=brand;
-            res.redirect('/shop-page')  
+            res.redirect('back')  
         }).catch((err) => {
             
         });
@@ -258,33 +294,114 @@ module.exports={
         });
         
     },
+    getSearchPdt:(req,res)=>{
+        user.searchProduct(req.query).then((result) => {
+            res.render('searchPage',{result})
+        }).catch((err) => {
+            console.log(err);
+        });
+
+    },
 
     //Add to cart
     getAddCart:(req,res)=>{
        
         user.productAddCart(req.session.userID,req.params.id).then((result)=>{
-            console.log(result);
+          user.cartProducts(req.session.userID).then((result)=>{
+            req.session.cartCount=result.length;
             res.redirect('back')
+          })
+           
         })
        
 
     },
+    getQtyInc:(req,res)=>{
+        
+        user.checkQty(req.session.userID,req.params.id).then((result)=>{
+            cItem=result;
+            let cartItems=cItem.map(item=>{
+              return item.quantity
+            })
+            if(cartItems[0]>9){
+                res.redirect('back')
+            }else{
+                user.quantityInc(req.session.userID,req.params.id).then(()=>{
+                    res.redirect('back')
+                 })
+            }
+        })
+
+        
+
+    },
+
+  
+    getQtyDec:(req,res)=>{
+        
+        user.checkQty(req.session.userID,req.params.id).then((result)=>{
+            cItem=result;
+            let cartItems=cItem.map(item=>{
+              return item.quantity
+            })
+           
+            if(cartItems[0]<2){
+                res.redirect('back')
+            }else{
+                user.quantityDec(req.session.userID,req.params.id).then(()=>{
+                    res.redirect('back')
+                 })
+            }
+        })
+
+      
+
+    },
     getCart:(req,res)=>{
-        user.cartProducts(req.session.userID).then((result)=>{
+          user.cartProducts(req.session.userID).then((result)=>{
+              cItem=result;
+              let cartQuantities={}
+              cItem.map(item=>{
+                cartQuantities[item.productId]=item.quantity
+              return item.quantity
+              })
+ 
+
           user.viewCart(result).then((result)=>{
+              req.session.cartCountNr=result.length;
+              result.map((item, index)=>{
+              result[index].cartQuantity=cartQuantities[item._id];
+              })
+              req.session.cartCount=result.length;
+
             const calcAmount = result.reduce((acc, item) => {
-                return acc += item.price;
+                return acc += item.price*item.cartQuantity;
             }, 0);
             const totalPrice=calcAmount;
-            res.render('cart',{result,totalPrice})
+             
+            for(i=0;i<result.length;i++){
+                if(result[i].quandity<0){
+                     user.cartStockStatus(result[i]._id).then((result)=>{
+                        
+                     }) 
+                }else if(result[i].quandity>0){
+                    user.cartStockUpdate(result[i]._id).then((result)=>{
+                    }) 
+                }
+            }
+           
+           let count= (req.session.cartCountNr==0)?true:false;
+           
+          
+            res.render('cart',{result,totalPrice,count,cartCount: req.session.cartCount})
           })
         })
        
     },
     getDeleteCart:(req,res)=>{
-        console.log(req.params.id);
-        user.deleteCartProduct(req.session.userID,req.params.id).then((result) => {
-            console.log(result);
+       
+        user.deleteCartProduct(req.session.userID,req.params.id).then(() => {
+           
             res.redirect('/cart')
         }).catch((err) => {
             console.log(err);
@@ -294,16 +411,20 @@ module.exports={
     // Wishlist
 
     getAddWishlist:(req,res)=>{
-        user.productAddWishlist(req.session.userID,req.params.id).then((result) => {
-            res.redirect('/shop-page')
+        user.productAddWishlist(req.session.userID,req.params.id).then(() => {
+            res.redirect('back')
         }).catch((err) => {
            console.log(err); 
         });
     },
+   
+
     getWishlist:(req,res)=>{
         user.wishlistProducts(req.session.userID).then((result) => {
             user.viewWishlist(result).then((result) => {
-                res.render('wishlist',{result})
+                req.session.wlCount=result.length;
+                let count= (req.session.wlCount==0)?true:false;
+                res.render('wishlist',{result,count,wlCount: req.session.wlCount})
             }).catch((err) => {
                 console.log(err);
             });
@@ -312,10 +433,23 @@ module.exports={
         });
 
     },
+    getAddCartDeleteWl:(req,res)=>{
+        user.productAddCart(req.session.userID,req.params.id).then(()=>{
+            user.deleteWishlistProduct(req.session.userID,req.params.id).then(()=>{
+                res.redirect('back')
+            }).catch(err=>{
+                console.log(err);
+            })
+            
+        })
+       
+    },
+
+
     getDeleteWishlist:(req,res)=>{
         // console.log(req.session.userID);
-        user.deleteWishlistProduct(req.session.userID,req.params.id).then((result) => {
-            res.redirect('/wishlist')
+        user.deleteWishlistProduct(req.session.userID,req.params.id).then(() => {
+            res.redirect('back')
         }).catch((err) => {
             console.log(err);
         });
@@ -327,20 +461,41 @@ module.exports={
 
     // },
     getCheckout:(req,res)=>{
+        
         user.cartProducts(req.session.userID).then((result)=>{
+            cItem=result;
+            let cartQuantities={}
+            cItem.map(item=>{
+              cartQuantities[item.productId]=item.quantity
+            return item.quantity
+            })
           user.viewCart(result).then((result)=>{
-            const calcAmount = result.reduce((acc, item) => {
-                return acc += item.price;
-            }, 0);
-            let Price=calcAmount;
-            let totalPrice=Price+80;
+
+            result.map((item, index)=>{
+                result[index].cartQuantity=cartQuantities[item._id];
+                })
+                req.session.cartCount=result.length;
+  
+              const calcAmount = result.reduce((acc, item) => {
+                  return acc += item.price*item.cartQuantity;
+              }, 0);
+              let totalPrice=calcAmount;
+           
+              let products=result;
+              req.session.orderProduct=result;
+            // const calcAmount = result.reduce((acc, item) => {
+            //     return acc += item.price;
+            // }, 0);
+            // let Price=calcAmount;
+            // let totalPrice=Price+80;
             if(req.session.couponStatus ==true && totalPrice>req.session.minPurchaseAmt){
                 totalPrice=totalPrice-req.session.discountAmt;
-                res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,Price,totalPrice,discount:req.session.discountAmt})
+                res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:req.session.discountAmt,products,couponStat:req.session.couponStatus })
             }else{
-                res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,Price,totalPrice,discount:'00'}) 
+                res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:'00',products,validCoupon: req.session.validCoupon,invalidCoupon: req.session.invalidCoupon}) 
             }
-            req.session.couponStatus=false
+            req.session.validCoupon=false;
+            req.session.invalidCoupon=false;
           })
         })
        
@@ -356,13 +511,20 @@ module.exports={
                 res.redirect('/addAddress')
             }else{
                 user.addAddress(req.session.userID,req.body).then((result) => {
-                res.redirect('/userProfile')
+                res.redirect('/editAddress')
             }).catch((err) => {
                 console.log(err);       
             });
             }
         })
         
+    },
+    getEditAddress:(req,res)=>{
+        user.getAddress(req.session.userID).then((result) => {
+            res.render('editAddress',{result})
+        }).catch((err) => {
+            console.log(err);
+        });
     },
 
     getUserProfile:(req,res)=>{
@@ -373,35 +535,57 @@ module.exports={
         });
     },
     getSelectedAddress:(req,res)=>{
-        console.log(req.params.id);
         user.selectedAddress(req.session.userID,req.params.id).then((result)=>{
-            console.log(result);
             req.session.selectedAddress=result;
             req.session.addressStatus=true;
             res.redirect('/checkout')
         })
     },
     getDeletedAddress:(req,res)=>{
-        console.log(req.params.id);
         user.deletedAddress(req.session.userID,req.params.id).then((result)=>{
-            console.log(result);
             req.session.selectedAddress=result;
-            res.redirect('/userProfile')
+            res.redirect('back')
         })
     },
 
     getRedeemCoupon:(req,res)=>{
-        user.redeemCoupon(req.body.redeemCoupon).then((result)=>{
-            req.session.discountAmt=result.discountAmt;
-            req.session.minPurchaseAmt=result.minPurchaseAmt;
-            req.session.couponStatus=true
-            res.redirect('/checkout')
+         
+        user.redeemCoupon(req.body.couponCode).then((result)=>{
+
+            if(result==undefined){
+               req.session.invalidCoupon=true;
+                res.redirect('/checkout')
+            }else{
+                if(result.expDate>new Date){
+                    req.session.discountAmt=result.discountAmt;
+                    req.session.minPurchaseAmt=result.minPurchaseAmt;
+                    req.session.couponStatus=true
+                    res.redirect('/checkout')
+                }else{
+                    req.session.discountAmt=result.discountAmt;
+                    req.session.minPurchaseAmt=result.minPurchaseAmt;
+                    req.session.couponStatus=false
+                    req.session.validCoupon=true;
+                    res.redirect('/checkout')
+                }
+            }
+        
+
+          
         })
+    },
+    postCheckoutOrder:(req,res)=>{
+     user.orderCheckout(req.body,req.session.orderProduct,req.session.userID).then((result)=>{
+        res.render('orderSuccess',{email:req.session.user})
+        successMail.successMail(req.session.user,req.session.username)
+        
+     })
     },
 
 
     getLogout:(req,res)=>{
-        req.session.destroy();
+        // req.session.destroy();
+        req.session.user=null;
         res.redirect('/login')
     }
    

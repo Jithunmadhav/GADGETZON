@@ -42,13 +42,16 @@
                   <a class="nav-link scroll-link" href="/admin/productCategory">Category</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link scroll-link" href="#section-3">Order Details</a>
+                  <a class="nav-link scroll-link" href="/admin/orderManagement">Order Details</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link scroll-link active" href="/admin/userManagement">User Details</a>
               </li>
                <li class="nav-item">
-                  <a class="nav-link scroll-link active" href="/admin/couponManagement">Coupon management</a>
+                  <a class="nav-link scroll-link " href="/admin/couponManagement">Coupon management</a>
+              </li>
+               <li class="nav-item">
+                  <a class="nav-link scroll-link " href="/admin/bannerManagement">Banner Management</a>
               </li>
           </ul>
       </div>
@@ -74,7 +77,7 @@
   </thead>
   <tbody>
     {{#each data}}
-    {{#unless this.Boolean }}
+    {{#unless this.ban }}
     <tr style="height: 80px; ">
       <td>{{this.fname}}</td>
       <td>{{this.lname}}</td>

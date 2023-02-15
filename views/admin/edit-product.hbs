@@ -84,6 +84,16 @@
 
                 </div>
                 </div>
+                 <div class="row">
+                <div class="col-md-12 mb-4">
+
+                  <div class="form-outline">
+                  <input type="text" id="discription" name="discription2" class="form-control " value="{{result.discription2}}"   placeholder="Discription"/>
+                
+                  </div>
+
+                </div>
+                </div>
                 <div class="row">
                 <div class="col-md-6 mb-4">
 
@@ -94,7 +104,10 @@
                   
                   <div class="form-outline">
                     {{#each result.sub_image}}
-                    <img style="width: 50px; height: 50px;" src="/product_img/{{ this.filename}}" alt="">
+                    <a href="/admin/deleteSubImage/{{this.filename}}" onclick="return confirm('Are you sure to Delete')">
+                      <img style="width: 50px; height: 50px;" src="/product_img/{{ this.filename}}" alt="">
+                    </a>
+                    
                      {{/each}}
 
                      <input type="file" name="sub_image" class="form-control-file"  multiple id="exampleFormControlFile1" accept="image/png, image/jpeg, image/jpg" >

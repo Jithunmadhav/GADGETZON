@@ -2,15 +2,20 @@
 const { response } = require('express')
 const express=require('express')
 const adminController = require('../controllers/adminController')
+const adminVerify = require('../middlewares/adminSession')
 const multipleUpload = require('../middlewares/multer')
 const router=express.Router()
 
 
              // ****** ADMIN LOGIN **********
+             
 
 router.get('/adminLogin',adminController.getLogin)
 
+
+
 router.post('/admLog',adminController.postLogin)
+router.use(adminVerify)
 
             // ****** ADMIN DASHBOARD **********
 
@@ -32,6 +37,8 @@ router.post('/addPdt',multipleUpload,adminController.postaddPdt)
 router.get('/editProduct/:id',adminController.getEditProduct)
 
 router.post('/edit-product/:id',multipleUpload,adminController.postEditproduct)
+
+router.get('/deleteSubImage/:name',adminController.getDeleteSubImage)
 
 //Delete Product
 
@@ -73,6 +80,7 @@ router.get('/deleteCategory/:id',adminController.getDeleteCategory)
 router.get('/searchCategory',adminController.getSearchCategory)
 
 router.get('/editCategory/:id',adminController.getEditCategory)
+
 router.get('/editCategory',adminController.getEditCategory)
 
 router.post('/updateCategory/:id',adminController.postUpdateCategory)
@@ -97,5 +105,16 @@ router.get('/unlistCoupon/:id',adminController.getUnlistCoupon)
 
 router.get('/searchCoupon',adminController.getSearchCoupon)
 
+router.get('/orderManagement',adminController.getOrderManagement)
+
+//************Banner Management ******
+
+router.get('/bannerManagement',adminController.getBannerManagement)
+
+router.get('/addBanner',adminController.getAddBanner)
+
+router.post('/postAddBanner',multipleUpload,adminController.postAddBanner)
+
+router.get('/bannerDelete/:id',adminController.getDeleteBanner)
 
 module.exports=router;

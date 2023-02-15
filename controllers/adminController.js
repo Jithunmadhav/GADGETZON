@@ -18,14 +18,15 @@ module.exports={
   postLogin:(req,res)=>{
       console.log(req.body);
       admin.adminLogin(req.body).then((response)=>{
-         
-          if(response.status){
+        
+         req.session.admin=response.username;
+          if(response.stat){
              
               res.redirect('/admin/adminDashboard')
              
           }else{
            req.session.status=true;
-           console.log(req.session.status);
+          
               res.redirect('/admin/adminLogin')
               
           }
@@ -59,13 +60,9 @@ getaddProduct:(req,res)=>{
 
 
 postaddPdt:(req,res)=>{
-  
   admin.productData(req.body,req.files).then((result)=>{
-
-      
+    res.redirect('/admin/productDetails')  
   })
-  res.redirect('/admin/productDetails')
-  
   },
 
 //Edit Product
@@ -74,14 +71,23 @@ getEditProduct:(req,res)=>{
     
     admin.editProduct(req.params.id).then((result)=>{
       admin.listCategory().then((category)=>{
+       
+        req.session.productId=result._id
         res.render('edit-product',{result,category})
       })
         
 
     })
 },
+getDeleteSubImage:(req,res)=>{
+  admin.deleteSubImage(req.session.productId,req.params.name).then(()=>{
+    res.redirect("back")
+  })
+  
+},
+
+
 postEditproduct:(req,res)=>{
-  console.log(req.body);
   
   admin.updateProduct(req.body,req.params.id,req.files).then((result)=>{
       res.redirect('/admin/productDetails')
@@ -90,13 +96,11 @@ postEditproduct:(req,res)=>{
 
 
 getListProduct:(req,res)=>{
-   
   admin.listProduct(req.params.id).then((result)=>{
       res.redirect('/admin/productDetails')
   })
   },
 getUnlistProduct:(req,res)=>{
-   
     admin.unlistProduct(req.params.id).then((result)=>{
         res.redirect('/admin/productDetails')
     })
@@ -310,5 +314,31 @@ getSearchCoupon:(req,res)=>{
     console.log(err);
   })
 },
+getOrderManagement:(req,res)=>{
+  admin.productOrderDetail().then((result)=>{
+    res.render('orderMangement',{result})
+  })
+  
+},
+getBannerManagement:(req,res)=>{
+  admin.getBannerDetails().then((result)=>{
+    res.render('bannerManagement',{result})
+  })
+  
+},
+getAddBanner:(req,res)=>{
+  res.render('addBanner')
+},
+postAddBanner:(req,res)=>{
+ admin.bannerAdd(req.body,req.files).then((result)=>{
+  res.redirect('/admin/bannerManagement')
+ })
+},
+getDeleteBanner:(req,res)=>{
+  admin.deleteBanner(req.params.id).then((result)=>{
+    res.redirect('back')
+    console.log(result);
+  })
+}
     
 }

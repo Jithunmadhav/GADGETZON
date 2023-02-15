@@ -58,10 +58,15 @@
     </div>
   </div>
 </div>
-
+ {{#if count}}
+   <div style="    height: 421px;
+    margin-top: 78px;
+    width: 100%;
+    display: flex;
+    justify-content: center;"><img src="\images\f6e464230662e7fa4c6a4afb92631aed.png" class="img-fluid" alt=""></div>
+    <div style="margin-top: -15px; display: flex; justify-content: center;"><a style="text-decoration: none; color: black;" class="btn btn-outline-warning" href="/shop-page"><h2 style="text-align: center;">Starts Shopping</h2></a></div>
+  {{else}}
 <section class="container">
-
-
 
 	<div class="cart-wrap">
 		<div class="container">
@@ -97,8 +102,8 @@
 					        		<td width="15%" class="price">{{this.price}}</td>
 					        		{{!-- <td width="15%"><span class="in-stock-box">{{this.status}}</span></td> --}}
 					        		<td width="15%">
-                        <a href="/addToCart/{{this._id}}"><button class="round-black-btn small-btn">Add to Cart</button></a></td>
-					        		<td width="10%" class="text-center"><a href="/deleteWishlist/{{this._id}}" onclick="return confirm('Are you sure to delete {{this.productname}}')" class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
+                        <a href="/addCartDeleteWl/{{this._id}}"><button class="round-black-btn small-btn">Add to Cart</button></a></td>
+					        		<td width="10%" class="text-center"><a href="/deleteWishlist/{{this._id}}"   class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
 					        	</tr>
 								{{/each}}
 				        	</tbody>
@@ -111,6 +116,7 @@
 	     <a style="text-decoration: none; display: flex;" href="/home"><i style="    margin-top: 6px;" class="fas fa-arrow-left mr-2"></i> Continue Shopping</a>
 
 </section>
+{{/if}}
 
 
 

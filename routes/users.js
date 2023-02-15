@@ -5,6 +5,8 @@ const userController=require('../controllers/userController')
 const sentOTP = require('../helpers/sentOTP')
 const adminController = require('../controllers/adminController')
 const verifyUser = require('../middlewares/userSession')
+const banUserAccount = require('../middlewares/banUser')
+
 
 const router=express.Router()
 
@@ -15,11 +17,11 @@ router.get('/login',userController.getLogin)
 
 router.post('/loginpost',userController.postLogin)
 
-router.get('/loginVerify',userController.getLoginVerify)
+// router.get('/loginVerify',userController.getLoginVerify)
 
-router.get('/resendOTP',userController.getResendOTP)
+// router.get('/resendOTP',userController.getResendOTP)
 
-router.post('/postLoginVerify',userController.postLoginVerify)
+// router.post('/postLoginVerify',userController.postLoginVerify)
 
 // user-signup-page
 router.get('/signup',userController.getSignup)
@@ -29,7 +31,10 @@ router.post('/signUP',userController.postSignup)
 // Signup-verification-page
 router.get('/signupVerify',userController.getSignupVerify)
 
+
 router.get('/resendOtp',userController.getResendOtp)
+
+router.get('/resendForgotOtp',userController.getResendOTp)
 
 router.post('/postSignup',userController.postSignupVerify)
 
@@ -50,9 +55,11 @@ router.get('/passwordSetting',userController.getpasswordSetting)
 router.post('/pwdSetting',userController.postPasswordSetting)
 
 
-router.use(verifyUser)
+
 // Home-page
 router.get('/home',userController.getHome)
+
+router.get('/searchProduct',userController.getSearchPdt)
 
 
 
@@ -70,17 +77,21 @@ router.get('/brandList/:name',userController.getBrandList)
 
 
 
-
-
 //product-Details
 router.get('/productDetails/:id',userController.getProductDetails)
 
+
+
+router.use(verifyUser)
+router.use(banUserAccount)
+
+
 //wishlist
-
-
 router.get('/addToWishlist/:id',userController.getAddWishlist)
 
 router.get('/wishlist',userController.getWishlist)
+
+router.get('/addCartDeleteWl/:id',userController.getAddCartDeleteWl)
 
 router.get('/deleteWishlist/:id',userController.getDeleteWishlist)
 
@@ -94,15 +105,19 @@ router.get('/cart',userController.getCart)
 
 router.get('/cartProductDelete/:id',userController.getDeleteCart)
 
+router.get('/quantityInc/:id',userController.getQtyInc)
 
-
+router.get('/quantityDec/:id',userController.getQtyDec)
 
 //checkOut-page
 router.get('/checkout/',userController.getCheckout)
 
 router.get('/addAddress',userController.getAddAdress)
 
+router.get('/editAddress',userController.getEditAddress)
+
 router.post('/addedAddress',userController.postAddedAddress)
+
 
 router.get('/userProfile',userController.getUserProfile)
 
@@ -111,6 +126,8 @@ router.get('/selectAddress/:id',userController.getSelectedAddress)
 router.get('/deleteAddress/:id',userController.getDeletedAddress)
 
 router.post('/redeemCoupon',userController.getRedeemCoupon)
+
+router.post('/postCheckout',userController.postCheckoutOrder)
 
 
 //order-details
