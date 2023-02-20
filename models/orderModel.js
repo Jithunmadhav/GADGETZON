@@ -1,16 +1,28 @@
+const { ObjectId } = require('mongodb');
 const mongoose=require('mongoose')
 const orderSchema=mongoose.Schema({
-    orderId:{
-        type:Number,
+    userId:{
+        type:ObjectId,
         required:true
     },
     orderDate:{
-        type:Date,
+        type:String,
         required:true
     },
     orderStatus:{
         type:Boolean,
-        required:true
+        required:true,
+        default:false
+    },
+    returnStatus:{
+        type:Boolean,
+        required:true,
+        default:false
+    },
+    cancelStatus:{
+        type:Boolean,
+        required:true,
+        default:false
     },
     address:{
         type:String,
@@ -35,6 +47,10 @@ const orderSchema=mongoose.Schema({
     totalPrice:{
         type:Number,
         required:true
+    },
+    dispatch:{
+        type:String,
+        default: new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString()
     }
 
 })

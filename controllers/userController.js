@@ -13,17 +13,33 @@ module.exports={
 
     getHome:(req,res)=>{
         if(req.session.userID){
-            // res.redirect('/home')
-            let userstatus= req.session.userStatus;
+            user.bannerDetails().then((banner)=>{
+                let userstatus= req.session.userStatus;
             let username=req.session.username;
+            if( req.session.homeSearchStatus){
+                res.render('homepage',{userstatus,username,result:req.session.homeSearch,status: req.session.homeSearchStatus,banner})
+               
+            }else{
+                res.render('homepage',{userstatus,username,banner})
+            }
+            req.session.homeSearchStatus=false;
+            })
+            // res.redirect('/home')
             
-                res.render('homepage',{userstatus,username})
         }else{
+            user.bannerDetails().then((banner)=>{
+                console.log(banner);
+                if( req.session.homeSearchStatus){
+                    res.render('homepage',{result:req.session.homeSearch,status: req.session.homeSearchStatus,banner})
+                }else{
+                    res.render('homepage',{banner})
+                }
+                req.session.homeSearchStatus=false;
+                    // req.session.userStatus=false;
+            })
             // let userstatus= req.session.userStatus;
             // let username=req.session.username;
-            
-                res.render('homepage')
-                // req.session.userStatus=false;
+          
         }
        
         
@@ -55,6 +71,7 @@ module.exports={
             
             req.session.user=response.user.email
             req.session.username=response.user.fname
+            req.session.lastName=response.user.lname
             req.session.userID=response.user._id;
             req.session.ban=response.user.ban;
             req.session.userStatus=true;
@@ -222,17 +239,17 @@ module.exports={
             user.listCategory().then((catg)=>{
                 user.listBrand().then((brand)=>{
                     if(req.session.catgStatus){
-                        res.render('shop-page',{result:req.session.catgData,catg,brand,count})  
+                        res.render('shop-page',{result:req.session.catgData,catg,brand,count,session:req.session.userID})  
     
                     }else if(req.session.sortStatus){
-                        res.render('shop-page',{result:req.session.sortData,catg,brand,count})  
+                        res.render('shop-page',{result:req.session.sortData,catg,brand,count,session:req.session.userID})  
                     }else if( req.session.brandStatus){
-                        res.render('shop-page',{result:req.session.brandData,catg,brand,count}) 
+                        res.render('shop-page',{result:req.session.brandData,catg,brand,count,session:req.session.userID}) 
                     }else if(req.session.searchStatus){
-                        res.render('shop-page',{result:req.session.searchData,catg,brand,count}) 
+                        res.render('shop-page',{result:req.session.searchData,catg,brand,count,session:req.session.userID}) 
                     }
                     else{
-                        res.render('shop-page',{result,catg,brand,count})
+                        res.render('shop-page',{result,catg,brand,count,session:req.session.userID})
                     }
                     req.session.catgStatus=false
                     req.session.sortStatus=false
@@ -267,11 +284,16 @@ module.exports={
         });
     },
     getSearchProduct:(req,res)=>{
+        console.log(req.query);
         user.searchProduct(req.query).then((result) => {
+            if(result.length==0){
+                res.render('searchErrorPage')
+            }else{
             req.session.searchStatus=true;
            
             req.session.searchData=result;
-            res.redirect('back')  
+            res.redirect('/shop-page')
+            }  
         }).catch((err) => {
             console.log(err);
         });
@@ -296,7 +318,17 @@ module.exports={
     },
     getSearchPdt:(req,res)=>{
         user.searchProduct(req.query).then((result) => {
-            res.render('searchPage',{result})
+            if(result.length==0){
+                res.render('searchErrorPage')
+            }else{
+                req.session.homeSearch=result;
+                req.session.homeSearchStatus=true;
+                console.log(result);
+                // res.render('searchPage',{result})
+                res.redirect('/home')
+            }
+           
+
         }).catch((err) => {
             console.log(err);
         });
@@ -305,19 +337,26 @@ module.exports={
 
     //Add to cart
     getAddCart:(req,res)=>{
-       
-        user.productAddCart(req.session.userID,req.params.id).then((result)=>{
-          user.cartProducts(req.session.userID).then((result)=>{
-            req.session.cartCount=result.length;
-            res.redirect('back')
-          })
-           
-        })
+        
+        try{
+            
+             user.productAddCart(req.session.userID,req.params.id).then((result)=>{
+               user.cartProducts(req.session.userID).then((result)=>{
+                 let count=result.length;
+                 // res.redirect('back')
+                 res.json({success:true,count})
+               })
+                
+             })
+
+        }catch(err){
+            res.status(501).json({err})
+        }
        
 
     },
     getQtyInc:(req,res)=>{
-        
+        let productId=req.params.id;
         user.checkQty(req.session.userID,req.params.id).then((result)=>{
             cItem=result;
             let cartItems=cItem.map(item=>{
@@ -326,8 +365,37 @@ module.exports={
             if(cartItems[0]>9){
                 res.redirect('back')
             }else{
-                user.quantityInc(req.session.userID,req.params.id).then(()=>{
-                    res.redirect('back')
+                user.quantityInc(req.session.userID,req.params.id).then((result)=>{
+                    
+                    
+                    req.session.total=result
+                    user.cartProducts(req.session.userID).then((result)=>{
+                       cItem=result;
+                       let cartQuantities={}
+                       cItem.map(item=>{
+                         cartQuantities[item.productId]=item.quantity
+                       return item.quantity
+                       })
+          
+         
+                   user.viewCart(result).then((result)=>{
+                       req.session.cartCountNr=result.length;
+                       result.map((item, index)=>{
+                       result[index].cartQuantity=cartQuantities[item._id];
+                       })
+                       req.session.cartCount=result.length;
+         
+                     const totalP = result.reduce((acc, item) => {
+                         return acc += item.price*item.cartQuantity;
+                     }, 0);
+                     let calc=totalP
+                  
+                  
+                     let cartQty=req.session.total;
+                    
+                     res.json({success:true,cartQty,calc})
+                   })
+               })
                  })
             }
         })
@@ -348,8 +416,39 @@ module.exports={
             if(cartItems[0]<2){
                 res.redirect('back')
             }else{
-                user.quantityDec(req.session.userID,req.params.id).then(()=>{
-                    res.redirect('back')
+                user.quantityDec(req.session.userID,req.params.id).then((result)=>{
+                    req.session.totalP=result
+                     user.cartProducts(req.session.userID).then((result)=>{
+                        cItem=result;
+                        let cartQuantities={}
+                        cItem.map(item=>{
+                          cartQuantities[item.productId]=item.quantity
+                        return item.quantity
+                        })
+           
+          
+                    user.viewCart(result).then((result)=>{
+                        req.session.cartCountNr=result.length;
+                        result.map((item, index)=>{
+                        result[index].cartQuantity=cartQuantities[item._id];
+                        })
+                        req.session.cartCount=result.length;
+          
+                      const totalP = result.reduce((acc, item) => {
+                          return acc += item.price*item.cartQuantity;
+                      }, 0);
+                      let calc=totalP
+                
+                   
+                      let cartQty=req.session.totalP;
+                     
+                      res.json({success:true,cartQty,calc})
+                    })
+                })
+                   
+                
+                     
+                 
                  })
             }
         })
@@ -358,6 +457,7 @@ module.exports={
 
     },
     getCart:(req,res)=>{
+         
           user.cartProducts(req.session.userID).then((result)=>{
               cItem=result;
               let cartQuantities={}
@@ -379,16 +479,16 @@ module.exports={
             }, 0);
             const totalPrice=calcAmount;
              
-            for(i=0;i<result.length;i++){
-                if(result[i].quandity<0){
-                     user.cartStockStatus(result[i]._id).then((result)=>{
+            // for(i=0;i<result.length;i++){
+            //     if(result[i].quandity<0){
+            //          user.cartStockStatus(result[i]._id).then((result)=>{
                         
-                     }) 
-                }else if(result[i].quandity>0){
-                    user.cartStockUpdate(result[i]._id).then((result)=>{
-                    }) 
-                }
-            }
+            //          }) 
+            //     }else if(result[i].quandity>0){
+            //         user.cartStockUpdate(result[i]._id).then((result)=>{
+            //         }) 
+            //     }
+            // }
            
            let count= (req.session.cartCountNr==0)?true:false;
            
@@ -411,7 +511,9 @@ module.exports={
     // Wishlist
 
     getAddWishlist:(req,res)=>{
+       
         user.productAddWishlist(req.session.userID,req.params.id).then(() => {
+            // res.json({success:true})
             res.redirect('back')
         }).catch((err) => {
            console.log(err); 
@@ -448,8 +550,10 @@ module.exports={
 
     getDeleteWishlist:(req,res)=>{
         // console.log(req.session.userID);
+        console.log("hello");
         user.deleteWishlistProduct(req.session.userID,req.params.id).then(() => {
             res.redirect('back')
+            // res.json({success:true})
         }).catch((err) => {
             console.log(err);
         });
@@ -461,7 +565,7 @@ module.exports={
 
     // },
     getCheckout:(req,res)=>{
-        
+        req.session.userProfileStatus=false;
         user.cartProducts(req.session.userID).then((result)=>{
             cItem=result;
             let cartQuantities={}
@@ -482,12 +586,7 @@ module.exports={
               let totalPrice=calcAmount;
            
               let products=result;
-              req.session.orderProduct=result;
-            // const calcAmount = result.reduce((acc, item) => {
-            //     return acc += item.price;
-            // }, 0);
-            // let Price=calcAmount;
-            // let totalPrice=Price+80;
+              req.session.orderProduct=result; 
             if(req.session.couponStatus ==true && totalPrice>req.session.minPurchaseAmt){
                 totalPrice=totalPrice-req.session.discountAmt;
                 res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:req.session.discountAmt,products,couponStat:req.session.couponStatus })
@@ -496,6 +595,7 @@ module.exports={
             }
             req.session.validCoupon=false;
             req.session.invalidCoupon=false;
+            req.session.couponStatus=false
           })
         })
        
@@ -511,7 +611,11 @@ module.exports={
                 res.redirect('/addAddress')
             }else{
                 user.addAddress(req.session.userID,req.body).then((result) => {
-                res.redirect('/editAddress')
+                if(req.session.userProfileStatus){
+                    res.redirect('/userProfile')
+                }else{
+                    res.redirect('/editAddress')
+                }    
             }).catch((err) => {
                 console.log(err);       
             });
@@ -519,9 +623,9 @@ module.exports={
         })
         
     },
-    getEditAddress:(req,res)=>{
+    getCheckoutAddress:(req,res)=>{
         user.getAddress(req.session.userID).then((result) => {
-            res.render('editAddress',{result})
+            res.render('checkoutAddress',{result})
         }).catch((err) => {
             console.log(err);
         });
@@ -529,7 +633,8 @@ module.exports={
 
     getUserProfile:(req,res)=>{
         user.getAddress(req.session.userID).then((result) => {
-            res.render('userProfile',{result})
+            req.session.userProfileStatus=true;
+            res.render('userProfile',{result,name: req.session.username,lname:req.session.lastName})
         }).catch((err) => {
             console.log(err);
         });
@@ -577,15 +682,68 @@ module.exports={
     postCheckoutOrder:(req,res)=>{
      user.orderCheckout(req.body,req.session.orderProduct,req.session.userID).then((result)=>{
         res.render('orderSuccess',{email:req.session.user})
-        successMail.successMail(req.session.user,req.session.username)
+        // successMail.successMail(req.session.user,req.session.username)
         
      })
     },
-
+    getEditUser:(req,res)=>{
+        user.editUserDetails(req.session.userID).then((result)=>{
+            res.render('editUser',{result})
+        })
+      
+    },
+    postupdateUser:(req,res)=>{
+        console.log(req.body);
+        user.updateUserDetails(req.session.userID,req.body).then((result)=>{
+            res.redirect('/userProfile')
+        })
+    },
+    getEditAddressDetails:(req,res)=>{
+        user.selectedAddress(req.session.userID,req.params.id).then((result)=>{
+            res.render('editAddress',{result})
+        })
+       
+    },
+    postUpdateAddress:(req,res)=>{
+        user.updateAddress(req.session.userID,req.params.id,req.body).then((result)=>{
+             
+            res.redirect('/userProfile')
+        })
+    },
+    getOrderHistory:(req,res)=>{
+        user.orderHistory(req.session.userID).then((result)=>{ 
+            if(req.session.orderListStatus){
+                res.render('orderHistory',{result:req.session.orderList})
+            }else{
+                res.render('orderHistory',{result})
+            }
+           
+        })
+       
+    },
+    getOrderedProduct:(req,res)=>{
+      
+    user.getOrderDetails(req.params.id).then((result)=>{
+        res.render('orderedProduct',{result})
+    })
+       
+    },
+    getCancelOrder:(req,res)=>{
+        user.cancelOrder(req.params.id).then(()=>{
+            res.redirect('/orderHistory')
+        })
+    },
+    getOrderList:(req,res)=>{
+        user.orderList(req.params.name).then((result)=>{
+            req.session.orderListStatus=true;
+            req.session.orderList=result;
+            res.redirect('back')
+        })
+    },
 
     getLogout:(req,res)=>{
-        // req.session.destroy();
-        req.session.user=null;
+        req.session.destroy();
+        // req.session.user=null;
         res.redirect('/login')
     }
    

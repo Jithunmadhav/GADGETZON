@@ -320,6 +320,16 @@ getOrderManagement:(req,res)=>{
   })
   
 },
+getEditOrderStatus:(req,res)=>{
+  admin.editOrderStatus(req.params.id).then((result)=>{
+    res.render('editOrderStatus',{result})
+  })
+},
+postEditOrderStatus:(req,res)=>{
+  admin.updateOrderStatus(req.params.id,req.body).then(()=>{
+    res.redirect('/admin/orderManagement')
+  })
+},
 getBannerManagement:(req,res)=>{
   admin.getBannerDetails().then((result)=>{
     res.render('bannerManagement',{result})

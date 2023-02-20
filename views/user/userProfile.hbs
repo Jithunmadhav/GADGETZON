@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>user profile</title>
 </head>
 <body>
     <section  style="background-color: #eee; height: 745px;">
@@ -20,7 +20,10 @@
         <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
           <ol class="breadcrumb mb-0" style="display: flex;  justify-content: space-between;">
             {{!-- <li class="breadcrumb-item"><a href="/checkOut">Back</a></li> --}}
-            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li><a href="/home">Home</a></li>
+             <li> <a href="/cart">View cart</a></li>
+              <li><a href="/wishlist">View wishlist</a></li>
+               <li> <a href="/orderHistory" >View order history</a></li>
             <li><a href="/logout" class="btn btn-outline-dark">Logout</a></li>
           </ol>
         </nav>
@@ -28,17 +31,18 @@
     </div>
 
     <div class="row">
-      <div class="col-lg-4">
+      <div class="col-lg-4 " style="margin-top: 35px;">
         <div class="card mb-4">
           <div class="card-body text-center">
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-              class="rounded-circle img-fluid" style="width: 150px;">
-            <h5 class="my-3">{{name}}</h5>
+            <img   src=" \images\blank-profile-picture-g1be656e2c_1280.png" alt="avatar"
+              class="rounded-circle img-fluid" style="width: 150px; margin-top: 5px;">
+            <h5 class="my-3">{{name}} {{lname}}</h5>
             <p class="text-muted mb-1"></p>
             <p class="text-muted mb-4"></p>
-            <div class="d-flex justify-content-center mb-2">
-              <a href="/cart" class="btn btn-warning ">cart</a>
-                 <a href="/wishlist" class="btn btn-warning ">wishlist</a>
+            <div style="flex-direction: column;" class="d-flex justify-content-center ">
+              <a href="/editUser" style="text-decoration: none; color: black; font-family: cursive;" class="btn btn-warning" >Edit details</a><br>
+              
+                
               {{!-- <button type="button" class="btn btn-warning ">cart</button><br>&nbsp;
               <button type="button" class="btn btn-warning ms-1">wishlist</button> --}}
             </div>
@@ -53,8 +57,9 @@
         </div>
 
         <div class="card mb-4">
+           {{#each result}}
           <div class="card-body">
-            {{#each result}}
+           
             <div class="row">
                 
               <div class="col-sm-8">
@@ -64,19 +69,19 @@
                 <p class="mb-0">{{this.zip}}</p>
               </div>
                <div class="col-sm-4">
-              <a href="/selectAddress/{{this.id}}" class=" btn btn-primary">select</a>
-
+                <a href="/editAddressDetails/{{this.id}}" class=" btn btn-primary">Edit</a>
                <a href="/deleteAddress/{{this.id}}"  onclick="return confirm('Are you sure to delete this address')" class=" btn btn-danger">Delete</a>
-             
+               
 
               </div>
               
             </div>
-            <hr>
-            {{/each}}
+         
             
            
           </div>
+                      <div style="width: 100%; height: 4px; background-color: #eee;"></div>
+   {{/each}}
         </div>
        
       </div>

@@ -114,7 +114,7 @@ router.get('/checkout/',userController.getCheckout)
 
 router.get('/addAddress',userController.getAddAdress)
 
-router.get('/editAddress',userController.getEditAddress)
+router.get('/editAddress',userController.getCheckoutAddress)
 
 router.post('/addedAddress',userController.postAddedAddress)
 
@@ -129,11 +129,23 @@ router.post('/redeemCoupon',userController.getRedeemCoupon)
 
 router.post('/postCheckout',userController.postCheckoutOrder)
 
+router.get('/editUser',userController.getEditUser)
+
+router.post('/updateUser',userController.postupdateUser)
+
+router.get('/editAddressDetails/:id',userController.getEditAddressDetails)
+
+router.post('/updateAddress/:id',userController.postUpdateAddress)
+
+router.get('/orderHistory',userController.getOrderHistory)
+
 
 //order-details
-router.get('/ordered-product',(req,res)=>{
-    res.render('orderedProduct')
-})
+router.get('/orderedProduct/:id',userController.getOrderedProduct)
+
+router.get('/cancelOrder/:id',userController.getCancelOrder)
+
+router.get('/orderList/:name',userController.getOrderList)
 
 router.get('/logout',userController.getLogout)
 

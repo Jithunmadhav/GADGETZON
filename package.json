@@ -6,6 +6,8 @@
     "express-fileupload": "^1.4.0",
     "express-hbs": "^2.4.0",
     "express-session": "^1.17.3",
+    "handlebars-helper-equal": "^1.0.0",
+    "handlebars-helpers": "^0.10.0",
     "hbs": "^4.2.0",
     "mongodb": "^4.13.0",
     "mongoose": "^6.9.1",

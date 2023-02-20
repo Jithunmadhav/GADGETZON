@@ -7,6 +7,7 @@ const productModel=require('../models/productModel')
 const categoryModel=require('../models/categoryModel')
 const couponModel=require('../models/couponModel')
 const orderModel=require('../models/orderModel')
+const bannerModel=require('../models/bannerModel')
 module.exports={
     checkSignup:(userData)=>{
         return new Promise(async(resolve, reject) => {
@@ -174,20 +175,23 @@ module.exports={
         });
       },
       quantityInc:(userId,productId)=>{
+       
         return new Promise(async(resolve, reject) => {
           // let quantity=2;
           let result= await productModel.findOne({_id:productId},{quandity:1})
          
           
-          if(result.quandity>1){
+          if(result.quandity>0){
             await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
               $inc:{
                   "cart.$.quantity":1
               }
-          }).then((result)=>{
-              resolve(result)
-            })
-            await productModel.updateOne({_id:productId},{$inc:{"quandity":-1}})
+          })
+            let {cart}=await userModel.findOne({_id:userId,cart:{$elemMatch:{productId:productId}} })
+            let found=cart.find(e=>e.productId==productId)
+            
+            resolve(found.quantity)
+            // await productModel.updateOne({_id:productId},{$inc:{"quandity":-1}})
           }else{
            
             await productModel.updateOne({_id:productId},{$set:{stockStatus:true}}).then((result)=>{
@@ -214,19 +218,22 @@ module.exports={
 
       quantityDec:(userId,productId)=>{
         return new Promise(async(resolve, reject) => {
-
           let result= await productModel.findOne({_id:productId},{quandity:1})
-          console.log(result.quandity);
+          
           
           if(result.quandity>=0){
             await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
               $inc:{
                   "cart.$.quantity":-1
               }
-          }).then((result)=>{
-              resolve(result)
-            })
-            await productModel.updateOne({_id:productId},{$inc:{"quandity":1}})
+              
+          })
+          let {cart}=await userModel.findOne({_id:userId},{cart:1})
+        
+            let found=cart.find(e=>e.productId==productId)
+           
+            resolve(found.quantity)
+            // await productModel.updateOne({_id:productId},{$inc:{"quandity":1}})
           }
           // let quantity= await productModel.updateOne({_id:productId},{$inc:{"quandity":1}})
           //    console.log(quantity);
@@ -353,6 +360,25 @@ module.exports={
         resolve(result)  
        });
      },
+     updateAddress:(userId,Id,data)=>{
+      console.log(userId);
+      console.log(Id);
+      console.log(data);
+      let ID=parseInt(Id)
+       return new Promise(async(resolve, reject) => {
+     let result= await userModel.updateOne({_id:userId,address:{$elemMatch:{id:ID}}},{$set:{"address.$": {
+      fname:data.fname,
+      lname:data.lname,
+      phone:data.phone,
+      address:data.address,
+      city:data.city,
+      state:data.state,
+      zip:data.zip,
+      id:ID
+     } }})
+        resolve(result)  
+       });
+     },
      redeemCoupon:(coupon)=>{
       return new Promise(async(resolve, reject) => {
       let result=await couponModel.find({couponCode:coupon}).lean()
@@ -362,11 +388,10 @@ module.exports={
      orderCheckout:(order,products,userID)=>{
       return new Promise(async(resolve, reject) => {
         for(let i=0;i<products.length;i++){
-          let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
+          // let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
           await orderModel.create({
-            orderId:orderId,
-            orderDate:new Date,
-            orderStatus:false,
+            userId:userID,
+            orderDate:new Date().toLocaleDateString(),
             address:order.address,
             paymentStatus:false,
             payment:order.payment,
@@ -378,11 +403,76 @@ module.exports={
              
             resolve(result)
           })
+
+          await productModel.updateOne({_id:products[i]._id},{$inc:{"quandity":-products[i].cartQuantity}})
         }
         return new Promise(async(resolve, reject) => {
          
           await userModel.updateOne(({_id:userID},{$set:{cart:[]}}))
         });
       });
+     },
+     bannerDetails:()=>{
+      return new Promise(async(resolve, reject) => {
+        let result=await bannerModel.find().lean()
+        resolve(result)
+      });
+     },
+     editUserDetails:(Id)=>{
+      return new Promise(async(resolve, reject) => {
+        let result=await userModel.findOne({_id:Id})
+        resolve(result)
+      });
+     },
+     updateUserDetails:(Id,data)=>{
+      return new Promise(async(resolve, reject) => {
+        await userModel.updateOne({_id:Id},{$set:{
+          fname:data.fname,
+          lname:data.lname,
+          phone:data.phone
+        }}).then((result)=>{
+          resolve(result)
+        })
+      });
+     },
+     orderHistory:(userId)=>{
+      return new Promise(async(resolve, reject) => {
+        let result=await orderModel.find({userId:userId}).lean()
+        resolve(result)
+      });
+     },
+     getOrderDetails:(Id)=>{
+      return new Promise(async(resolve, reject) => {
+        let result=await orderModel.findById({_id:Id})
+        resolve(result)
+      });
+     },
+     cancelOrder:(Id)=>{
+      return new Promise(async(resolve, reject) => {
+      await orderModel.updateOne({_id:Id},{$set:{cancelStatus:true}}).then((result)=>{
+      
+        resolve()
+      })
+      });
+     },
+     orderList:(data)=>{
+   
+      return new Promise(async(resolve, reject) => {
+        if(data=='delivered'){
+        let result=  await orderModel.find({orderStatus:true}).lean()
+        resolve(result)
+        }else if(data=='notDelivered'){
+          let result=  await orderModel.find({$and:[{orderStatus:false},{cancelStatus:false}]}).lean()
+        resolve(result)
+        }else if(data=='cancelled'){
+          let result=  await orderModel.find({cancelStatus:true}).lean()
+          console.log(result);
+          resolve(result)
+        }else if(data=='all'){
+          let result=  await orderModel.find({}).lean()
+          resolve(result)
+        }
+      });
      }
+    
 }

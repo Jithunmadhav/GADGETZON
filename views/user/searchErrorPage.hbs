@@ -60,63 +60,22 @@
  
 
        
- {{!-- <div  class=" row row-cols-1 row-cols-md-6 g-4 mt-5" style=" width: 100%; margin-left: 5px;">
-  {{#each result}}
-  <div  class="col mb-4" >
-    <a style="text-decoration: none; color: black;" href="/productDetails/{{this._id}}"> 
-    <div style="    border-radius: 11px; border-color: rgb(12, 12, 14);"  class="card h-100">
-      <div style="display: flex;justify-content: center;">
-       <img  src="/product_img/{{this.main_image.[0].filename}}" class="card-img1 " alt="Hollywood Sign on The Hill" />
-      </div></a>
-      <div class="card-body">
-        <h5 style=" text-align: center;  height: 30px;" class="card-title">{{this.productname}}</h5>
-        <h4 style=" height: 30px; text-align: center;" class="card-title">Rs.{{this.price}}</h4>
-       
-      <div style="display: flex;justify-content: center;">
-        <a href="/addToCart/{{this._id}}"><input align="center" type="submit" class=" btn btn-warning" value="Add to cart"></a>
-       {{#if this.wlStatus}}
-        <a href="/deleteWishlist/{{this._id}}"><i style="font-size: 25px; margin-top: -10px; color: red;" class="bi bi-heart-fill btn pl-3" ></i></a>
-       {{else}}
-        <a href="/addToWishlist/{{this._id}}"><i style="font-size: 25px; margin-top: -10px;" class="bi bi-heart btn pl-3" ></i></a>
-        {{/if}}
-      </div>
-      </div>
-    </div>
-   
-      {{/each}} 
-  </div>
+ {{!-- <div style="width: 600px; height:500px; ">
+  <img class="img-fluid" src="\images\404notfound.jpg" alt="">
+ </div> --}}
+  <div
+        style="    height: 421px;
+    margin-top: 78px;
+    width: 100%;
+    display: flex;
+    justify-content: center;"
+      ><img
+          src="\images\404notfound.jpg"
+          class="img-fluid"
+          alt=""
+        /></div>
+            <div style="margin-top: 15px; display: flex; justify-content: center;"><a style="text-decoration: none; color: black;" class="btn btn-warning" href="/home"><h2 style="text-align: center;">Go back</h2></a></div>
 
-</div> --}}
-<section  >
-  <div class="container py-5">
-    <div class="row">
-         {{#each result}}
-      <div class="col-md-6 col-lg-4 mb-2 mb-lg-0" >
-        <div  class="card" style="box-shadow:0px 0px 4px 0px rgb(123, 123, 123);">
-         <a style="text-decoration: none; color: black;" href="/productDetails/{{this._id}}"> 
-         <div style="display: flex;justify-content: center;">
-          <img style="height: 200px; width: 200px; padding-top: 5px;"  src="/product_img/{{this.main_image.[0].filename}}"
-            class="card-img-top" alt="Laptop" /></div></a>
-           <div class="card-body">
-        <h5 style=" text-align: center; " class="card-title">{{this.productname}}</h5>
-        <h4 style=" text-align: center;" class="card-title">Rs.{{this.price}}</h4>
-       
-      <div style="display: flex;justify-content: center;">
-        <a href="/addToCart/{{this._id}}"><input align="center" type="submit" class=" btn btn-warning" value="Add to cart"></a>
-       {{#if this.wlStatus}}
-        <a href="/deleteWishlist/{{this._id}}"><i style="font-size: 25px; margin-top: -10px; color: red;" class="bi bi-heart-fill btn pl-3" ></i></a>
-       {{else}}
-        <a href="/addToWishlist/{{this._id}}"><i style="font-size: 25px; margin-top: -10px;" class="bi bi-heart btn pl-3" ></i></a>
-        {{/if}}
-      </div>
-      </div>
-        </div>
-      </div>
-     {{/each}}
-     
-    </div>
-  </div>
-</section>
 
 
 

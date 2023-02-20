@@ -1,74 +1,226 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css">
- 
+    <link rel="stylesheet" href="/stylesheets/user/productDetails.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <title>Hello, world!</title>
+  </head>
+  <body>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <section  style="background-color: #eee; height: 745px;">
-  <div class="container py-5">
-    <div class="row" >
-      <div class="col">
-        <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
-          <ol class="breadcrumb mb-0" style="display: flex;  justify-content: space-between;">
-            {{!-- <li class="breadcrumb-item"><a href="/checkOut">Back</a></li> --}}
-            <li class="breadcrumb-item"><h4>Address</h4></li>
-            <li><a style="font-size: 19px;
-            text-decoration: none;
-             margin-top: 4px; margin-left: 33px;font-family: emoji;" class="btn btn-dark"  href="/addAddress"  >Add </a>
-            </li>
-          </ol>
-        </nav>
-      </div>
+  <header class="sticky-top">
+        <nav  class="navbar navbar-expand-md   navbar-dark bg-dark main-menu sticky-top" style=" box-shadow:none; width: 100%; z-index:100;">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <h4 class="font-weight-bold"><h3>Gadget<font color="#FFD523">Zon</font></h3></h4>
+    </a>
+
+    <ul class="navbar-nav ml-auto d-block d-md-none">
+      <li class="nav-item">
+      <a style="color: white;" class="btn btn-link" href="#"><i class="bx bxs-cart icon-single"></i></a>
+      <a style="color: white;" class="btn btn-link" href="/wishlist"><i class="bi bi-bag-heart-fill"></i></a>
+    </li>
+    </ul>
+
+    <div class="collapse navbar-collapse">
+      <form class="form-inline my-2 my-lg-0 mx-auto">
+        <input class="form searchsize" type="search" placeholder="  Search for products..." aria-label="Search" >
+        <button style="background-color: #F26522;" class="btn my-2 my-sm-0" type="submit"><i class="bx bx-search"></i></button>
+      </form>
+
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a style="color: white;" class="btn btn-link" href="/cart"><i style="font-size: 25px;" class="bx bxs-cart icon-single"></i></a>
+        </li>
+
+        <li class="nav-item">
+          <a style="color: white;" class="btn btn-link" href="/wishlist"><i class="bi bi-bag-heart-fill"></i></a>
+        </li>
+      
+
+        
+      </ul>
     </div>
 
+  </div>
+</nav>
+<div style="position: fixed; width: 100%; z-index: 50;" class="search-bar d-block d-md-none bg-dark">
+  <div class="container">
     <div class="row">
-    
-      <div class="col-lg-12">
-        
-
-        <div class="card mb-4">
-          <div class="card-body">
-            {{#each result}}
-            <div class="row">
-                
-              <div class="col-sm-8">
-                <p class="mb-0">{{this.fname}} {{this.lname}}</p>
-                <p class="mb-0">{{this.phone}}</p>
-                <p class="mb-0">{{this.address}},{{this.city}},{{this.state}}</p>
-                <p class="mb-0">{{this.zip}}</p>
-              </div>
-               <div class="col-sm-4">
-              <a href="/selectAddress/{{this.id}}" class=" btn btn-primary">select</a>
-
-               <a href="/deleteAddress/{{this.id}}"  onclick="return confirm('Are you sure to delete this address')" class=" btn btn-danger">Delete</a>
-             
-
-              </div>
-              
-            </div>
-            <hr>
-            {{/each}}
-            
-           
-          </div>
-        </div>
-       
+      <div class="col-12">
+        <form class="form-inline mb-3 mx-auto">
+          <input class="form-control" type="search" placeholder="Search for products..." aria-label="Search"  style="width: 318px;">
+          <button  style="background-color: #F26522;" class="btn " type="submit"><i class="bx bx-search"></i></button>
+        </form>
       </div>
     </div>
   </div>
-</section>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+</div>
+</header>
+{{#if result.cancelStatus}}
+<section>
+   <div class="flex-Container">
+  <div  class="flex-item-left">
 
-</body>
+  {{!-- <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner">
+     <div class="carousel-item active">
+      <img class="d-block w-100 img-fluid" src="/product_img/{{result.main_image.[0].filename}}" alt="First slide">
+    </div>
+    {{#each result.sub_image}}
+    <div class="carousel-item ">
+      <img class="d-block w-100 img-fluid" src="/product_img/{{ this.filename}}" alt="First slide">
+    </div>
+    {{/each}}
+  </div>
+</div> --}}
+<div><img style="width: 400px; height: 400px; margin-top: 100px;" class="img-fluid" src="/product_img/{{result.products.[0].main_image.[0].filename}}" alt=""></div>
+
+  </div>
+
+
+  <div style="overflow:hidden; overflow-y: scroll; max-height: 658px;" class="flex-item-right mb-3">
+  <div style="padding-top: 40px; "><h2 class="txt-align">{{result.products.[0].productname}} </h2><hr>
+ 
+  
+
+   <h2 class="txt-align"> <i style="font-size: 20px; position: relative; top: -7px;" class="bi bi-currency-rupee"></i>{{result.products.[0].price}} /-</h2>
+
+   <hr>
+  <h4 class="txt-align">Quantity : {{result.products.[0].cartQuantity}} </h4><hr>
+  <h4 class="txt-align">Ordered date : {{result.orderDate}} </h4><hr>
+   
+  
+   
+    <h3 style="text-align: left;"><span style="background-color: rgb(242, 97, 44);" class="badge   d-inline">Cancelled</span></h3>
+ 
+     </div>
+
+  </div>
+</div>
+</section>
+{{else}}
+<section>
+   <div class="flex-Container">
+  <div  class="flex-item-left">
+
+  {{!-- <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner">
+     <div class="carousel-item active">
+      <img class="d-block w-100 img-fluid" src="/product_img/{{result.main_image.[0].filename}}" alt="First slide">
+    </div>
+    {{#each result.sub_image}}
+    <div class="carousel-item ">
+      <img class="d-block w-100 img-fluid" src="/product_img/{{ this.filename}}" alt="First slide">
+    </div>
+    {{/each}}
+  </div>
+</div> --}}
+<div><img style="width: 400px; height: 400px; margin-top: 100px;" class="img-fluid" src="/product_img/{{result.products.[0].main_image.[0].filename}}" alt=""></div>
+
+  </div>
+
+
+  <div style="overflow:hidden; overflow-y: scroll; max-height: 658px;" class="flex-item-right mb-3">
+  <div style="padding-top: 40px; "><h2 class="txt-align">{{result.products.[0].productname}} </h2><hr>
+ 
+  
+
+   <h2 class="txt-align"> <i style="font-size: 20px; position: relative; top: -7px;" class="bi bi-currency-rupee"></i>{{result.products.[0].price}} /-</h2>
+
+   <hr>
+  <h4 class="txt-align">Quantity : {{result.products.[0].cartQuantity}} </h4><hr>
+  <h4 class="txt-align">Order date : {{result.orderDate}} </h4><hr>
+  <h4 class="txt-align">Payment Mode : {{result.payment}} </h4><hr>
+  {{#if result.orderStatus}}
+  <h5 style="text-align: left;"><span class="badge badge-success rounded-pill d-inline">Delivered</span></h5><hr>
+  {{else}}
+  <h4 class="txt-align">Expected Delivery : {{result.dispatch}} </h4><hr>
+  {{/if}}
+  <h4 class="txt-align">Ordered Address :<br><h5 style="text-align: left;"> {{result.address}} </h5></h4><hr>
+  {{#if result.orderStatus}}
+  <div style="display: flex;" ><a style="width: 200px;" class="btn btn-warning" href="#"><h5>Return order</h5></a></div>
+  {{else}}
+  <div style="display: flex;" >
+  
+                          <button
+                            type="button"
+                            class="btn btn-warning btn-md mb-2"
+                            data-toggle="modal"
+                            data-target="#exampleModalCenter"
+                          >
+                            <h5>cancel order</h5>
+                          </button>
+
+                          <!-- Modal -->
+                          <div
+                            class="modal fade"
+                            id="exampleModalCenter"
+                            tabindex="-1"
+                            role="dialog"
+                            aria-labelledby="exampleModalCenterTitle"
+                            aria-hidden="true"
+                          >
+                            <div
+                              class="modal-dialog modal-dialog-centered"
+                              role="document"
+                            >
+                              <div class="modal-content">
+
+                                <div
+                                  class="modal-body"
+                                  style="display: flex; justify-content: center; font-size: 25px; font-family: cursive;"
+                                >
+                                  Are you sure to cancel the order.
+                                </div>
+                                <div
+                                  style="display: flex; justify-content: center;"
+                                  class="modal-footer"
+                                >
+                                  <button
+                                    type="button"
+                                    class="btn btn-dark"
+                                    data-dismiss="modal"
+                                  >Close</button>
+                                  <a
+                                    href="/cancelOrder/{{result._id}}"
+                                  ><button
+                                  style="margin-top: -10px;"
+                                      type="button"
+                                      class="btn btn-danger"
+                                      data-toggle="modal"
+                                      data-target="#exampleModalCenter"
+                                    >cancel</button></a>
+                                  {{! <button type="button" class="btn btn-primary">Save changes</button> }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          </div>
+  {{/if}}
+  
+     </div>
+
+  </div>
+</div>
+</section>
+{{/if}}
+
+   
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
 </html>

@@ -3,6 +3,7 @@ const verifyUser=(req,res,next)=>{
         next()
     }
     else{
+    
         res.redirect('/login')
     }
     // next()

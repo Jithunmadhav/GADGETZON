@@ -65,10 +65,12 @@
       <th scope="col">Order date</th>
       <th scope="col">product name</th>
        <th scope="col">price</th>
-       <th scope="col">Quantity</th>
+       <th scope="col">Qty</th>
       <th scope="col">payment</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
       {{!-- <th scope="col">Delivery status</th> --}}
-      <th scope="col">Address</th>
+     
       {{!-- <th scope="col">Zip</th>
       <th scope="col"></th> --}}
     </tr>
@@ -77,20 +79,34 @@
     {{#each result}}
   
     <tr style="height: 80px; ">
-      <td>{{this.orderId}}</td>
+      <td>{{this._id}}</td>
       <td style="width: 200px;">{{this.orderDate}}</td>
       <td>{{this.products.[0].productname}}</td>
       <td>{{this.products.[0].price}}</td>
       <td>{{this.products.[0].cartQuantity}}</td>
       <td>{{this.payment}}</td>
-      {{!-- <td class="btn btn-warning">{{this.orderStatus}}</td> --}}
-      <td style="width: 200px;">{{this.address}}</td>
-      {{!-- <td>{{this.address}}</td>
-      <td>{{this.city}}</td>
-      <td>{{this.state}}</td>
-      <td>{{this.zip}}</td> --}}
-      {{!-- <td><a href="/admin/banUser/{{this._id}}" onclick="return confirm('Are you sure to ban {{this.fname}}')"><button class="btn btn-outline-dark">Ban <i style="color: red;" class="fa fa-ban "></i></button></a></td> --}}
-     
+    {{#if cancelStatus}}
+                 <td>
+                    <h5><span style="background-color: rgb(244, 123, 80);" class="badge   d-inline">Cancelled</span></h5>
+                  </td>
+                  {{else}}
+                   {{#if orderStatus}}
+                  <td>
+                    <h5><span
+                      class="badge badge-success  d-inline"
+                    >Delivered</span></h5>
+                  </td>
+                  {{/if}}
+                {{#unless orderStatus}}
+                  <td>
+                    <h5><span class="badge badge-danger  d-inline">Pending</span></h5>
+                  </td>
+                  {{! <td>Senior</td> }}
+                {{/unless}}
+                {{/if}}
+                {{#unless cancelStatus }}
+             <td><a href="/admin/editOrderStatus/{{this._id}}"><i class="bi bi-pencil-square pdtDelete"></i></a></td>
+             {{/unless}}
     </tr>
 
    {{/each}}

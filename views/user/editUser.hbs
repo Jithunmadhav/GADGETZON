@@ -19,110 +19,63 @@
       <div class="container py-5">
         <div class="row d-flex justify-content-center align-items-center">
           <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-            {{!-- <h2
+            <h2
               style="justify-content: center;
                display: flex;"
               class="fw-bold mb-3 text-white-50"
-            >Gadget<font color="#FFD523">Zon</font></h2> --}}
+            >Gadget<font color="#FFD523">Zon</font></h2>
 
             <div
-              class="card text-white signup-form-size"  >
+              class="card text-white signup-form-size" style="height: 507px;"  >
               <div class="card-body p-5 text-center">
 
                 <div class="mb-md-5 h-100 mt-md-1 pb-5">
-                  <form action="/updateAddress/{{result.id}}" method="POST">
-                    <h1 style="color: black;">Address</h1><br />
+                  <form action="/updateUser" method="POST">
+                    <h1 style="color: black;">Edit profile</h1><br />
+                   
                     <div class="row">
-                      <label style="color: black; display: flex;font-family: emoji;">Name :</label>
                       <div class="col">
-                        
                         <input
                           type="text"
-                          class="form-control mb-3"
+                          class="form-control form-control-lg mb-3"
                           placeholder="First name"
-                          value="{{result.fname}}"
                           name="fname"
+                          value="{{result.fname}}"
                           aria-label="First name"
                         />
                       </div>
                       <div class="col">
                         <input
                           type="text"
-                          class="form-control mb-3"
+                          class="form-control form-control-lg mb-3"
                           placeholder="Last name"
+                          name="lname"
                           value="{{result.lname}}"
-                          name="lname"      
                           aria-label="Last name"
                         />
                       </div>
                     </div>
-                                        
-                   <label style="color: black; display: flex; font-family: emoji;">phone :</label>
+
 
                     <input
-                      class="form-control  mb-3"
+                      class="form-control form-control-lg mb-3"
                       type="text"
                       name="phone"
-                       value="{{result.phone}}"
+                      value="{{result.phone}}"
                       minlength="10" maxlength="10"
                       id="phonenum"
                       placeholder="Phone Number "
                       required
                     />
-                    <label style="color: black; display: flex; font-family: emoji;">Address :</label>
+                  
 
                     <input
-                    
-                      class="form-control mb-3"
-                      type="text"
-                      name="address"
-                       value="{{result.address}}"
-                      placeholder="Address"
-                      required
-                    />
-                    <div class="row g-3">
-                      <div class="col-sm-7">
-                        <input
-                          type="text"
-                          class="form-control "
-                          placeholder="City"
-                          aria-label="City"
-                           value="{{result.city}}"
-                          name="city"
-                          required
-                        />
-                      </div>
-                      <div class="col-sm">
-                        <input
-                          type="text"
-                          class="form-control "
-                          placeholder="State"
-                          aria-label="State"
-                           value="{{result.state}}"
-                          name="state"
-                          required
-                        />
-                      </div>
-                      <div class="col-sm">
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Zip"
-                          aria-label="Zip"
-                          value="{{result.zip}}"
-                          name="zip"
-                          required
-                        />
-                      </div>
-                    </div><br>
-
-                    <input
-                      style="width: 38%;"
+                      style="width: 68%;"
                       class="btn btn-warning btn-lg px-5"
                       name="submit"
                       type="submit"
                       id="submitDetails"
-                      value="Save"
+                      value="Continue"
                     /><br /><br />
 
                   </form>

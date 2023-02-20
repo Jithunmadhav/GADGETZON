@@ -10,6 +10,7 @@ const adminVerify = require('./middlewares/adminSession')
 const dbConnect = require('./config/dbConfig')
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -45,9 +46,10 @@ dbConnect();
 //   console.log(req.query);
 //   res.json({success:true})
 // })
-// app.get("/sample", (req, res)=>{
-//   res.render("sample")
-// })
+app.get("/sample", (req, res)=>{
+  
+  res.render("sample")
+})
 app.use('/',userRoute)
 
 // app.use(express.static(__dirname + '/public'));
@@ -55,6 +57,6 @@ app.use('/',userRoute)
 
 
 app.listen(4000,()=>{
-    console.log('Server running  on http://localhost:4000/admin/adminLogin');
+    console.log('Server running  on http://localhost:4000/home');
 })
 

@@ -161,30 +161,36 @@
                         <h6>{{this.productname}}</h6>
                       </td>
                        <td>
-                        {{#if this.stockStatus}}
-                        <span style="background-color: rgb(245, 65, 65);" class="btn">Out of stock</span>
-                        {{else}}
-                           <span style="background-color: #28b416;" class="btn">In stock</span>
-                        {{/if}}
+                        {{!-- {{#if this.stockStatus}} --}}
+                        {{!-- <span style="background-color: rgb(245, 65, 65);" class="btn">Out of stock</span> --}}
+                        {{!-- {{else}} --}}
+                           <span id="{{this.price}}" style="background-color: #28b416; width: 110px;" class="btn">In stock</span>
+                        {{!-- {{/if}} --}}
                       </td>
                       <td data-th="Price">{{this.price}}</td>
 
                       <td data-th="Quantity">
                         <div style="display: flex;">
-                          <a
+                          {{!-- <a
                             href="/quantityDec/{{this._id}}"
                             class="btn btn-dark"
-                          >-</a>
+                          >-</a> --}}
+                          <input type="hidden" id="{{this.quandity}}" value="{{this.quandity}}">
+                          <button  class="btn btn-dark" onclick="qtyDec('{{this._id}}','{{this.quandity}}','{{this.price}}')">-</button>
                           <input
                             type="text"
+                            id="{{this._id}}"
                             class="form-control text-center"
                             style="width: 50px;"
+                            readonly
                             value="{{this.cartQuantity}}"
                           />
-                          <a
+                          {{!-- <div style="height: 50px; width: 50px;" id="cartQty">1</div> --}}
+                          {{!-- <a
                             href="/quantityInc/{{this._id}}"
                             class="btn btn-dark"
-                          >+</a>
+                          >+</a> --}}
+                             <button  class="btn btn-dark" onclick="qtyInc('{{this._id}}','{{this.quandity}}','{{this.price}}')">+</button>
                         </div>
 
                       </td>
@@ -253,11 +259,10 @@
               </table>
               <div class="float-right text-right">
                 <h4>Total:</h4>
-                <h1><i
-                    style="font-size: 25px; position: relative; top: -7px;"
-                    class="bi bi-currency-rupee"
-                  ></i>{{totalPrice}}
-                  /-</h1>
+                <div style="display: flex;">
+                <h1 ><i style="font-size: 25px; position: relative; top: 9px;"class="bi bi-currency-rupee" ></i><h2 id="totalPrice">{{totalPrice}}</h2> </h1>
+
+                </div>
               </div>
             </div>
           </div>
@@ -269,7 +274,7 @@
               >Checkout</a>
             </div>
             <div class="col-sm-6 mb-3 mb-m-1 order-md-1 text-md-left">
-              <a href="/home">
+              <a href="/shop-page">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Continue Shopping</a>
             </div>
@@ -278,6 +283,69 @@
       </section>
 
     {{/if}}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      function qtyDec(proId,qtud,price){
+     
+     axios.get('/quantityDec/'+proId).then((response)=>{
+       if(response.data.cartQty==undefined){
+       document.getElementById(proId).value=1
+       }else{
+         let Qty=document.getElementById(qtud).value
+          console.log(response)
+          if(response.data.cartQty<=Qty){
+              document.getElementById(proId).value=response.data.cartQty
+              document.getElementById('totalPrice').innerText=response.data.calc;
+               document.getElementById(price).innerHTML="in Stock"
+               document.getElementById(price).style.backgroundColor=" #28b416"
+          }else{
+             console.log(" out stock")
+            document.getElementById(proId).value=response.data.cartQty
+
+            document.getElementById(price).innerHTML="Out of Stock"
+            document.getElementById(price).style.backgroundColor="red"
+          }
+      
+       }
+     
+      
+    }).catch(err=>{
+      console.log(err)
+    })
+}
+
+    function qtyInc(proId,qtud,price){
+    
+     axios.get('/quantityInc/'+proId).then((response)=>{
+     if(response?.data?.cartQty==undefined){
+      
+       document.getElementById(proId).value=10
+       }else{
+         let Qty=document.getElementById(qtud).value
+        console.log(Qty)
+        console.log(response)
+          if(response.data.cartQty>Qty){
+              console.log("out of stock")
+              document.getElementById(proId).value=response.data.cartQty;
+            document.getElementById(price).innerHTML="Out of Stock"
+            document.getElementById(price).style.backgroundColor="red"
+            
+          }else{
+          document.getElementById(proId).value=response.data.cartQty;
+            document.getElementById('totalPrice').innerText=response.data.calc;
+             document.getElementById(price).innerHTML="in Stock"
+             document.getElementById(price).style.backgroundColor=" #28b416"
+          }
+       
+      
+       }
+      
+      
+    }).catch(err=>{
+      console.log(err)
+    })
+}
+    </script>
 
     <script
       src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"

@@ -107,6 +107,10 @@ router.get('/searchCoupon',adminController.getSearchCoupon)
 
 router.get('/orderManagement',adminController.getOrderManagement)
 
+router.get('/editOrderStatus/:id',adminController.getEditOrderStatus)
+
+router.post('/editOrderStatus/:id',adminController.postEditOrderStatus)
+
 //************Banner Management ******
 
 router.get('/bannerManagement',adminController.getBannerManagement)

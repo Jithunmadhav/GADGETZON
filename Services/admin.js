@@ -349,7 +349,7 @@ addCoupon:(data)=>{
       discountAmt:parseInt(data.discountAmt),
       minPurchaseAmt:parseInt(data.minPurchaseAmt),
       createdDate:new Date(),
-      expDate:new Date(data.expDate),
+      expDate:new Date(data.expDate).toLocaleDateString(),
       couponStatus:false
     })
     resolve(result)
@@ -385,6 +385,29 @@ productOrderDetail:()=>{
   return new Promise(async(resolve, reject) => {
    let result= await orderModel.find().lean()
    resolve(result)
+  });
+},
+editOrderStatus:(Id)=>{
+return new Promise(async(resolve, reject) => {
+  let result=await orderModel.findOne({_id:Id})
+  resolve(result)
+});
+},
+updateOrderStatus:(Id,data)=>{
+  return new Promise(async(resolve, reject) => {
+    if(data.orderStatus=="Delivered"){
+      await orderModel.updateOne({_id:Id},{$set:{orderStatus:true}}).then(()=>{
+        resolve()
+      })
+
+    }
+   
+    else{
+      await orderModel.updateOne({_id:Id},{$set:{orderStatus:false}}).then(()=>{
+        resolve()
+      })
+
+    }
   });
 },
 bannerAdd:(data,file)=>{
