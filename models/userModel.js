@@ -36,6 +36,11 @@ const userSchema=mongoose.Schema({
     address:{
         type:Array,
         required:true
+    },
+    wallet:{
+        type:Number,
+        required:true,
+        default:0
     }
 })
 

@@ -42,12 +42,12 @@
         
       
 
-   <form action="/postCheckout" method="post">
+   <form action="/postCheckout" id="formData" method="post">
   <section style="height: 480px;" class="gradient-custom">
   <div class="container py-5" style="height: 405px;">
     <div class="row d-flex justify-content-center my-4">
       
-      <div class="col-md-6">
+      <div class="col-md-7">
         <div class="card mb-4">
           <div class="card-header py-3">
             <h5 class="mb-0">Delivery address</h5>
@@ -64,7 +64,7 @@
               
               <div style="text-align: left;" class="col-sm-8">
 
-                <textarea  style="border-color: #f5f7f62e;" name="address" rows="4" cols="50" readonly> {{result.fname}} {{result.lname}}, {{result.phone}}, {{result.address}}, {{result.city}}, {{result.state}}, {{result.zip}}</textarea>
+                <textarea  style="border-color: #f5f7f62e;" name="address" rows="4" cols="50" readonly> {{result.fname}} {{result.lname}}, {{result.phone}}, {{result.address}}, {{result.city}}, {{result.state}}, {{result.zip}} </textarea>
               </div>
               <div class="col-sm-4">
                <a href="/editAddress" ><i  style="margin-top: 10px;" class="bi bi-pencil-square pdtDelete"></i></a>
@@ -87,10 +87,12 @@
               
      <div style="    font-size: 17px;text-align: left;">
       
-        <input type="radio" name="payment" value="cod" checked>
+        <input type="radio" name="payment" value="COD" >
         <label for="html">Pay on Delivery</label><br>
         <input type="radio" id="css" name="payment" value="online">
-        <label for="css">Online payment</label>
+        <label for="css">Online payment</label><br>
+        <input type="radio" id="css" name="payment" value="wallet">
+        <label for="css">Pay using wallet</label>
      </div> 
           </div>
              
@@ -105,11 +107,8 @@
 
       </div>
       
-      <div class="col-md-6">
-           <div class="card mb-2">
-      
-          
-        </div>
+      <div class="col-md-5">
+           
         <div class="card mb-4">
           <div class="card-header py-3">
             <h5 class="mb-0">Summary</h5>
@@ -142,7 +141,7 @@
               {{#if couponStat}}
                <input type="hidden" name="couponStat" value="{{couponStat}}" >
               <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                 <strong> Coupon Discount</strong>
+                 <strong style="color: orangered;"> Coupon Discount</strong>
                 <span><strong>{{discount}}.00</strong> </span>
               </li>
               {{/if}}<hr>
@@ -157,37 +156,43 @@
               </li>
             </ul>
 
-            <button type="submit" class="btn btn-warning btn-lg btn-block">
+            <button type="submit" onclick="placeOrder()"  class="btn btn-warning btn-lg btn-block">
              Place Order
             </button>
+            </form>
+
+            
           </div>
+          
         </div>
-        
-      </div>
-      
-    </div>
-  </div>
-</section>
-</form>
-<div class="card" style="height: 90px; width: 35%; margin-left: 215px; margin-top: 10px;">
+        <div class="card" style="height: 140px;   ">
           
         <form action="/redeemCoupon" method="post">
-          {{!-- <div style="background-color: #dad9d9;height: 50px;">
+          <div style="background-color: #e6e6e6;height: 50px; margin-top: -5px;">
          <h4 style="margin-left: 8px; margin-top: 5px;"> &nbsp; Coupon<img style="width: 50px; height: 50px;" src="\images\voucher.png" alt=""> </h4>
-          </div> --}}
+          </div>
           <div class="card-body p-4 d-flex flex-row" style="    margin-top: -12px;">
-          <h6  > &nbsp; Coupon<img style="width: 50px; height: 50px;" src="\images\voucher.png" alt=""> </h6>
+          {{!-- <h6  > &nbsp; Coupon<img style="width: 50px; height: 50px;" src="\images\voucher.png" alt=""> </h6> --}}
 
             <div class="form-outline flex-fill ">
               <input type="text" id="form1" name="couponCode" class="form-control form-control-lg"  required/>
             </div>
             <button style="width: 127px; height: 47px;" type="submit" class="btn btn-dark  ms-3">Apply</button>
+            
            
           </div >
-           {{#if validCoupon}}<h6 style="color: red; text-align: center;">Coupon is expired</h6>{{/if}}
-           {{#if invalidCoupon}} <h6 style="color: red; text-align: center;">Invalid coupon code </h6>{{/if}}
+           {{#if validCoupon}}<h6 style="color: red; text-align: center;  margin-top: -21px;">Coupon is expired</h6>{{/if}}
+           {{#if invalidCoupon}} <h6 style="color: red; text-align: center; margin-top: -21px;">Invalid coupon code </h6>{{/if}}
+            {{#if minStatus}} <h6 style="color: red; text-align: center; margin-top: -21px;">Minimum purchase amount is {{minPurchaseAmt}} </h6>{{/if}}
               </form>
            </div>
+
+      </div>
+      
+    </div>
+  </div>
+</section>
+
 
 
   <!-- Optional JavaScript -->
@@ -201,5 +206,67 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
+     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+   <script>
+   $("#formData").submit((e)=>{
+    e.preventDefault()
+   })
+   function placeOrder(){
+ axios.post('/postCheckout', document.querySelector('#formData'), {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}).then((resp)=>{
+  console.log(resp)
+if(resp.data.codSuccess){
+  window.location.href='/orderSuccess'
+}else{
+  console.log(resp)
+ razorpayPayment(resp.data)
+}
+})
+   }
+
+   function razorpayPayment(order){
+    var options = {
+    "key": "rzp_test_CbGFfMm3j0aAgq", // Enter the Key ID generated from the Dashboard
+    "amount": order.result.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "GadgetZon", //your business name
+    "description": "Online Transaction",
+    "image": "https://i.ibb.co/zSMfgvM/Logo.png",
+    "order_id": order.result.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+      
+        verifyPayment(response,order)
+    },
+    "prefill": {
+        "name": order.name, //your customer's name
+        "email":  order.email,
+        "contact": order.phone
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+ rzp1.open();
+   }
+
+   function verifyPayment(payment,order){
+    axios.post('/verifyPayment',{payment,order}).then((resp)=>{
+      if(resp.data.success){
+         window.location.href='/orderSuccess'
+      }else{
+        console.log("Payment failed")
+      }
+    })
+   }
+  
+   </script>
 </body>
 </html>

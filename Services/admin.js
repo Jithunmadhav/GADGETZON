@@ -433,6 +433,32 @@ deleteBanner:(id)=>{
       resolve(result)
     })
   });
+},
+returnConfirm:(Id,data)=>{
+ 
+  if(data.returnStatus=='confirmReturn'){
+     
+    return new Promise(async(resolve, reject) => {
+      await orderModel.updateOne({_id:Id},{$set:{returnConfirm:true}}).then(()=>{
+        resolve()
+      })
+      await orderModel.updateOne({_id:Id},{$set:{returnRequest:false}})
+      let pdtId=data.productId
+      let returnQt=parseInt(data.returnQty)
+      await productModel.updateOne({_id:pdtId},{$inc:{"quandity":returnQt}}) 
+      await userModel.updateOne({_id:data.userId},{$inc:{"wallet":data.price}})
+    });  
+  }else{
+    
+    return new Promise(async(resolve, reject) => {
+      await orderModel.updateOne({_id:Id},{$set:{returnCancel:true}}).then(()=>{
+        resolve()
+      }) 
+      await orderModel.updateOne({_id:Id},{$set:{returnConfirm:false}})
+      await orderModel.updateOne({_id:Id},{$set:{returnRequest:false}}) 
+    });
+  }
+ 
 }
 
 

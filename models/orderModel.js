@@ -1,6 +1,10 @@
 const { ObjectId } = require('mongodb');
 const mongoose=require('mongoose')
 const orderSchema=mongoose.Schema({
+    orderID:{
+        type:String,
+        required:true
+    },
     userId:{
         type:ObjectId,
         required:true
@@ -14,7 +18,17 @@ const orderSchema=mongoose.Schema({
         required:true,
         default:false
     },
-    returnStatus:{
+    returnRequest:{
+        type:Boolean,
+        required:true,
+        default:false
+    },
+    returnConfirm:{
+        type:Boolean,
+        required:true,
+        default:false
+    },
+    returnCancel:{
         type:Boolean,
         required:true,
         default:false
@@ -29,13 +43,10 @@ const orderSchema=mongoose.Schema({
         required:true
     },
     paymentStatus:{
-        type:Boolean,
-        required:true
-    },
-    payment:{
         type:String,
         required:true
     },
+    
     products:{
         type:Array,
         required:true

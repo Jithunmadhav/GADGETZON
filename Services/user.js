@@ -8,6 +8,12 @@ const categoryModel=require('../models/categoryModel')
 const couponModel=require('../models/couponModel')
 const orderModel=require('../models/orderModel')
 const bannerModel=require('../models/bannerModel')
+const Razorpay = require('razorpay');
+
+const instance = new Razorpay({
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.KEY_SECRET,
+});
 module.exports={
     checkSignup:(userData)=>{
         return new Promise(async(resolve, reject) => {
@@ -181,7 +187,7 @@ module.exports={
           let result= await productModel.findOne({_id:productId},{quandity:1})
          
           
-          if(result.quandity>0){
+          if(result.quandity>=1){
             await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
               $inc:{
                   "cart.$.quantity":1
@@ -193,10 +199,11 @@ module.exports={
             resolve(found.quantity)
             // await productModel.updateOne({_id:productId},{$inc:{"quandity":-1}})
           }else{
-           
-            await productModel.updateOne({_id:productId},{$set:{stockStatus:true}}).then((result)=>{
-              resolve(result)
-            })
+           let qty=1;
+           resolve(qty)
+            // await productModel.updateOne({_id:productId},{$set:{stockStatus:true}}).then((result)=>{
+            //   resolve(result)
+            // })
           }
         //   await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
         //     $inc:{
@@ -345,6 +352,12 @@ module.exports={
           resolve(address)
         });
     },
+    userDetails:(userId)=>{
+      return new Promise(async(resolve, reject) => {
+       let result= await userModel.findOne({_id:userId})
+       resolve(result)
+      });
+    },
     selectedAddress:(userId,Id)=>{
      let ID=parseInt(Id)
       return new Promise(async(resolve, reject) => {
@@ -387,13 +400,15 @@ module.exports={
      },
      orderCheckout:(order,products,userID)=>{
       return new Promise(async(resolve, reject) => {
+        let status=order.payment=='COD'?'COD':'ONLINE'
         for(let i=0;i<products.length;i++){
-          // let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
+          let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
           await orderModel.create({
+            orderID:orderId,
             userId:userID,
             orderDate:new Date().toLocaleDateString(),
             address:order.address,
-            paymentStatus:false,
+            paymentStatus:status,
             payment:order.payment,
             products:products[i],
             couponStat:Boolean(order.couponStat),
@@ -405,13 +420,39 @@ module.exports={
           })
 
           await productModel.updateOne({_id:products[i]._id},{$inc:{"quandity":-products[i].cartQuantity}})
+          await userModel.findByIdAndUpdate( userID, { $set: { cart: [] } })
         }
-        return new Promise(async(resolve, reject) => {
-         
-          await userModel.updateOne(({_id:userID},{$set:{cart:[]}}))
-        });
+       
       });
      },
+     generateRazorpay:(orderID,totalPrice)=>{
+      return new Promise((resolve, reject) => {
+        const options={
+          amount: totalPrice*100,
+          currency: "INR",
+          receipt: orderID 
+        };
+
+       instance.orders.create(options,(err,order)=>{
+        resolve(order)
+       });
+      
+      });
+     },
+     verifyPayment:(details)=>{
+      return new Promise((resolve, reject) => {
+        let crypto = require('crypto')
+        let hamc =crypto.createHmac('sha256', process.env.KEY_SECRET)
+        hamc.update(details.payment.razorpay_order_id+'|'+details.payment.razorpay_payment_id)
+        hamc=hamc.digest('hex')
+        if(hamc==details.payment.razorpay_signature){
+          resolve()
+        }else{
+          reject()
+        }
+      });
+     },
+
      bannerDetails:()=>{
       return new Promise(async(resolve, reject) => {
         let result=await bannerModel.find().lean()
@@ -447,12 +488,32 @@ module.exports={
         resolve(result)
       });
      },
-     cancelOrder:(Id)=>{
-      return new Promise(async(resolve, reject) => {
-      await orderModel.updateOne({_id:Id},{$set:{cancelStatus:true}}).then((result)=>{
+     cancelOrder:(data,userId)=>{
+      if(data.payment=='ONLINE'){
+        return new Promise(async(resolve, reject) => {
+          await orderModel.updateOne({_id:data.orderID},{$set:{cancelStatus:true}}).then((result)=>{
+          
+            resolve()
+          })
+          let pdtPrice=parseInt(data.price)
+          
+          await userModel.updateOne({_id:userId},{$inc:{"wallet":pdtPrice}})
+          });
+      }else{
+        return new Promise(async(resolve, reject) => {
+          await orderModel.updateOne({_id:Id},{$set:{cancelStatus:true}}).then((result)=>{
+          
+            resolve()
+          })
+          });
+      }
       
-        resolve()
-      })
+     },
+     returnOrder:(Id)=>{
+      return new Promise(async(resolve, reject) => {
+        await orderModel.updateOne({_id:Id},{$set:{returnRequest:true}}).then(()=>{
+          resolve()
+        })
       });
      },
      orderList:(data)=>{

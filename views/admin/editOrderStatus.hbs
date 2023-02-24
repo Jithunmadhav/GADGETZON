@@ -56,6 +56,7 @@
 
   </div>
 </nav>
+
        <section class="vh-100 gradient-custom">
   <div class="container py-5 h-100">
     <div class="row justify-content-center align-items-center h-100">
@@ -63,7 +64,50 @@
         <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
           <div class="card-body p-4 p-md-5">
             
+           {{#if result.returnRequest}}
+            <form action="/admin/editReturnStatus/{{result._id}}" method="post">
+
+         
+
+              <div class="row">
+                <div class="col-md-12 mb-4">
+
+                  <div class="form-outline mb-2">
+                    <label for="">Order ID :</label>
+                    <input type="text" class="form-control form-control-lg" value="{{result._id}}" readonly/>
+                    <input type="text" name="productId" value="{{result.products.0._id}}" hidden>
+                    <input type="text" name="returnQty" value="{{result.products.0.cartQuantity}}" hidden>
+                    <input type="text" name="price" value="{{result.products.0.price}}" hidden>
+                    <input type="text" name="userId" value="{{result.userId}}" hidden>
+                    
+                  </div>
+                  {{!-- <div class="form-outline mb-2">
+                    <input type="text" class="form-control form-control-lg" value="{{result.userId}}" readonly/>
+                  </div> --}}
+                   <div class="form-outline mb-2">
+                    <label for="">Product :</label>
+                    <input type="text" class="form-control form-control-lg" value="{{result.products.[0].productname}}" readonly/>
+                  </div>
+                   <div class="form-outline">
+                    <label for="">Return status</label>
+                    <select style=" color: #6c75a7;" name="returnStatus" class="select form-control" required>
+             
+                    <option value="confirmReturn">Confirm Return</option>
+                    <option value="cancel">Cancel Return</option>
+                      
+                  </select>
+                  </div>
+
+                </div></div>
+              
            
+              <div class="mt-4 pt-2" style="display: flex; justify-content: center;">
+                <input class="btn btn-primary btn-lg" type="submit" value="Submit" />
+              </div>
+
+            </form>
+
+           {{else}}
             <form action="/admin/editOrderStatus/{{result._id}}" method="post">
 
          
@@ -100,12 +144,14 @@
               </div>
 
             </form>
+            {{/if}}
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

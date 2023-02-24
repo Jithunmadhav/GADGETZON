@@ -129,6 +129,10 @@ router.post('/redeemCoupon',userController.getRedeemCoupon)
 
 router.post('/postCheckout',userController.postCheckoutOrder)
 
+router.get('/orderSuccess',userController.getOrderSuccess)
+
+router.post('/verifyPayment',userController.getVerifyPayment)
+
 router.get('/editUser',userController.getEditUser)
 
 router.post('/updateUser',userController.postupdateUser)
@@ -143,7 +147,9 @@ router.get('/orderHistory',userController.getOrderHistory)
 //order-details
 router.get('/orderedProduct/:id',userController.getOrderedProduct)
 
-router.get('/cancelOrder/:id',userController.getCancelOrder)
+router.post('/cancelOrder',userController.postCancelOrder)
+
+router.get('/returnOrder/:id',userController.getReturnOrder)
 
 router.get('/orderList/:name',userController.getOrderList)
 

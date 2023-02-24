@@ -4,16 +4,16 @@ module.exports={
  
   successMail:(email,name)=> {
       return new Promise((resolve, reject)=>{
-      let password="nxkfijtymujdbmtq"
+      let password=process.env.EMAIL
       let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: "gadgetzonnn@gmail.com",
-            pass: password
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
         }
     });
     var mailOptions = {
-        from:"gadgetzonnn@gmail.com",
+        from:process.env.EMAIL,
         to: email,
         subject: "GADGETZON order confimation",
         html: `   <h1> Hi ${name} <h1>

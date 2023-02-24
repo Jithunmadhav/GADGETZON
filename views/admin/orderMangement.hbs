@@ -75,17 +75,37 @@
       <th scope="col"></th> --}}
     </tr>
   </thead>
+  
   <tbody>
     {{#each result}}
   
     <tr style="height: 80px; ">
-      <td>{{this._id}}</td>
+      <td>{{this.orderID}}</td>
       <td style="width: 200px;">{{this.orderDate}}</td>
       <td>{{this.products.[0].productname}}</td>
       <td>{{this.products.[0].price}}</td>
       <td>{{this.products.[0].cartQuantity}}</td>
-      <td>{{this.payment}}</td>
-    {{#if cancelStatus}}
+      <td>{{this.paymentStatus}}</td>
+      
+
+      {{#if this.returnRequest}}
+       <td>
+        <h5><span style="background-color: rgb(248, 240, 16);" class="badge   d-inline">Return pending</span></h5> 
+       </td>
+       <td><a href="/admin/editOrderStatus/{{this._id}}"><i class="bi bi-pencil-square pdtDelete"></i></a></td>
+    {{else}}
+    {{#if this.returnConfirm}}
+    <td>
+     <h5><span style="background-color: rgb(122, 122, 120);" class="badge   d-inline">Returned</span></h5> 
+    </td>
+    
+    {{else}}
+    {{#if this.returnCancel}}
+    <td>
+        <h5><span style="background-color: rgb(232, 176, 87);" class="badge   d-inline">Return Cancelled</span></h5> 
+    </td>
+    {{else}}
+      {{#if cancelStatus}}
                  <td>
                     <h5><span style="background-color: rgb(244, 123, 80);" class="badge   d-inline">Cancelled</span></h5>
                   </td>
@@ -104,11 +124,15 @@
                   {{! <td>Senior</td> }}
                 {{/unless}}
                 {{/if}}
+               
                 {{#unless cancelStatus }}
              <td><a href="/admin/editOrderStatus/{{this._id}}"><i class="bi bi-pencil-square pdtDelete"></i></a></td>
              {{/unless}}
-    </tr>
 
+    </tr>
+   {{/if}}
+   {{/if}}
+   {{/if}}
    {{/each}}
   </tbody>
 

@@ -113,10 +113,8 @@
           class="img-fluid"
           alt=""
         /></div>
-      <div style="margin-top: -15px;"><a
-          style="text-decoration: none; color: black;"
-          href="/shop-page"
-        ><h2 style="text-align: center;">Starts Shopping</h2></a></div>
+      
+        <div style="margin-top: -15px; display: flex; justify-content: center;"><a style="text-decoration: none; color: black;" class="btn btn-outline-warning" href="/shop-page"><h2 style="text-align: center;">Starts Shopping</h2></a></div>
     {{else}}
 
       <section class="pt-5 pb-5">
@@ -127,6 +125,7 @@
               <p class="mb-5">
                 <i class="text-info font-weight-bold">{{cartCount}}</i>
                 items in your cart</p>
+            
               <table
                 id="shoppingCart"
                 class="table table-condensed table-responsive"
@@ -135,7 +134,6 @@
                   <tr>
                     <th style="width:30%">Product</th>
                     <th style="width:30%">Product name</th>
-                     <th style="width:12%">Stock status</th>
                     <th style="width:12%">Price</th>
                     <th style="width:10%">Quantity</th>
                     <th style="width:16%"></th>
@@ -143,7 +141,8 @@
                 </thead>
                 <tbody>
                   {{#each result}}
-                    <tr>
+                    <tr style="height: 130px;">
+                       
                       <td data-th="Product">
                         <div class="row">
                           <div class="col-md-6 col-12">
@@ -156,25 +155,21 @@
                           </div>
 
                         </div>
+                        {{#if this.pdtStatus}}
+                 <h6 style="color: rgb(245, 64, 64); font-family: cursive;">Only {{this.quandity}} stock's left</h6>
+
+                        {{/if}}
                       </td>
                       <td>
                         <h6>{{this.productname}}</h6>
+                       
                       </td>
-                       <td>
-                        {{!-- {{#if this.stockStatus}} --}}
-                        {{!-- <span style="background-color: rgb(245, 65, 65);" class="btn">Out of stock</span> --}}
-                        {{!-- {{else}} --}}
-                           <span id="{{this.price}}" style="background-color: #28b416; width: 110px;" class="btn">In stock</span>
-                        {{!-- {{/if}} --}}
-                      </td>
+                       
                       <td data-th="Price">{{this.price}}</td>
 
                       <td data-th="Quantity">
                         <div style="display: flex;">
-                          {{!-- <a
-                            href="/quantityDec/{{this._id}}"
-                            class="btn btn-dark"
-                          >-</a> --}}
+                        
                           <input type="hidden" id="{{this.quandity}}" value="{{this.quandity}}">
                           <button  class="btn btn-dark" onclick="qtyDec('{{this._id}}','{{this.quandity}}','{{this.price}}')">-</button>
                           <input
@@ -185,78 +180,26 @@
                             readonly
                             value="{{this.cartQuantity}}"
                           />
-                          {{!-- <div style="height: 50px; width: 50px;" id="cartQty">1</div> --}}
-                          {{!-- <a
-                            href="/quantityInc/{{this._id}}"
-                            class="btn btn-dark"
-                          >+</a> --}}
+                           
                              <button  class="btn btn-dark" onclick="qtyInc('{{this._id}}','{{this.quandity}}','{{this.price}}')">+</button>
                         </div>
 
                       </td>
 
                       <td class="actions" data-th="">
-                        <div class="text-right">
 
-                          <button
-                            type="button"
-                            class="btn btn-white border-secondary bg-white btn-md mb-2"
-                            data-toggle="modal"
-                            data-target="#exampleModalCenter"
-                          >
-                            <i class="fas fa-trash"></i>
-                          </button>
-
-                          <!-- Modal -->
-                          <div
-                            class="modal fade"
-                            id="exampleModalCenter"
-                            tabindex="-1"
-                            role="dialog"
-                            aria-labelledby="exampleModalCenterTitle"
-                            aria-hidden="true"
-                          >
-                            <div
-                              class="modal-dialog modal-dialog-centered"
-                              role="document"
-                            >
-                              <div class="modal-content">
-
-                                <div
-                                  class="modal-body"
-                                  style="display: flex; justify-content: center;"
-                                >
-                                  Are you sure to delete
-                                </div>
-                                <div
-                                  style="display: flex; justify-content: center;"
-                                  class="modal-footer"
-                                >
-                                  <button
-                                    type="button"
-                                    class="btn btn-dark"
-                                    data-dismiss="modal"
-                                  >Close</button>
-                                  <a
-                                    href="/cartProductDelete/{{this._id}}"
-                                  ><button
-                                      type="button"
-                                      class="btn btn-danger"
-                                      data-toggle="modal"
-                                      data-target="#exampleModalCenter"
-                                    >Delete</button></a>
-                                  {{! <button type="button" class="btn btn-primary">Save changes</button> }}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                        </div>
+                         <a style="text-decoration: none; color: black;" href="/cartProductDelete/{{this._id}}"  class="btn btn-white border-secondary bg-white btn-md mb-2"> <i class="fas fa-trash"></i></a>
+                       
                       </td>
+                      
+                       
                     </tr>
+                     
                   {{/each}}
                 </tbody>
+                
               </table>
+                 
               <div class="float-right text-right">
                 <h4>Total:</h4>
                 <div style="display: flex;">
@@ -272,6 +215,7 @@
                 href="/checkout"
                 class="btn btn-warning mb-4 btn-lg pl-5 pr-5"
               >Checkout</a>
+              
             </div>
             <div class="col-sm-6 mb-3 mb-m-1 order-md-1 text-md-left">
               <a href="/shop-page">
@@ -288,23 +232,14 @@
       function qtyDec(proId,qtud,price){
      
      axios.get('/quantityDec/'+proId).then((response)=>{
+      console.log(response)
        if(response.data.cartQty==undefined){
        document.getElementById(proId).value=1
        }else{
          let Qty=document.getElementById(qtud).value
           console.log(response)
-          if(response.data.cartQty<=Qty){
-              document.getElementById(proId).value=response.data.cartQty
-              document.getElementById('totalPrice').innerText=response.data.calc;
-               document.getElementById(price).innerHTML="in Stock"
-               document.getElementById(price).style.backgroundColor=" #28b416"
-          }else{
-             console.log(" out stock")
-            document.getElementById(proId).value=response.data.cartQty
-
-            document.getElementById(price).innerHTML="Out of Stock"
-            document.getElementById(price).style.backgroundColor="red"
-          }
+           document.getElementById(proId).value=response.data.cartQty
+          
       
        }
      
@@ -324,19 +259,8 @@
          let Qty=document.getElementById(qtud).value
         console.log(Qty)
         console.log(response)
-          if(response.data.cartQty>Qty){
-              console.log("out of stock")
-              document.getElementById(proId).value=response.data.cartQty;
-            document.getElementById(price).innerHTML="Out of Stock"
-            document.getElementById(price).style.backgroundColor="red"
-            
-          }else{
-          document.getElementById(proId).value=response.data.cartQty;
-            document.getElementById('totalPrice').innerText=response.data.calc;
-             document.getElementById(price).innerHTML="in Stock"
-             document.getElementById(price).style.backgroundColor=" #28b416"
-          }
-       
+         document.getElementById(proId).value=response.data.cartQty
+      
       
        }
       
@@ -345,6 +269,7 @@
       console.log(err)
     })
 }
+
     </script>
 
     <script

@@ -121,4 +121,7 @@ router.post('/postAddBanner',multipleUpload,adminController.postAddBanner)
 
 router.get('/bannerDelete/:id',adminController.getDeleteBanner)
 
+
+router.post('/editReturnStatus/:id',adminController.getReturnConfirm)
+
 module.exports=router;

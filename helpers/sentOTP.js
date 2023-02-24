@@ -4,16 +4,15 @@ module.exports={
  
   sentOTP:(email, otp)=> {
       return new Promise((resolve, reject)=>{
-      let password="nxkfijtymujdbmtq"
       let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: "gadgetzonnn@gmail.com",
-            pass: password
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
         }
     });
     var mailOptions = {
-        from:"gadgetzonnn@gmail.com",
+        from:process.env.EMAIL,
         to: email,
         subject: "GADGETZON Email verification",
         html: `

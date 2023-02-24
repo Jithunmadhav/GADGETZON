@@ -22,8 +22,9 @@
     <title>Document</title>
   </head>
   <body>
-    <section style="background-color: #eee; height: 745px;">
-      <div class="container py-5">
+  
+    <section style="background-color: #eee;">
+      <div class="container vh-100  py-5">
         <div class="row">
           <div class="col">
             <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
@@ -52,6 +53,9 @@
             </nav>
           </div>
         </div>
+    {{#if count}}
+    <h4 style="text-align: center; font-weight: bold; font-family: cursive;">You have no orders</h4>
+    {{else}}
 
         <table class="table align-middle mb-0 bg-white container">
 
@@ -83,32 +87,28 @@
                       alt=""
                     />
                     {{this.products.0.productname}}</p>
-
+              
                 </td>
+                {{#if returnRequest}}
+                <td>
+                    <h5><span style="background-color: rgb(178, 175, 175);" class="badge   d-inline">Return Requested</span></h5>
+                  </td>
+                {{else}}
+                {{#if returnConfirm}}
+                <td>
+                    <h5><span style="background-color: rgb(50, 168, 77);" class="badge   d-inline">Returned</span></h5>
+                  </td>
+                  {{else}}
+                {{#if returnCancel}}
+                <td>
+                    <h5><span style="background-color: rgb(128, 138, 74);" class="badge   d-inline">Return cancelled</span></h5>
+                  </td>
+                  {{else}}
                 {{#if cancelStatus}}
                  <td>
                     <h5><span style="background-color: rgb(242, 97, 44);" class="badge   d-inline">Cancelled</span></h5>
                   </td>
-                  {{else}}
-                   {{#if orderStatus}}
-                  <td>
-                    <h5><span
-                      class="badge badge-success  d-inline"
-                    >Delivered</span></h5>
-                  </td>
-                  {{/if}}
-                {{#unless orderStatus}}
-                  <td>
-                    <h5><span class="badge badge-danger  d-inline">Not
-                      delivered</span></h5>
-                  </td>
-                  {{! <td>Senior</td> }}
-                {{/unless}}
-                {{/if}}
-
-               
-                
-                <td>
+                   <td>
                   <a
                     style="color: black; text-decoration: none;"
                     href="/orderedProduct/{{this._id}}"
@@ -118,6 +118,48 @@
                   </a>
 
                 </td>
+                  {{else}}
+                   {{#if orderStatus}}
+                  <td>
+                    <h5><span
+                      class="badge badge-success  d-inline"
+                    >Delivered</span></h5>
+                  </td>
+                   <td>
+                  <a
+                    style="color: black; text-decoration: none;"
+                    href="/orderedProduct/{{this._id}}"
+                  >
+                    <h5><span class="badge badge-primary  d-inline">view
+                      details</span></h5>
+                  </a>
+
+                </td>
+                  {{/if}}
+                {{#unless orderStatus}}
+                  <td>
+                    <h5><span class="badge badge-danger  d-inline"> 
+                      pending</span></h5>
+                  </td>
+                   <td>
+                  <a
+                    style="color: black; text-decoration: none;"
+                    href="/orderedProduct/{{this._id}}"
+                  >
+                    <h5><span class="badge badge-primary  d-inline">view
+                      details</span></h5>
+                  </a>
+
+                </td>
+                  {{! <td>Senior</td> }}
+                {{/unless}}
+                {{/if}}
+                {{/if}}
+                {{/if}}
+                {{/if}}
+
+               
+                
               </tr>
 
             </tbody>
@@ -125,6 +167,7 @@
         </table>
       </div>
     </section>
+    {{/if}}
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
     ></script>
