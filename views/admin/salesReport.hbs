@@ -1,0 +1,176 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/stylesheets/admin/admin-home.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GadgetZon</title>
+     <link rel="shortcut icon" href="\images\online-shopping.png">
+  </head>
+  <body>
+    <nav class="navbar navbar-dark fixed-top">
+  <div class="container">
+   <h4 style="color: rgb(195, 191, 191);">Admin</h4>
+   
+
+      <a class="navbar-brand" href="index.html">Bootstrap Hamburger Menu</a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                  <a class="nav-link scroll-link active" href="/admin/adminDashboard">Dashboard</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/productDetails">Product Details</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/productCategory">Category</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/orderManagement">Order Details</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/userManagement">User Details</a>
+              </li>
+               <li class="nav-item">
+                  <a class="nav-link scroll-link " href="/admin/couponManagement">Coupon management</a>
+              </li>
+                 <li class="nav-item">
+                  <a class="nav-link scroll-link " href="/admin/bannerManagement">Banner Management</a>
+              </li>
+          </ul>
+      </div>
+
+  </div>
+</nav>
+  
+    <section style="background-color: #eee; margin-top: 50px; ">
+      <div class="container vh-100   py-5">
+        <div class="row">
+          <div class="col">
+            <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+              <ol
+                class="breadcrumb mb-0"
+                style="display: flex;  justify-content: space-between;"
+              >
+                {{! <li class="breadcrumb-item"><a href="/checkOut">Back</a></li> }}
+                <li class="breadcrumb-item"><h4>Sales Report</h4></li>
+              <div>
+                <form action="/admin/salesReport" method="post">
+                    <label for="">From</label>
+                    <input type="date" name="date1" required>&nbsp;&nbsp;
+                      <label for="">To</label> 
+                    <input type="date" name="date2" required>&nbsp;
+                    <input type="submit" style="background-color: rgb(16, 14, 14); color: white; font-family: cursive; " value="Filter">
+                </form>
+              </div>
+              </ol>
+            </nav>
+          </div>
+        </div>
+    {{#if status}}
+    <h4 style="text-align: center; font-weight: bold; font-family: cursive;">No Data Available</h4>
+    {{else}}
+       
+        <table class="table align-middle mb-0 bg-white container">
+
+          <thead class="bg-light">
+            <tr>
+              <th>Order ID</th>
+              <th>Username</th>
+              <th>Product</th>
+              <th>price </th>
+              <th>Qty</th>
+              <th>Sub Total</th>
+               
+              
+
+            </tr>
+          </thead>
+         {{#each result}}
+            <tbody>
+
+              <tr>
+
+                <td>
+
+                  <p class="fw-normal mb-1">{{this.orderID}}</p>
+                </td>
+                <td>
+                  <p class="fw-normal mb-1">{{this.address.fname}} {{this.address.lname}}</p>
+                </td>
+                <td>
+                  <p class="fw-normal mb-1">{{this.products.[0].productname}}</p>
+                </td>
+                 <td>
+                  <p class="fw-normal mb-1">{{this.products.[0].price}}</p>
+                </td>
+                 <td>
+                  <p class="fw-normal mb-1">{{this.products.[0].cartQuantity}}</p>
+                </td>
+                 <td>
+                  <p class="fw-normal mb-1">{{this.subTotal}}</p>
+                </td>
+               
+                
+              </tr>
+              {{/each}}
+            </tbody>
+        
+        </table>
+      
+        <div style="background-color: white;
+        height: 60px;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 2px;
+    align-content: stretch;
+     
+    flex-direction: column;">
+          <div style=" margin-top: 14px; ">
+             <h4 style="text-align: right; margin-right: 90px; font-weight: bold; font-family: cursive; ">Total Revenue: <i style="font-size: 25px;  "class="bi bi-currency-rupee" ></i>{{total}}</h4></div> 
+            </div>
+              {{/if}}
+      </div>
+    </section>
+    {{!-- {{/if}} --}}
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+      crossorigin="anonymous"
+    ></script>
+
+  </body>
+  
+</html>

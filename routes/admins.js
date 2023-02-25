@@ -21,7 +21,11 @@ router.use(adminVerify)
 
 router.get('/adminDashboard',adminController.getDashboard)
 
+router.get('/monthRevenue',adminController.getMonthRevenue)                                                     
 
+router.get('/salesReport',adminController.getSalesReport)
+
+router.post('/salesReport',adminController.postSalesReport)
             // ****** PRODUCT MANAGEMENT **********
 
 router.get('/productDetails',adminController.getproductDetails)
@@ -120,6 +124,7 @@ router.get('/addBanner',adminController.getAddBanner)
 router.post('/postAddBanner',multipleUpload,adminController.postAddBanner)
 
 router.get('/bannerDelete/:id',adminController.getDeleteBanner)
+
 
 
 router.post('/editReturnStatus/:id',adminController.getReturnConfirm)

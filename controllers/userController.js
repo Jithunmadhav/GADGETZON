@@ -563,6 +563,9 @@ module.exports={
     // },
     getCheckout:(req,res)=>{
         req.session.userProfileStatus=false;
+        user.userDetails(req.session.userID).then((result)=>{
+           req.session.walletBal=result.wallet;
+        })
         user.cartProducts(req.session.userID).then((result)=>{
             cItem=result;
             let cartQuantities={}
@@ -575,7 +578,10 @@ module.exports={
                 result[index].cartQuantity=cartQuantities[item._id];
                 })
 
+
+
                 for(i=0;i<result.length;i++){
+
                     if(result[i].cartQuantity>result[i].quandity){
                         result.map((item, index)=>{
                             result[i].pdtStatus=true;
@@ -585,8 +591,11 @@ module.exports={
                             result[i].pdtStatus=false;
                             }) 
                     }
+                    result.map((item, index)=>{
+                        result[i].subTotal=result[i].cartQuantity*result[i].price;
+                        }) 
                 } 
-                 
+              
                 for(i=0;i<result.length;i++){
                     if(result[i].cartQuantity>result[i].quandity){
                                                       
@@ -604,16 +613,20 @@ module.exports={
                     const calcAmount = result.reduce((acc, item) => {
                         return acc += item.price*item.cartQuantity;
                     }, 0);
+                
+
                     let totalPrice=calcAmount;
-                 
+                    let wallet= req.session.walletBal;
                     let products=result;
                     req.session.orderProduct=result; 
+                    console.log(req.session.orderProduct);
                     
                   if(req.session.couponStatus ==true && totalPrice>req.session.minPurchaseAmt){
                       totalPrice=totalPrice-req.session.discountAmt;
-                      res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:req.session.discountAmt,products,couponStat:req.session.couponStatus })
+                     
+                      res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:req.session.discountAmt,products,couponStat:req.session.couponStatus,wallet })
                   }else{
-                      res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:'00',products,validCoupon: req.session.validCoupon,invalidCoupon: req.session.invalidCoupon}) 
+                      res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:'00',products,validCoupon: req.session.validCoupon,invalidCoupon: req.session.invalidCoupon,wallet}) 
                   }
                   req.session.validCoupon=false;
                   req.session.invalidCoupon=false;
@@ -718,23 +731,35 @@ module.exports={
     postCheckoutOrder:(req,res)=>{
        req.session.order=req.body;
         if(req.body.payment=='COD'){
-            user.orderCheckout(req.body,req.session.orderProduct,req.session.userID).then((result)=>{
+            user.orderCheckout(req.body,req.session.orderProduct, req.session.selectedAddress,req.session.userID).then((result)=>{
                 res.json({codSuccess:true})
             })
-        }else{
+        }else if(req.body.payment=='wallet'){                                        
+            user.userDetails(req.session.userID).then((result)=>{           
+                if(req.body.totalPrice<=result.wallet){ 
+                    user.orderCheckout(req.body,req.session.orderProduct, req.session.selectedAddress,req.session.userID).then((result)=>{
+                        
+                        res.json({walletSucces:true})
+                    })
+                }
+                else{
+                    res.json({walletSucces:false})
+                }
+            })
+        }else if(req.body.payment=='online'){
             let name=req.session.selectedAddress.fname;
             let phone=req.session.selectedAddress.phone;
             let email=req.session.user;
             let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
             let total=parseInt(req.body.totalPrice)
             user.generateRazorpay(orderId,total).then((result)=>{
-                res.json({result,name,phone,email})
+                res.json({onlineSuccess:true,result,name,phone,email})
                 })
         }
     },
     getVerifyPayment:(req,res)=>{
         user.verifyPayment(req.body).then(()=>{
-            user.orderCheckout(req.session.order,req.session.orderProduct,req.session.userID).then((result)=>{
+            user.orderCheckout(req.session.order,req.session.orderProduct, req.session.selectedAddress,req.session.userID).then((result)=>{
                 res.json({success:true})
             })
         }).catch(err=>{

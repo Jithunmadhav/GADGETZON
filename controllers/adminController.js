@@ -12,7 +12,7 @@ module.exports = {
     }
   },
   postLogin: (req, res) => {
-    console.log(req.body);
+    
     admin.adminLogin(req.body).then((response) => {
       req.session.admin = response.username;
       if (response.stat) {
@@ -28,9 +28,45 @@ module.exports = {
   //****** ADMIN DASHBOARD *************
 
   getDashboard: (req, res) => {
-    res.render("admin-dashboard");
+    admin.totalSales().then((result)=>{
+      res.render("admin-dashboard",{result});
+    })
+   
   },
-
+  getMonthRevenue:(req,res)=>{
+    admin.monthRevenue().then((result)=>{
+      res.json(result)
+    })
+  },
+  getSalesReport:(req,res)=>{
+    if(req.session.dateReportStatus){
+      let result=req.session.salesReport;
+      let count=result.length;
+      let status=(count==0)?true:false;
+      let total = result.reduce((acc, item) => {
+        return acc += item.subTotal ;
+    }, 0);
+       
+      res.render('salesReport',{result,total,status})
+    }else{
+      admin.allSalesReport().then((result)=>{
+        let count=result.length;
+        let status=(count==0)?true:false;
+        let total=result.reduce((acc,item)=>{
+          return acc+=item.subTotal;
+        },0)
+        res.render('salesReport',{result,total,status})
+      })
+    }
+    req.session.dateReportStatus=false;
+  },
+  postSalesReport:(req,res)=>{
+   admin.dateSalesReport(req.body).then((result)=>{
+    req.session.dateReportStatus=true;
+    req.session.salesReport=result;
+    res.redirect('/admin/salesReport')
+   })
+  },
   //****** PRODUCT MANAGEMENT **********
 
   getproductDetails: (req, res) => {

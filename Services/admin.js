@@ -23,19 +23,58 @@ module.exports={
               response.username=status.username;
               response.stat=true
                 resolve(response)
-                console.log("Login successfull");
+               
             }
             else{
                 resolve({status:false})
-                console.log("Login deneid");
+                 
             }
           }else {
             resolve({status:false})
-          console.log("login failed");
+           
           }
         });
     },
+     // ***** ADMIN DASHBOARD ******
 
+     totalSales:()=>{
+      return new Promise(async(resolve, reject) => {
+       let sales= await orderModel.aggregate([{$match:{orderStatus:true}},{$group:{_id:null,total:{$sum:"$subTotal"}}}])
+       let orders=await orderModel.countDocuments({})
+       let products=await productModel.countDocuments({})
+       let salesResult=sales[0] ?? 0;
+       resolve({salesResult,orders,products})
+      });
+     },
+     monthRevenue:()=>{
+      return new Promise(async(resolve, reject) => {
+               const monthlyDataArray= await orderModel.aggregate([{$match:{orderStatus:true}},{$group:{_id:{$month:"$orderDate"}, sum:{$sum:"$subTotal"}}}])
+               let monthlyDataObject={}
+               monthlyDataArray.map(item=>{
+                monthlyDataObject[item._id]=item.sum
+            })
+            let monthlyData=[]
+            for(let i=1; i<=12; i++){
+                monthlyData[i-1]= monthlyDataObject[i] ?? 0
+              }
+        resolve(monthlyData)
+      });
+     },
+     allSalesReport:()=>{
+      return new Promise(async(resolve, reject) => {
+        let result=await orderModel.find({orderStatus:true}).lean()
+        resolve(result)
+      });
+     },
+     dateSalesReport:(data)=>{
+      return new Promise(async(resolve, reject) => {
+        let result=  await orderModel.find({orderDate:{$gte:data.date1,$lt:data.date2}}).lean()
+         let filter=result.filter(e=>e.orderStatus==true)
+      resolve(filter)
+        
+      });
+     },
+     
     // ***** PRODUCT MANAGEMENT ******
 
     //Add product

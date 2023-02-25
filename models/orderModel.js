@@ -10,7 +10,7 @@ const orderSchema=mongoose.Schema({
         required:true
     },
     orderDate:{
-        type:String,
+        type: Date,
         required:true
     },
     orderStatus:{
@@ -39,7 +39,7 @@ const orderSchema=mongoose.Schema({
         default:false
     },
     address:{
-        type:String,
+        type:Object,
         required:true
     },
     paymentStatus:{
@@ -53,6 +53,10 @@ const orderSchema=mongoose.Schema({
     }, 
     couponStat:{
         type:Boolean,
+        required:true
+    },
+    subTotal:{
+        type:Number,
         required:true
     },
     totalPrice:{

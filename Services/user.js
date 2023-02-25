@@ -398,26 +398,31 @@ module.exports={
       resolve(result[0])
       });
      },
-     orderCheckout:(order,products,userID)=>{
+     orderCheckout:(order,products,address,userID)=>{
       return new Promise(async(resolve, reject) => {
-        let status=order.payment=='COD'?'COD':'ONLINE'
+        
         for(let i=0;i<products.length;i++){
+          let subtotal=products[i].subTotal;
           let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
           await orderModel.create({
             orderID:orderId,
             userId:userID,
-            orderDate:new Date().toLocaleDateString(),
-            address:order.address,
-            paymentStatus:status,
+            orderDate:new Date(),
+            address:address,
+            paymentStatus:order.payment,
             payment:order.payment,
             products:products[i],
             couponStat:Boolean(order.couponStat),
+            subTotal:parseInt(subtotal),
             totalPrice:parseInt(order.totalPrice)
           }).then((result)=>{
             
              
             resolve(result)
           })
+          if(order.payment=='wallet'){
+            await userModel.updateOne({_id:userID},{$inc:{"wallet":-parseInt(order.totalPrice)}})
+          }
 
           await productModel.updateOne({_id:products[i]._id},{$inc:{"quandity":-products[i].cartQuantity}})
           await userModel.findByIdAndUpdate( userID, { $set: { cart: [] } })
@@ -489,20 +494,20 @@ module.exports={
       });
      },
      cancelOrder:(data,userId)=>{
-      if(data.payment=='ONLINE'){
+       
+      if(data.payment=='COD'){
         return new Promise(async(resolve, reject) => {
           await orderModel.updateOne({_id:data.orderID},{$set:{cancelStatus:true}}).then((result)=>{
           
             resolve()
           })
+          }); 
+      }else{
+       return new Promise(async(resolve, reject) => {
+          await orderModel.updateOne({_id:data.orderID},{$set:{cancelStatus:true}})
           let pdtPrice=parseInt(data.price)
           
-          await userModel.updateOne({_id:userId},{$inc:{"wallet":pdtPrice}})
-          });
-      }else{
-        return new Promise(async(resolve, reject) => {
-          await orderModel.updateOne({_id:Id},{$set:{cancelStatus:true}}).then((result)=>{
-          
+          await userModel.updateOne({_id:userId},{$inc:{"wallet":pdtPrice}}).then((result)=>{
             resolve()
           })
           });
