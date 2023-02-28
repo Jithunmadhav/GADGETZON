@@ -9,6 +9,10 @@ const session=require('express-session')
 const adminVerify = require('./middlewares/adminSession')
 const dbConnect = require('./config/dbConfig')
 const process = require('process')
+const MongoStore = require('connect-mongo');
+
+
+
  
 
 
@@ -35,7 +39,8 @@ app.use(session({
   secret:'thisismysecrctekeyfhrgfgrfrty84fwir767',
   resave:false,
   cookie:{maxAge:oneDay},
-  saveUninitialized:true
+  saveUninitialized:true,
+  store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/gadgetzon" })
 }));
 app.use('/admin',adminRoute)
 app.use(function(req, res, next) {

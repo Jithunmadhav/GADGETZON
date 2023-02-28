@@ -137,7 +137,29 @@
        
       <div style="display: flex;justify-content: center;">
         {{!-- <a href="/addToCart/{{this._id}}"><input align="center" type="submit" class=" btn btn-warning" value="Add to cart"></a> --}}
-        <button class=" btn btn-warning" onclick="addToCart('{{this._id}}')">Add to cart</button>
+        <button class=" btn btn-warning" onclick="addToCart('{{this._id}}')"  >Add to cart</button>
+
+        <!-- Modal -->
+<div   class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div style="background-color: #d8ccc6; height: 150px;" class="modal-content">
+     
+      <div class="modal-body">
+        <div>    <h5 style="text-align: center; font-weight: bold; font-family: cursive;" class="modal-title" id="exampleModalLongTitle">Product Added to cart successfully</h5>
+       </div>
+       <div style="height: 50px;"></div>
+       <div style="display: flex; justify-content: center;">
+        <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>&emsp;
+         
+        <a href="/cart" type="button" class="btn btn-warning">Go to cart</a>
+       </div>
+      </div>
+       
+    </div>
+  </div>
+</div>
+ <!-- Modal End -->
+
        {{#if this.wlStatus}}
         {{!-- <span id="deleteWl" onclick="deleteWl('{{this._id}}')"><i style="font-size: 25px; margin-top: -10px; color: red;" class="bi bi-heart-fill btn pl-3" ></i></span> --}}
 
@@ -200,6 +222,7 @@
       if(response?.data?.count){
         
          document.getElementById('count').innerText=response.data.count
+         $("#exampleModalCenter").modal();
       }else{
         window.location.href='/login'
        

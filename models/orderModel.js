@@ -14,10 +14,11 @@ const orderSchema=mongoose.Schema({
         required:true
     },
     orderStatus:{
-        type:Boolean,
+        type:String,
         required:true,
-        default:false
+        default:'pending'
     },
+
     returnRequest:{
         type:Boolean,
         required:true,

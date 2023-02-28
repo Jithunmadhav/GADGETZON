@@ -6,7 +6,7 @@ const bannerSchema=mongoose.Schema({
         required:true
     },
     main_image:{
-        type:Object,
+        type:Array,
         required:true
     }
 })

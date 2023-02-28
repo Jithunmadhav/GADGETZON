@@ -22,16 +22,11 @@ module.exports={
             let user=await userModel.findOne({email:userData.email})
             
             if(user){
-                console.log("user excist");
-                // console.log(user.email);
-                // console.log(user.Boolean);
                 resp.status=true;
                 resp.ban=user.ban;
                 resolve(resp)
             }
             else{
-                
-                console.log("user not excist");
                 resp.status=false;
                 resp.ban=false;
                 resolve(resp)
@@ -56,9 +51,6 @@ module.exports={
             let response={}
             let user=await userModel.findOne({email:userData.email})
             if(user){
-              
-              
-             
               let status= await bcrypt.compare(userData.password,user.password)
               if(status){
                 
@@ -118,17 +110,37 @@ module.exports={
         }
        
     } ,
-    sortProduct:(data)=>{
+    sortProduct:(data,category)=>{
         return new Promise(async(resolve, reject) => {
             high="high";
             low="low";
-            if(data==high){
-                let result= await productModel.find({}).sort({price:-1}).lean()
+            if(category=='all')
+            {
+              if(data==high){
+                let result= await productModel.find().sort({price:-1}).lean()
                resolve(result)
             }else if(data==low){
                let result= await productModel.find().sort({price:1}).lean()
                resolve(result)  
             }
+            }else if(category==undefined){
+              if(data==high){
+                let result= await productModel.find().sort({price:-1}).lean()
+               resolve(result)
+            }else if(data==low){
+               let result= await productModel.find().sort({price:1}).lean()
+               resolve(result)  
+            }
+            }else{
+              if(data==high){
+                let result= await productModel.find({category:category}).sort({price:-1}).lean()
+               resolve(result)
+            }else if(data==low){
+               let result= await productModel.find({category:category}).sort({price:1}).lean()
+               resolve(result)  
+            }
+            }
+          
         });
     } ,  //Search Product
     searchProduct:({productname})=>{
@@ -197,33 +209,23 @@ module.exports={
             let found=cart.find(e=>e.productId==productId)
             
             resolve(found.quantity)
-            // await productModel.updateOne({_id:productId},{$inc:{"quandity":-1}})
           }else{
            let qty=1;
            resolve(qty)
-            // await productModel.updateOne({_id:productId},{$set:{stockStatus:true}}).then((result)=>{
-            //   resolve(result)
-            // })
           }
-        //   await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
-        //     $inc:{
-        //         "cart.$.quantity":1
-        //     }
-        // }).then((result)=>{
-        //     resolve(result)
-        //   })
-        //   let quan= await productModel.updateOne({_id:productId},{$inc:{"quandity":-1}})
-        //  console.log(quan);
         });
       },
       checkQty:(userId,productId)=>{
         return new Promise(async(resolve, reject) => {
-          let {cart}= await userModel.findOne({"cart.productId":productId},{_id:0,cart:{$elemMatch:{productId:productId}} })
+          let {cart}= await userModel.findOne({_id:userId,"cart.productId":productId},{_id:0,cart:{$elemMatch:{productId:productId}} })
+          console.log(cart);
           resolve(cart)
         });
       },
 
       quantityDec:(userId,productId)=>{
+        console.log("prod",productId);
+        console.log("userId",userId);
         return new Promise(async(resolve, reject) => {
           let result= await productModel.findOne({_id:productId},{quandity:1})
           
@@ -234,6 +236,8 @@ module.exports={
                   "cart.$.quantity":-1
               }
               
+          }).then((value)=>{
+            console.log(value);
           })
           let {cart}=await userModel.findOne({_id:userId},{cart:1})
         
@@ -327,11 +331,9 @@ module.exports={
           let cityStatus=address.find(e=>e.city==data.city)
           
           if(addressStatus==undefined || cityStatus==undefined){
-            console.log("not excist");
             stat=false
             resolve(stat)
           }else{
-            console.log("already excist");
             stat=true
             resolve(stat)
           }
@@ -374,9 +376,6 @@ module.exports={
        });
      },
      updateAddress:(userId,Id,data)=>{
-      console.log(userId);
-      console.log(Id);
-      console.log(data);
       let ID=parseInt(Id)
        return new Promise(async(resolve, reject) => {
      let result= await userModel.updateOne({_id:userId,address:{$elemMatch:{id:ID}}},{$set:{"address.$": {
@@ -490,6 +489,12 @@ module.exports={
      getOrderDetails:(Id)=>{
       return new Promise(async(resolve, reject) => {
         let result=await orderModel.findById({_id:Id})
+        resolve(result)
+      });
+     },
+     invoice:(orderId)=>{
+      return new Promise(async(resolve, reject) => {
+        let result=await orderModel.find({_id:orderId}).lean()
         resolve(result)
       });
      },

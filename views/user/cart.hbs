@@ -235,12 +235,14 @@
      axios.get('/quantityDec/'+proId).then((response)=>{
       console.log(response)
        if(response.data.cartQty==undefined){
+        console.log(response)
        document.getElementById(proId).value=1
        }else{
          let Qty=document.getElementById(qtud).value
           console.log(response)
            document.getElementById(proId).value=response.data.cartQty
-          
+            document.getElementById('totalPrice').innerHTML=response.data.calc
+         console.log(response.data.calc)
       
        }
      
@@ -255,12 +257,13 @@
      axios.get('/quantityInc/'+proId).then((response)=>{
      if(response?.data?.cartQty==undefined){
       
-       document.getElementById(proId).value=10
        }else{
          let Qty=document.getElementById(qtud).value
         console.log(Qty)
-        console.log(response)
+        console.log(response )
          document.getElementById(proId).value=response.data.cartQty
+         document.getElementById('totalPrice').innerHTML=response.data.calc
+           console.log(response.data.calc)
       
       
        }

@@ -125,7 +125,6 @@ module.exports={
     //Update Product
     updateProduct:(pdtData,id,fname)=>{
       return new Promise(async(resolve, reject) => {
-        console.log(fname);
         if(fname.main_image && fname.sub_image){
         let result=  await productModel.updateOne({_id:id},
           {$set:{
@@ -191,7 +190,6 @@ module.exports={
       return new Promise(async(resolve, reject) => {
       let result=  await productModel.updateOne({_id:pdtId},{$pull:{sub_image:{filename:name}}})
       resolve(result)
-        // await userModel.updateOne({_id:userID},{$pull:{cart:{productId:productID}}})
       });
     },
 //  List and unlist products
@@ -266,7 +264,6 @@ removeBan:(id)=>{
 validateCategory:(data)=>{
 
   return new Promise(async(resolve, reject) => {
-    console.log(data);
    let response={}
     let catg= await categoryModel.findOne({categoryname:data})
     if(catg){
@@ -303,7 +300,6 @@ deleteCategory:(id)=>{
 searchCategory:({category})=>{
   return new Promise((resolve, reject) => {
     let result=categoryModel.find({categoryname:new RegExp(category,'i')}).lean()
-    // console.log(result);
    resolve(result)
   });
 },
@@ -316,7 +312,6 @@ editCategory:(id)=>{
 },
 validateEditCatgy:(data)=>{
   return new Promise(async(resolve, reject) => {
-    console.log(data);
    let response={}
     let catg= await categoryModel.findOne({categoryname:data})
     if(catg){
@@ -498,7 +493,13 @@ returnConfirm:(Id,data)=>{
     });
   }
  
-}
+},
+getOrderDetails:(Id)=>{
+  return new Promise(async(resolve, reject) => {
+    let result=await orderModel.findById({_id:Id})
+    resolve(result)
+  });
+ }
 
 
 

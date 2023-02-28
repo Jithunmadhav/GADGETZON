@@ -92,7 +92,7 @@ a{
   }
 
   .searchsize{
-    width: 650px;
+    width: 550px;
     height: 40px;
     border-radius: 5px;
   }
@@ -106,7 +106,7 @@ a{
   
  @media(max-width:1000px ) {
     .searchsize{
-      width: 250px;
+      width: 200px;
       height: 40px;
     border-radius: 5px;
     }

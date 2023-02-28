@@ -6,7 +6,7 @@ const admin = require('../Services/admin')
 const user = require('../Services/user')
 const successMail=require('../helpers/successMail')
 
-const router=express.Router()
+const router=express.Router()            
 
 module.exports={
     // Home-page
@@ -14,13 +14,17 @@ module.exports={
     getHome:(req,res)=>{
         if(req.session.userID){
             user.bannerDetails().then((banner)=>{
+                let mac=banner.find(e=>e.bannerName=="mac")
+                let iphone=banner.find(e=>e.bannerName=="iphone")
+                let realme=banner.find(e=>e.bannerName=="realme")
+                
                 let userstatus= req.session.userStatus;
             let username=req.session.username;
             if( req.session.homeSearchStatus){
-                res.render('homepage',{userstatus,username,result:req.session.homeSearch,status: req.session.homeSearchStatus,banner})
+                res.render('homepage',{userstatus,username,result:req.session.homeSearch,status: req.session.homeSearchStatus,mac,iphone,realme})
                
             }else{
-                res.render('homepage',{userstatus,username,banner})
+                res.render('homepage',{userstatus,username,banner,mac,iphone,realme})
             }
             req.session.homeSearchStatus=false;
             })
@@ -28,10 +32,13 @@ module.exports={
             
         }else{
             user.bannerDetails().then((banner)=>{
+                let mac=banner.find(e=>e.bannerName=="mac")
+                let iphone=banner.find(e=>e.bannerName=="iphone")
+                let realme=banner.find(e=>e.bannerName=="realme")
                 if( req.session.homeSearchStatus){
-                    res.render('homepage',{result:req.session.homeSearch,status: req.session.homeSearchStatus,banner})
+                    res.render('homepage',{result:req.session.homeSearch,status: req.session.homeSearchStatus,mac,iphone,realme})
                 }else{
-                    res.render('homepage',{banner})
+                    res.render('homepage',{mac,iphone,realme})
                 }
                 req.session.homeSearchStatus=false;
                     // req.session.userStatus=false;
@@ -251,7 +258,7 @@ module.exports={
                         res.render('shop-page',{result,catg,brand,count,session:req.session.userID})
                     }
                     req.session.catgStatus=false
-                    req.session.sortStatus=false
+                    req.session.sortStatus=false  
                     req.session.brandStatus=false
                     req.session.searchStatus=false;
                 })
@@ -264,6 +271,7 @@ module.exports={
        
     },
     getCategoryList:(req,res)=>{
+        req.session.categoryName=req.params.name;
         user.getCategoryProducts(req.params.name).then((result) => {
             req.session.catgStatus=true;
             req.session.catgData=result;
@@ -274,7 +282,7 @@ module.exports={
 
     },
     getSortProduct:(req,res)=>{
-        user.sortProduct(req.params.sort).then((result) => {
+        user.sortProduct(req.params.sort,req.session.categoryName).then((result) => {
             req.session.sortStatus=true;
             req.session.sortData=result;
             res.redirect('back')  
@@ -283,7 +291,7 @@ module.exports={
         });
     },
     getSearchProduct:(req,res)=>{
-        console.log(req.query);
+      
         user.searchProduct(req.query).then((result) => {
             if(result.length==0){
                 res.render('searchErrorPage')
@@ -322,8 +330,7 @@ module.exports={
             }else{
                 req.session.homeSearch=result;
                 req.session.homeSearchStatus=true;
-                console.log(result);
-                // res.render('searchPage',{result})
+                
                 res.redirect('/home')
             }
            
@@ -342,7 +349,6 @@ module.exports={
              user.productAddCart(req.session.userID,req.params.id).then((result)=>{
                user.cartProducts(req.session.userID).then((result)=>{
                  let count=result.length;
-                 // res.redirect('back')
                  res.json({success:true,count})
                })
                 
@@ -407,18 +413,20 @@ module.exports={
 
   
     getQtyDec:(req,res)=>{
-        
+        console.log("get ID : ",req.params.id);
         user.checkQty(req.session.userID,req.params.id).then((result)=>{
+            console.log("checkQty : ",result);
             cItem=result;
             let cartItems=cItem.map(item=>{
               return item.quantity
             })
-            
-            if(cartItems[0]<2){
+            console.log("cartItems",cartItems);
+            if(cartItems[0]<=1){
                 res.redirect('back')
             }else{
                 user.quantityDec(req.session.userID,req.params.id).then((result)=>{
                     req.session.totalP=result
+                   
                      user.cartProducts(req.session.userID).then((result)=>{
                         cItem=result;
                         let cartQuantities={}
@@ -429,12 +437,13 @@ module.exports={
            
           
                     user.viewCart(result).then((result)=>{
+                        
                         req.session.cartCountNr=result.length;
                         result.map((item, index)=>{
                         result[index].cartQuantity=cartQuantities[item._id];
                         })
                         req.session.cartCount=result.length;
-          
+                        // console.log(result);
                       const totalP = result.reduce((acc, item) => {
                           return acc += item.price*item.cartQuantity;
                       }, 0);
@@ -442,6 +451,7 @@ module.exports={
                 
                    
                       let cartQty=req.session.totalP;
+                      
                     
                       res.json({success:true,cartQty,calc})
                     })
@@ -479,9 +489,6 @@ module.exports={
                 return acc += item.price*item.cartQuantity;
             }, 0);
             const totalPrice=calcAmount;
-             
-            
-           
            let count= (req.session.cartCountNr==0)?true:false;
            if( req.session.productStock){
             res.render('cart',{result: req.session.productResult,totalPrice,count,cartCount: req.session.cartCount,stockStatus: req.session.productStock})
@@ -546,21 +553,12 @@ module.exports={
 
 
     getDeleteWishlist:(req,res)=>{
-        // console.log(req.session.userID);
-        console.log("hello");
         user.deleteWishlistProduct(req.session.userID,req.params.id).then(() => {
             res.redirect('back')
-            // res.json({success:true})
         }).catch((err) => {
             console.log(err);
         });
     },
-    // getCheckout:(req,res)=>{
-    //     console.log(req.params.id);
-    //    res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus})
-       
-
-    // },
     getCheckout:(req,res)=>{
         req.session.userProfileStatus=false;
         user.userDetails(req.session.userID).then((result)=>{
@@ -618,9 +616,7 @@ module.exports={
                     let totalPrice=calcAmount;
                     let wallet= req.session.walletBal;
                     let products=result;
-                    req.session.orderProduct=result; 
-                    console.log(req.session.orderProduct);
-                    
+                    req.session.orderProduct=result;    
                   if(req.session.couponStatus ==true && totalPrice>req.session.minPurchaseAmt){
                       totalPrice=totalPrice-req.session.discountAmt;
                      
@@ -669,6 +665,7 @@ module.exports={
         
     },
     getCheckoutAddress:(req,res)=>{
+        req.session.checkoutAddress=true;
         user.getAddress(req.session.userID).then((result) => {
             res.render('checkoutAddress',{result})
         }).catch((err) => {
@@ -677,6 +674,7 @@ module.exports={
     },
 
     getUserProfile:(req,res)=>{
+        req.session.checkoutAddress=false;
         user.getAddress(req.session.userID).then((result) => {
             req.session.getAddress=result
             req.session.userProfileStatus=true;
@@ -702,7 +700,7 @@ module.exports={
         })
     },
 
-    getRedeemCoupon:(req,res)=>{
+    getRedeemCoupon:(req,res)=>{ 
          
         user.redeemCoupon(req.body.couponCode).then((result)=>{
 
@@ -779,7 +777,7 @@ module.exports={
       
     },
     postupdateUser:(req,res)=>{
-        console.log(req.body);
+       
         user.updateUserDetails(req.session.userID,req.body).then((result)=>{
             res.redirect('/userProfile')
         })
@@ -792,8 +790,13 @@ module.exports={
     },
     postUpdateAddress:(req,res)=>{
         user.updateAddress(req.session.userID,req.params.id,req.body).then((result)=>{
-             
-            res.redirect('/userProfile')
+            if(req.session.checkoutAddress){
+                res.redirect('/editAddress')
+               
+            }else{
+                res.redirect('/userProfile')
+            }
+           
         })
     },
     getOrderHistory:(req,res)=>{
@@ -817,6 +820,13 @@ module.exports={
         res.render('orderedProduct',{result})
     })
        
+    },
+    getInvoice:(req,res)=>{
+        user.invoice(req.params.id).then((result)=>{
+            let date=result[0].orderDate.toLocaleDateString();
+             
+            res.json({result,date})
+        })
     },
     postCancelOrder:(req,res)=>{
         user.cancelOrder(req.body,req.session.userID).then(()=>{

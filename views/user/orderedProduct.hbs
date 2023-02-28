@@ -123,18 +123,7 @@
         <div class="flex-Container">
           <div class="flex-item-left">
 
-            {{!-- <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-  <div class="carousel-inner">
-     <div class="carousel-item active">
-      <img class="d-block w-100 img-fluid" src="/product_img/{{result.main_image.[0].filename}}" alt="First slide">
-    </div>
-    {{#each result.sub_image}}
-    <div class="carousel-item ">
-      <img class="d-block w-100 img-fluid" src="/product_img/{{ this.filename}}" alt="First slide">
-    </div>
-    {{/each}}
-  </div>
-</div> --}}
+       
             <div><img
                 style="width: 400px; height: 400px; margin-top: 100px;"
                 class="img-fluid"
@@ -181,18 +170,6 @@
         <div class="flex-Container">
           <div class="flex-item-left">
 
-            {{!-- <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-  <div class="carousel-inner">
-     <div class="carousel-item active">
-      <img class="d-block w-100 img-fluid" src="/product_img/{{result.main_image.[0].filename}}" alt="First slide">
-    </div>
-    {{#each result.sub_image}}
-    <div class="carousel-item ">
-      <img class="d-block w-100 img-fluid" src="/product_img/{{ this.filename}}" alt="First slide">
-    </div>
-    {{/each}}
-  </div>
-</div> --}}
             <div><img
                 style="width: 400px; height: 400px; margin-top: 100px;"
                 class="img-fluid"
@@ -236,7 +213,7 @@
               {{/if}}
               <h4 class="txt-align">Ordered Address :<br /><h5
                   style="text-align: left;"
-                > {{result.address}} </h5></h4><hr />
+                > {{result.address.address}},{{result.address.city}},{{result.address.state}}</h5></h4><hr />
               {{#if result.orderStatus}}
                 <div style="display: flex;">
                    <button
@@ -246,7 +223,8 @@
                     data-target="#exampleModalCenter"
                   >
                     <h5>Return order</h5>
-                  </button>
+                  </button>&nbsp;&nbsp;
+                  <button onclick="Invoice('{{result._id}}')" type="button"  class="btn btn-warning btn-md mb-2"><h5>Invoice download</h5></button>
                 </div>
                  <!-- Modal -->
                   <div
@@ -301,7 +279,8 @@
                     data-target="#exampleModalCenter"
                   >
                     <h5>cancel order</h5>
-                  </button>
+                  </button>&nbsp;&nbsp;
+                  <button onclick="Invoice('{{result._id}}')" type="button"  class="btn btn-warning btn-md mb-2"><h5>Invoice download</h5></button>
 
                   <!-- Modal -->
                   <div
@@ -374,6 +353,7 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/easyinvoice/dist/easyinvoice.min.js"></script>
      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
      <script>
       function cancelOrder(orderID,payment,price){
@@ -386,6 +366,100 @@
           }
         }).catch(err=>{
           console.log(err)
+        })
+      }
+      function Invoice(Id){
+        axios.get('/invoice/'+Id).then((resp)=>{
+          console.log(resp.data)
+          
+          
+           var data = {
+            "images": {
+        // The logo on top of your invoice
+        "logo": "https://i.ibb.co/4tZvsmy/Screenshot-187.png",
+       
+    },
+    // Customize enables you to provide your own templates
+    // Please review the documentation for instructions and examples
+    "customize": {
+        //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html 
+    },
+    "sender": {
+        "company": "Payment",
+        "address": resp.data.result[0].paymentStatus
+        
+        //"custom1": "custom value 1",
+        //"custom2": "custom value 2",
+        //"custom3": "custom value 3"
+    },
+     "client": {
+        "company": "Shipping To",
+        "address": resp.data.result[0].address.address ,
+        "zip":  resp.data.result[0].address.city  ,
+        "city": resp.data.result[0].address.zip  ,
+        "country":  resp.data.result[0].address.phone 
+        // "custom1": "custom value 1",
+        // "custom2": "custom value 2",
+        // "custom3": "custom value 3"
+    },
+     
+    
+    "information": {
+        // Invoice number
+        "number":resp.data.result[0].address.fname + resp.data.result[0].address.lname,
+        // Invoice data
+        "date": resp.data.result[0].orderID,
+         "due-date": resp.data.date
+        // Invoice due date
+        
+    },
+    // The products you would like to see on your invoice
+    // Total values are being calculated automatically
+    "products": [
+        {
+            "quantity":  resp.data.result[0].products[0].cartQuantity,
+            "description": resp.data.result[0].products[0].productname,
+             "description": resp.data.result[0].products[0].productname,
+            "tax-rate": 0,
+            "price": resp.data.result[0].products[0].price
+        }
+       
+    ],
+    // The message you would like to display on the bottom of your invoice
+    "bottom-notice": "Thankyou for purchasing from us",
+    // Settings to customize your invoice
+    "settings": {
+        "currency": "INR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
+        // "locale": "nl-NL", // Defaults to en-US, used for number formatting (See documentation 'Locales and Currency')
+        // "tax-notation": "gst", // Defaults to 'vat'
+        // "margin-top": 25, // Defaults to '25'
+        // "margin-right": 25, // Defaults to '25'
+        // "margin-left": 25, // Defaults to '25'
+        // "margin-bottom": 25, // Defaults to '25'
+        // "format": "A4", // Defaults to A4, options: A3, A4, A5, Legal, Letter, Tabloid
+        // "height": "1000px", // allowed units: mm, cm, in, px
+        // "width": "500px", // allowed units: mm, cm, in, px
+        // "orientation": "landscape", // portrait or landscape, defaults to portrait
+    },
+    // Translate your invoice to your preferred language
+    "translate": {
+         "invoice": "Order Invoice",  // Default to 'INVOICE'
+        "number": "Name", // Defaults to 'Number'
+         "date": "Order ID", // Default to 'Date'
+         "due-date": "Order Date", // Defaults to 'Due Date'
+        // "subtotal": "Subtotaal", // Defaults to 'Subtotal'
+        // "products": "Producten", // Defaults to 'Products'
+        // "quantity": "Aantal", // Default to 'Quantity'
+        // "price": "Prijs", // Defaults to 'Price'
+        // "product-total": "Totaal", // Defaults to 'Total'
+        // "total": "Totaal" // Defaults to 'Total'
+    },
+};
+    easyinvoice.createInvoice(data, function (result) {
+         
+        easyinvoice.download('Invoice.pdf', result.pdf);
+   
+    });
         })
       }
      </script>

@@ -1,0 +1,191 @@
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+<link rel="stylesheet" href="css/furniture-styles.css">
+ <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"
+    />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="/stylesheets/admin/orderedPdt.css">
+
+       <title>GadgetZon</title>
+     <link rel="shortcut icon" href="\images\online-shopping.png">
+  </head>
+  <body>
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container">
+   <h4 style="color: rgb(195, 191, 191);">Admin</h4>
+   
+
+      <a class="navbar-brand" href="index.html">Bootstrap Hamburger Menu</a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                  <a class="nav-link scroll-link active" href="#">Dashboard</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/productDetails">Product Details</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/productCategory">Category</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/orderManagement">Order Details</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link scroll-link" href="/admin/userManagement">User Details</a>
+              </li>
+               <li class="nav-item">
+                  <a class="nav-link scroll-link " href="/admin/couponManagement">Coupon management</a>
+              </li>
+                 <li class="nav-item">
+                  <a class="nav-link scroll-link " href="/admin/bannerManagement">Banner Management</a>
+              </li>
+          </ul>
+      </div>
+
+  </div>
+</nav>
+    
+    {{#if result.cancelStatus}}
+      <section style="margin-top: 50px;">
+        <div class="flex-Container">
+          <div class="flex-item-left">
+
+       
+            <div><img
+                style="width: 400px; height: 400px; margin-top: 100px;"
+                class="img-fluid"
+                src="/product_img/{{result.products.0.main_image.0.filename}}"
+                alt=""
+              /></div>
+
+          </div>
+
+          <div
+            
+            class="flex-item-right mb-3"
+          >
+            <div style="padding-top: 40px; "><h2
+                class="txt-align"
+              >{{result.products.0.productname}} </h2><hr />
+
+              <h2 class="txt-align">
+                <i
+                  style="font-size: 20px; position: relative; top: -7px;"
+                  class="bi bi-currency-rupee"
+                ></i>{{result.products.0.price}}
+                /-</h2>
+
+              <hr />
+              <h4 class="txt-align">Quantity :
+                {{result.products.0.cartQuantity}}
+              </h4><hr />
+              <h4 class="txt-align">Ordered date : {{result.orderDate}} </h4><hr
+              />
+
+              <h3 style="text-align: left;"><span
+                  style="background-color: rgb(242, 97, 44);"
+                  class="badge d-inline"
+                >Cancelled</span></h3>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+    {{else}}
+      <section style="margin-top: 50px;">
+        <div class="flex-Container">
+          <div class="flex-item-left">
+
+            <div><img
+                style="width: 400px; height: 400px; margin-top: 100px;"
+                class="img-fluid"
+                src="/product_img/{{result.products.0.main_image.0.filename}}"
+                alt=""
+              /></div>
+
+          </div>
+
+          <div
+           
+            class="flex-item-right mb-3"
+          >
+            <div style="padding-top: 40px; "><h2
+                class="txt-align"
+              >{{result.products.0.productname}} </h2><hr />
+
+              <h2 class="txt-align">
+                <i
+                  style="font-size: 20px; position: relative; top: -7px;"
+                  class="bi bi-currency-rupee"
+                ></i>{{result.products.0.price}}
+                /-</h2>
+
+              <hr />
+              <h4 class="txt-align">Quantity :
+                {{result.products.0.cartQuantity}}
+              </h4><hr />
+              <h4 class="txt-align">Order date : {{result.orderDate}} </h4><hr
+              />
+              <h4 class="txt-align">Payment Mode : {{result.paymentStatus}} </h4><hr
+              />
+              {{#if result.orderStatus}}
+                <h5 style="text-align: left;"><span
+                    class="badge badge-success rounded-pill d-inline"
+                  >Delivered</span></h5><hr />
+              {{else}}
+                <h4 class="txt-align">Expected Delivery :
+                  {{result.dispatch}}
+                </h4><hr />
+              {{/if}}
+              <h4 class="txt-align">Ordered Address :<br /><h5
+                  style="text-align: left;"
+                > {{result.address.address}},{{result.address.city}},{{result.address.state}}</h5></h4><hr />
+             
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+    {{/if}}
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+      
+  </body>
+</html>

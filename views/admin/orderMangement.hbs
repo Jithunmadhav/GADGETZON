@@ -69,6 +69,7 @@
       <th scope="col">payment</th>
       <th scope="col"></th>
       <th scope="col"></th>
+       <th scope="col"></th>
       {{!-- <th scope="col">Delivery status</th> --}}
      
       {{!-- <th scope="col">Zip</th>
@@ -125,10 +126,14 @@
                 {{/unless}}
                 {{/if}}
                
-                {{#unless cancelStatus }}
+              
+            <td> <a style="color: black; text-decoration: none;" href="/admin/orderedPdtDetails/{{this._id}}">
+                    <h5><span class="badge badge-primary  d-inline">view details</span></h5>
+                  </a>
+            </td>
+              {{#unless cancelStatus }}
              <td><a href="/admin/editOrderStatus/{{this._id}}"><i class="bi bi-pencil-square pdtDelete"></i></a></td>
              {{/unless}}
-
     </tr>
    {{/if}}
    {{/if}}

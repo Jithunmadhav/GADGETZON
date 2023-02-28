@@ -1,5 +1,6 @@
 const admin = require("../Services/admin");
 const express = require("express");
+const { render } = require("easyinvoice");
 module.exports = {
   //****** ADMIN LOGIN ******************
 
@@ -394,4 +395,11 @@ module.exports = {
       res.redirect("/admin/orderManagement");
     });
   },
+
+  getPdtDetails:(req,res)=>{
+    admin.getOrderDetails(req.params.id).then((result)=>{
+      
+      res.render('orderedPdtDetails',{result})
+  })
+  }
 };

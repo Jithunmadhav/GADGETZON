@@ -6,6 +6,7 @@ const sentOTP = require('../helpers/sentOTP')
 const adminController = require('../controllers/adminController')
 const verifyUser = require('../middlewares/userSession')
 const banUserAccount = require('../middlewares/banUser')
+ 
 
 
 const router=express.Router()
@@ -146,6 +147,8 @@ router.get('/orderHistory',userController.getOrderHistory)
 
 //order-details
 router.get('/orderedProduct/:id',userController.getOrderedProduct)
+
+router.get('/invoice/:id',userController.getInvoice)
 
 router.post('/cancelOrder',userController.postCancelOrder)
 

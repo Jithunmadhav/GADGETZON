@@ -115,6 +115,9 @@ router.get('/editOrderStatus/:id',adminController.getEditOrderStatus)
 
 router.post('/editOrderStatus/:id',adminController.postEditOrderStatus)
 
+
+router.get('/orderedPdtDetails/:id',adminController.getPdtDetails)
+
 //************Banner Management ******
 
 router.get('/bannerManagement',adminController.getBannerManagement)
