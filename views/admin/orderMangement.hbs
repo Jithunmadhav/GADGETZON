@@ -67,8 +67,9 @@
        <th scope="col">price</th>
        <th scope="col">Qty</th>
       <th scope="col">payment</th>
+      <th scope="col">Order Status</th>
       <th scope="col"></th>
-      <th scope="col"></th>
+     
        <th scope="col"></th>
       {{!-- <th scope="col">Delivery status</th> --}}
      
@@ -82,7 +83,7 @@
   
     <tr style="height: 80px; ">
       <td>{{this.orderID}}</td>
-      <td style="width: 200px;">{{this.orderDate}}</td>
+      <td style="width: 200px;">{{this.date}}</td>
       <td>{{this.products.[0].productname}}</td>
       <td>{{this.products.[0].price}}</td>
       <td>{{this.products.[0].cartQuantity}}</td>
@@ -97,8 +98,9 @@
     {{else}}
     {{#if this.returnConfirm}}
     <td>
-     <h5><span style="background-color: rgb(122, 122, 120);" class="badge   d-inline">Returned</span></h5> 
+     <h5><span style="background-color: rgb(181, 181, 178);" class="badge   d-inline">Returned</span></h5> 
     </td>
+    
     
     {{else}}
     {{#if this.returnCancel}}
@@ -111,16 +113,16 @@
                     <h5><span style="background-color: rgb(244, 123, 80);" class="badge   d-inline">Cancelled</span></h5>
                   </td>
                   {{else}}
-                   {{#if orderStatus}}
+                   {{#if deliveryStatus}}
                   <td>
                     <h5><span
                       class="badge badge-success  d-inline"
                     >Delivered</span></h5>
                   </td>
                   {{/if}}
-                {{#unless orderStatus}}
+                {{#unless deliveryStatus}}
                   <td>
-                    <h5><span class="badge badge-danger  d-inline">Pending</span></h5>
+                    <h5><span class="badge badge-danger  d-inline">{{this.orderStatus}}</span></h5>
                   </td>
                   {{! <td>Senior</td> }}
                 {{/unless}}

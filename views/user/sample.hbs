@@ -1,0 +1,26 @@
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="payOnline" id="jithun" onclick="val(id)">
+  <label class="form-check-label" for="flexRadioDefault1">
+    Default radio
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="payOnline" id="madhav" onclick="val(id)" checked>
+  <label class="form-check-label" for="flexRadioDefault2">
+    Default checked radio
+  </label>
+</div>
+<script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+<script>
+  function val(id){
+axios.post('/user/id')
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+  }
+
+</script>

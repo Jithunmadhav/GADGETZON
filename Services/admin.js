@@ -39,7 +39,7 @@ module.exports={
 
      totalSales:()=>{
       return new Promise(async(resolve, reject) => {
-       let sales= await orderModel.aggregate([{$match:{orderStatus:true}},{$group:{_id:null,total:{$sum:"$subTotal"}}}])
+       let sales= await orderModel.aggregate([{$match:{orderStatus:'Delivered'}},{$group:{_id:null,total:{$sum:"$subTotal"}}}])
        let orders=await orderModel.countDocuments({})
        let products=await productModel.countDocuments({})
        let salesResult=sales[0] ?? 0;
@@ -48,7 +48,7 @@ module.exports={
      },
      monthRevenue:()=>{
       return new Promise(async(resolve, reject) => {
-               const monthlyDataArray= await orderModel.aggregate([{$match:{orderStatus:true}},{$group:{_id:{$month:"$orderDate"}, sum:{$sum:"$subTotal"}}}])
+               const monthlyDataArray= await orderModel.aggregate([{$match:{orderStatus:'Delivered'}},{$group:{_id:{$month:"$orderDate"}, sum:{$sum:"$subTotal"}}}])
                let monthlyDataObject={}
                monthlyDataArray.map(item=>{
                 monthlyDataObject[item._id]=item.sum
@@ -62,14 +62,14 @@ module.exports={
      },
      allSalesReport:()=>{
       return new Promise(async(resolve, reject) => {
-        let result=await orderModel.find({orderStatus:true}).lean()
+        let result=await orderModel.find({orderStatus:'Delivered'}).lean()
         resolve(result)
       });
      },
      dateSalesReport:(data)=>{
       return new Promise(async(resolve, reject) => {
         let result=  await orderModel.find({orderDate:{$gte:data.date1,$lt:data.date2}}).lean()
-         let filter=result.filter(e=>e.orderStatus==true)
+         let filter=result.filter(e=>e.orderStatus=='Delivered')
       resolve(filter)
         
       });
@@ -430,17 +430,26 @@ return new Promise(async(resolve, reject) => {
 updateOrderStatus:(Id,data)=>{
   return new Promise(async(resolve, reject) => {
     if(data.orderStatus=="Delivered"){
-      await orderModel.updateOne({_id:Id},{$set:{orderStatus:true}}).then(()=>{
+      await orderModel.updateOne({_id:Id},{$set:{deliveryStatus:true}})
+      await orderModel.updateOne({_id:Id},{$set:{orderStatus:'Delivered'}}).then(()=>{
         resolve()
       })
 
+    }else if(data.orderStatus=="shipped"){
+      await orderModel.updateOne({_id:Id},{$set:{orderStatus:'shipped'}}).then(()=>{
+        resolve()
+      })
     }
    
-    else{
-      await orderModel.updateOne({_id:Id},{$set:{orderStatus:false}}).then(()=>{
+    else if(data.orderStatus=="outfordelivery"){
+      await orderModel.updateOne({_id:Id},{$set:{orderStatus:'outfordelivery'}}).then(()=>{
         resolve()
       })
 
+    }else{
+      await orderModel.updateOne({_id:Id},{$set:{orderStatus:'notDelivered'}}).then(()=>{
+        resolve()
+      })
     }
   });
 },
@@ -479,7 +488,7 @@ returnConfirm:(Id,data)=>{
       await orderModel.updateOne({_id:Id},{$set:{returnRequest:false}})
       let pdtId=data.productId
       let returnQt=parseInt(data.returnQty)
-      await productModel.updateOne({_id:pdtId},{$inc:{"quandity":returnQt}}) 
+      
       await userModel.updateOne({_id:data.userId},{$inc:{"wallet":data.price}})
     });  
   }else{

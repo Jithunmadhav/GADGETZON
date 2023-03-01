@@ -152,7 +152,7 @@
               <h4 class="txt-align">Quantity :
                 {{result.products.0.cartQuantity}}
               </h4><hr />
-              <h4 class="txt-align">Ordered date : {{result.orderDate}} </h4><hr
+              <h4 class="txt-align">Ordered date : {{date}} </h4><hr
               />
 
               <h3 style="text-align: left;"><span
@@ -198,11 +198,11 @@
               <h4 class="txt-align">Quantity :
                 {{result.products.0.cartQuantity}}
               </h4><hr />
-              <h4 class="txt-align">Order date : {{result.orderDate}} </h4><hr
+              <h4 class="txt-align">Order date : {{date}} </h4><hr
               />
               <h4 class="txt-align">Payment Mode : {{result.paymentStatus}} </h4><hr
               />
-              {{#if result.orderStatus}}
+              {{#if result.deliveryStatus}}
                 <h5 style="text-align: left;"><span
                     class="badge badge-success rounded-pill d-inline"
                   >Delivered</span></h5><hr />
@@ -210,11 +210,14 @@
                 <h4 class="txt-align">Expected Delivery :
                   {{result.dispatch}}
                 </h4><hr />
+                 <h4 class="txt-align">Order Status :
+                  {{result.orderStatus}}
+                </h4><hr />
               {{/if}}
               <h4 class="txt-align">Ordered Address :<br /><h5
                   style="text-align: left;"
                 > {{result.address.address}},{{result.address.city}},{{result.address.state}}</h5></h4><hr />
-              {{#if result.orderStatus}}
+              {{#if result.deliveryStatus}}
                 <div style="display: flex;">
                    <button
                     type="button"

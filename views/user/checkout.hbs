@@ -95,7 +95,7 @@
         </div>
 
         <div style="  width: 50%; height: 150px;">
-        <input type="radio" id="css" name="payment" value="wallet">
+        <input type="radio" id="css" name="wallet" value="walletapplied">
         <label for="css">Pay using wallet</label>
         <p style="font-weight: bold; font-family: cursive;">Available bal:
           <i style="font-size: 15px;  "class="bi bi-currency-rupee" ></i>
@@ -226,15 +226,11 @@
   console.log(resp)
 if(resp.data.codSuccess){
   window.location.href='/orderSuccess'
-}else if(resp.data.walletSucces){
- window.location.href='/orderSuccess'
-}else if(resp.data.walletSucces==false){
-document.getElementById('walletStat').innerHTML="Available wallet Balance is less"
 }
 else if(resp.data.onlineSuccess){
  razorpayPayment(resp.data)
-}else{
-  console.log("Error")
+}else if(resp.data.err){
+ window.location.href='/checkout'
 }
 })
    }

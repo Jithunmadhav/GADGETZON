@@ -357,6 +357,15 @@ module.exports = {
   },
   getOrderManagement: (req, res) => {
     admin.productOrderDetail().then((result) => {
+     
+      for(i=0;i<result.length;i++){
+        result.map((item, index)=>{
+          result[i].date=result[i].orderDate.toDateString();
+          })
+      }
+     
+      
+      
       res.render("orderMangement", { result });
     });
   },

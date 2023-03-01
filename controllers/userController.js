@@ -413,14 +413,14 @@ module.exports={
 
   
     getQtyDec:(req,res)=>{
-        console.log("get ID : ",req.params.id);
+        
         user.checkQty(req.session.userID,req.params.id).then((result)=>{
-            console.log("checkQty : ",result);
+            
             cItem=result;
             let cartItems=cItem.map(item=>{
               return item.quantity
             })
-            console.log("cartItems",cartItems);
+           
             if(cartItems[0]<=1){
                 res.redirect('back')
             }else{
@@ -727,37 +727,72 @@ module.exports={
         })
     },
     postCheckoutOrder:(req,res)=>{
-       req.session.order=req.body;
+        req.session.order=req.body;
+       
+      
         if(req.body.payment=='COD'){
-            user.orderCheckout(req.body,req.session.orderProduct, req.session.selectedAddress,req.session.userID).then((result)=>{
-                res.json({codSuccess:true})
-            })
-        }else if(req.body.payment=='wallet'){                                        
-            user.userDetails(req.session.userID).then((result)=>{           
-                if(req.body.totalPrice<=result.wallet){ 
-                    user.orderCheckout(req.body,req.session.orderProduct, req.session.selectedAddress,req.session.userID).then((result)=>{
-                        
-                        res.json({walletSucces:true})
+            if(req.body.wallet=='walletapplied'){
+                console.log("wallet applied");
+                user.userDetails(req.session.userID).then((result)=>{
+                    req.session.wallet=result.wallet;
+                    let wallet=result.wallet;
+                    let totalPrice=parseInt(req.body.totalPrice)
+                    if(wallet>=totalPrice){
+                        req.session.amount=0;
+                    }else{
+                        req.session.amount=totalPrice-wallet;
+                    }
+                    user.orderCheckout(req.body,req.session.amount,req.session.orderProduct, req.session.selectedAddress,req.session.userID,wallet).then((result)=>{
+                        res.json({codSuccess:true})
                     })
-                }
-                else{
-                    res.json({walletSucces:false})
-                }
-            })
-        }else if(req.body.payment=='online'){
-            let name=req.session.selectedAddress.fname;
-            let phone=req.session.selectedAddress.phone;
-            let email=req.session.user;
-            let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
-            let total=parseInt(req.body.totalPrice)
-            user.generateRazorpay(orderId,total).then((result)=>{
-                res.json({onlineSuccess:true,result,name,phone,email})
+                    
                 })
+            }else{
+                console.log("wallet not applied");
+                req.session.amount=req.session.order.totalPrice;
+                user.orderCheckout(req.body,req.session.amount,req.session.orderProduct, req.session.selectedAddress,req.session.userID,req.session.wallet).then((result)=>{
+                    res.json({codSuccess:true})
+                })
+            }
+           
+        }else if(req.body.payment=='online'){
+            if(req.body.wallet=='walletapplied'){
+                user.userDetails(req.session.userID).then((result)=>{
+                    let wallet=result.wallet;
+                    let totalPrice=parseInt(req.body.totalPrice)
+                    if(wallet>=totalPrice){
+                        req.session.amount=0;
+                    }else{
+                        req.session.amount=totalPrice-wallet;
+                    }
+                    let name=req.session.selectedAddress.fname;
+                    let phone=req.session.selectedAddress.phone;
+                    let email=req.session.user;
+                    let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
+                    user.generateRazorpay(orderId, req.session.amount).then((result)=>{
+                        res.json({onlineSuccess:true,result,name,phone,email})
+                        })
+                    
+                })   
+            }else{
+                req.session.amount=req.session.order.totalPrice;
+                let name=req.session.selectedAddress.fname;
+                let phone=req.session.selectedAddress.phone;
+                let email=req.session.user;
+                let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
+                user.generateRazorpay(orderId, req.session.amount).then((result)=>{
+                    res.json({onlineSuccess:true,result,name,phone,email})
+                    })
+                
+            }
+            
+        }else{
+           res.json({err:true})
         }
     },
     getVerifyPayment:(req,res)=>{
         user.verifyPayment(req.body).then(()=>{
-            user.orderCheckout(req.session.order,req.session.orderProduct, req.session.selectedAddress,req.session.userID).then((result)=>{
+            user.orderCheckout(req.session.order,req.session.amount,req.session.orderProduct, req.session.selectedAddress,req.session.userID,req.session.wallet).then((result)=>{
                 res.json({success:true})
             })
         }).catch(err=>{
@@ -803,6 +838,7 @@ module.exports={
         user.orderHistory(req.session.userID).then((result)=>{ 
             req.session.orderCount=result.length;
             let count= (req.session.orderCount==0)?true:false;
+           
              
             if(req.session.orderListStatus){
                 res.render('orderHistory',{result:req.session.orderList,count})
@@ -816,8 +852,9 @@ module.exports={
     getOrderedProduct:(req,res)=>{
       
     user.getOrderDetails(req.params.id).then((result)=>{
-      
-        res.render('orderedProduct',{result})
+      console.log(result);
+         let date=result.orderDate.toDateString();
+        res.render('orderedProduct',{result,date})
     })
        
     },

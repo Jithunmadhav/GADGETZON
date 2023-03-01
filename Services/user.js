@@ -218,14 +218,13 @@ module.exports={
       checkQty:(userId,productId)=>{
         return new Promise(async(resolve, reject) => {
           let {cart}= await userModel.findOne({_id:userId,"cart.productId":productId},{_id:0,cart:{$elemMatch:{productId:productId}} })
-          console.log(cart);
+          
           resolve(cart)
         });
       },
 
       quantityDec:(userId,productId)=>{
-        console.log("prod",productId);
-        console.log("userId",userId);
+        
         return new Promise(async(resolve, reject) => {
           let result= await productModel.findOne({_id:productId},{quandity:1})
           
@@ -236,18 +235,15 @@ module.exports={
                   "cart.$.quantity":-1
               }
               
-          }).then((value)=>{
-            console.log(value);
-          })
+          }) 
           let {cart}=await userModel.findOne({_id:userId},{cart:1})
         
             let found=cart.find(e=>e.productId==productId)
            
             resolve(found.quantity)
-            // await productModel.updateOne({_id:productId},{$inc:{"quandity":1}})
+             
           }
-          // let quantity= await productModel.updateOne({_id:productId},{$inc:{"quandity":1}})
-          //    console.log(quantity);
+          
           
         
          
@@ -397,9 +393,9 @@ module.exports={
       resolve(result[0])
       });
      },
-     orderCheckout:(order,products,address,userID)=>{
+     orderCheckout:(order,amount,products,address,userID,wallet)=>{
       return new Promise(async(resolve, reject) => {
-        
+        let balance=0;
         for(let i=0;i<products.length;i++){
           let subtotal=products[i].subTotal;
           let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
@@ -413,14 +409,24 @@ module.exports={
             products:products[i],
             couponStat:Boolean(order.couponStat),
             subTotal:parseInt(subtotal),
+            payAmount:amount,
             totalPrice:parseInt(order.totalPrice)
           }).then((result)=>{
             
              
             resolve(result)
           })
-          if(order.payment=='wallet'){
-            await userModel.updateOne({_id:userID},{$inc:{"wallet":-parseInt(order.totalPrice)}})
+          if(order.wallet=='walletapplied'){
+            if(wallet>parseInt(order.totalPrice)){
+              await userModel.updateOne({_id:userID},{$inc:{"wallet":-parseInt(order.totalPrice)}}).then((result)=>{
+                console.log(result);
+              }) 
+            }else{
+              await userModel.updateOne({_id:userID},{$set:{"wallet":balance}}).then((result)=>{
+                console.log(result);
+              }) 
+            }
+
           }
 
           await productModel.updateOne({_id:products[i]._id},{$inc:{"quandity":-products[i].cartQuantity}})

@@ -148,13 +148,16 @@
               />
               <h4 class="txt-align">Payment Mode : {{result.paymentStatus}} </h4><hr
               />
-              {{#if result.orderStatus}}
+              {{#if result.deliveryStatus}}
                 <h5 style="text-align: left;"><span
                     class="badge badge-success rounded-pill d-inline"
                   >Delivered</span></h5><hr />
               {{else}}
                 <h4 class="txt-align">Expected Delivery :
                   {{result.dispatch}}
+                </h4><hr />
+                <h4 class="txt-align">Expected Delivery :
+                  {{result.orderStatus}}
                 </h4><hr />
               {{/if}}
               <h4 class="txt-align">Ordered Address :<br /><h5

@@ -18,6 +18,11 @@ const orderSchema=mongoose.Schema({
         required:true,
         default:'pending'
     },
+    deliveryStatus:{
+        type:Boolean,
+        required:true,
+        default:false
+    },
 
     returnRequest:{
         type:Boolean,
@@ -57,6 +62,10 @@ const orderSchema=mongoose.Schema({
         required:true
     },
     subTotal:{
+        type:Number,
+        required:true
+    },
+    payAmount:{
         type:Number,
         required:true
     },
