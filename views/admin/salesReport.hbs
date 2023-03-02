@@ -152,7 +152,7 @@
     flex-direction: column;">
           <div style=" margin-top: 14px; ">
              <h4 style="text-align: right; margin-right: 90px; font-weight: bold; font-family: cursive; ">Total Revenue: <i style="font-size: 25px;  "class="bi bi-currency-rupee" ></i>{{total}}</h4></div> 
-            </div>
+            </div><button class="btn btn-success " onclick="downloadPdf()">Download in pdf</button>
               {{/if}}
       </div>
     </section>
@@ -170,7 +170,38 @@
       integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
       crossorigin="anonymous"
     ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script>
+    let orders=[]
+    {{#each result}}
+    orders.push(['{{this.orderID}}','{{this.address.fname}}','{{this.products.[0].productname}}','{{this.products.[0].price}}','{{this.products.[0].cartQuantity}}','{{this.subTotal}}'])
 
+    {{/each}}
+    let totalRevenue= '{{total}}'
+ 
+ const { jsPDF } = window.jspdf;
+function downloadPdf() {
+      const doc= new jsPDF();
+      doc.text(15, 20, "GadgetZon Sales Report ");
+      doc.autoTable({
+        head: [['Type', 'Details']],
+        body: [
+              
+              ['Total Revenue', totalRevenue]
+              
+              ],
+        startY: 40
+      })
+      doc.text(15, doc.lastAutoTable.finalY+20, "order info");
+      doc.autoTable({
+        head: [['Order ID','Username', 'Product Name','Price','Quantity','Sub Total']],
+        body: orders,
+        startY: doc.lastAutoTable.finalY + 30
+      })
+      doc.save('sales-report.pdf');
+    }
+</script>
   </body>
   
 </html>

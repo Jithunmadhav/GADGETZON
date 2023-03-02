@@ -74,8 +74,12 @@ const orderSchema=mongoose.Schema({
         required:true
     },
     dispatch:{
-        type:String,
-        default: new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString()
+        type:Date,
+        default: new Date(new Date().setDate(new Date().getDate() + 7))
+    },
+    returnDate:{
+        type:Date,
+        default: new Date(new Date().setDate(new Date().getDate() + 10))
     }
 
 })

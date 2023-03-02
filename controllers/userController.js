@@ -762,16 +762,20 @@ module.exports={
                     let totalPrice=parseInt(req.body.totalPrice)
                     if(wallet>=totalPrice){
                         req.session.amount=0;
-                    }else{
-                        req.session.amount=totalPrice-wallet;
-                    }
-                    let name=req.session.selectedAddress.fname;
-                    let phone=req.session.selectedAddress.phone;
-                    let email=req.session.user;
-                    let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
-                    user.generateRazorpay(orderId, req.session.amount).then((result)=>{
-                        res.json({onlineSuccess:true,result,name,phone,email})
+                        user.orderCheckout(req.body,req.session.amount,req.session.orderProduct, req.session.selectedAddress,req.session.userID,wallet).then((result)=>{
+                            res.json({codSuccess:true})
                         })
+                    }else{
+                        let amount=totalPrice-wallet;
+                        let name=req.session.selectedAddress.fname;
+                        let phone=req.session.selectedAddress.phone;
+                        let email=req.session.user;
+                        let orderId=Math.floor(Math.random()*1000000)+ Date.now() 
+                        user.generateRazorpay(orderId,amount).then((result)=>{
+                            res.json({onlineSuccess:true,result,name,phone,email})
+                            })
+                    }
+                  
                     
                 })   
             }else{
@@ -852,9 +856,9 @@ module.exports={
     getOrderedProduct:(req,res)=>{
       
     user.getOrderDetails(req.params.id).then((result)=>{
-      console.log(result);
          let date=result.orderDate.toDateString();
-        res.render('orderedProduct',{result,date})
+        res.render('orderedProduct',{result,date,status:req.session.returnStatus})
+        req.session.returnStatus=false;
     })
        
     },
@@ -872,8 +876,14 @@ module.exports={
         })
     },
     getReturnOrder:(req,res)=>{
-        user.returnOrder(req.params.id).then(()=>{
-            res.redirect('/orderHistory')
+        user.returnOrder(req.params.id).then((result)=>{
+            if(result.status){
+                res.redirect('/orderHistory')
+            }else{
+                req.session.returnStatus=true;
+                res.redirect('back')
+            }
+            
         })
     },
     getOrderList:(req,res)=>{

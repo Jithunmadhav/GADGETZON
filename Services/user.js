@@ -418,13 +418,9 @@ module.exports={
           })
           if(order.wallet=='walletapplied'){
             if(wallet>parseInt(order.totalPrice)){
-              await userModel.updateOne({_id:userID},{$inc:{"wallet":-parseInt(order.totalPrice)}}).then((result)=>{
-                console.log(result);
-              }) 
+              await userModel.updateOne({_id:userID},{$inc:{"wallet":-parseInt(order.totalPrice)}}) 
             }else{
-              await userModel.updateOne({_id:userID},{$set:{"wallet":balance}}).then((result)=>{
-                console.log(result);
-              }) 
+              await userModel.updateOne({_id:userID},{$set:{"wallet":balance}}) 
             }
 
           }
@@ -527,9 +523,15 @@ module.exports={
      },
      returnOrder:(Id)=>{
       return new Promise(async(resolve, reject) => {
-        await orderModel.updateOne({_id:Id},{$set:{returnRequest:true}}).then(()=>{
-          resolve()
-        })
+        let result = await orderModel.findOne({_id:Id})
+        let currentdate=new Date()   
+        if(result.returnDate > currentdate){
+           await orderModel.updateOne({_id:Id},{$set:{returnRequest:true}})
+           resolve({status:true})
+        }else{
+           resolve({status:false})
+        }
+        
       });
      },
      orderList:(data)=>{
