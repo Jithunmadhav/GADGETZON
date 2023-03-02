@@ -10,6 +10,7 @@ const adminVerify = require('./middlewares/adminSession')
 const dbConnect = require('./config/dbConfig')
 const process = require('process')
 const MongoStore = require('connect-mongo');
+const hbs = require("hbs");
 
 
 
@@ -26,6 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 app.set('views', [path.join(__dirname, 'views/admin'),path.join(__dirname, 'views/user')]);
 app.set('view engine', 'hbs');
 
+hbs.registerHelper("inc", function (value, options) {
+  return parseInt(value) + 1;
+});
 //session
 const oneDay=1000*60*60*24;
 // app.get("/check",async(req, res)=>{

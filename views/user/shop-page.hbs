@@ -106,20 +106,6 @@
 
 
 
-
-
-
-{{!-- <div style="width: auto; float: left; margin-top: 11px;"  class="dropdown show">
-  <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-   Filter
-  </a>
-
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <a class="dropdown-item" href="#">Action</a>
-    <a class="dropdown-item" href="#">Another action</a>
-    <a class="dropdown-item" href="#">Something else here</a>
-  </div>
-</div> --}}
  </section>
 
  {{#if session}}   
@@ -174,8 +160,10 @@
     </div>
     </a>
   </div>
+  
   {{/each}} 
 </div>
+ 
 {{else}}
 <div  class=" row row-cols-1 row-cols-md-4 g-4 mt-5" style=" width: 100%; margin-left: 5px;">
   {{#each result}}
@@ -200,8 +188,28 @@
     </a>
   </div>
   {{/each}} 
+  
 </div>
 {{/if}}
+<nav aria-label="Page navigation example">
+  <ul class="pagination" style="justify-content: center;">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    {{#each pagination}}
+    <li class="page-item"><a class="page-link" href="/shop-page/?page={{inc @index}}">{{inc @index}}</a></li>
+    {{/each}}
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
 {{!-- 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"> 

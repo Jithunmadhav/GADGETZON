@@ -68,7 +68,7 @@ router.get('/sortProduct/:sort',userController.getSortProduct)
 
 router.get('/search-product',userController.getSearchProduct)
 
-router.get('/brandList/:name',userController.getBrandList)
+ 
 
 
 

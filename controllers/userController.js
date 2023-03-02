@@ -10,6 +10,9 @@ module.exports={
     // Home-page
 
     getHome:(req,res)=>{
+        req.session.catgStatus=false
+        req.session.sortStatus=false
+        req.session.searchStatus=false
         if(req.session.userID){
             user.bannerDetails().then((banner)=>{
                 let mac=banner.find(e=>e.bannerName=="mac")
@@ -319,68 +322,114 @@ module.exports={
 
     },
     getShopPage:(req,res)=>{
+        try {         
         let count=req.session.cartCount;
-        user.getProduct().then((result) => {
+        req.session.pageNum=parseInt(req.query.page??1) 
+        req.session.perpage=4;
+        user.getProduct(req.session.pageNum,req.session.perpage).then((result) => {
             user.listCategory().then((catg)=>{
-                user.listBrand().then((brand)=>{
+                 
                     if(req.session.catgStatus){
-                        res.render('shop-page',{result:req.session.catgData,catg,brand,count,session:req.session.userID})  
-    
+                        try {
+                            user.getCategoryProducts(req.session.categoryName,req.session.pageNum,req.session.perpage).then((result) => {
+                                let pageCount=Math.ceil(result.docCount/req.session.perpage)
+                                let pagination=[]
+                                for(i=1;i<=pageCount;i++){
+                                    pagination.push(i)
+                                }
+                                res.render('shop-page',{result:result.result,catg,count,session:req.session.userID,pagination})  
+            
+                            })
+                        } catch (error) {
+                            console.log(error);
+                        }
+                        
+                       
                     }else if(req.session.sortStatus){
-                        res.render('shop-page',{result:req.session.sortData,catg,brand,count,session:req.session.userID})  
-                    }else if( req.session.brandStatus){
-                        res.render('shop-page',{result:req.session.brandData,catg,brand,count,session:req.session.userID}) 
+                        if(req.session.searchStatus){
+                         
+                            user.sortProduct(req.session.sortData,req.session.categoryName,req.session.searchQuery,req.session.pageNum,req.session.perpage).then((result) => {
+                                 
+                                let pageCount=Math.ceil(result.docCount/req.session.perpage)
+                                let pagination=[]
+                                for(i=1;i<=pageCount;i++){
+                                    pagination.push(i)
+                                }
+                                res.render('shop-page',{result:result.result,catg,count,session:req.session.userID,pagination})  
+                            })
+                        }else{
+                           
+                            req.session.searchQuery="null";
+                            user.sortProduct(req.session.sortData,req.session.categoryName,req.session.searchQuery,req.session.pageNum,req.session.perpage).then((result) => {
+                                let pageCount=Math.ceil(result.docCount/req.session.perpage)
+                                let pagination=[]
+                                for(i=1;i<=pageCount;i++){
+                                    pagination.push(i)
+                                }
+                                res.render('shop-page',{result:result.result,catg,count,session:req.session.userID,pagination})  
+                            })
+                        }
+                       
                     }else if(req.session.searchStatus){
-                        res.render('shop-page',{result:req.session.searchData,catg,brand,count,session:req.session.userID}) 
+                        let pageCount=Math.ceil(req.session.searchData.docCount/req.session.perpage)
+                                let pagination=[]
+                                for(i=1;i<=pageCount;i++){
+                                    pagination.push(i)
+                                }
+                        res.render('shop-page',{result:req.session.searchData.result,catg,count,session:req.session.userID,pagination}) 
                     }
                     else{
-                        res.render('shop-page',{result,catg,brand,count,session:req.session.userID})
+                        let pageCount=Math.ceil(result.docCount/req.session.perpage)
+                        let pagination=[]
+                        for(i=1;i<=pageCount;i++){
+                            pagination.push(i)
+                        }
+                        res.render('shop-page',{result:result.result,catg,count,session:req.session.userID,pagination})
                     }
-                    req.session.catgStatus=false
-                    req.session.sortStatus=false  
-                    req.session.brandStatus=false
-                    req.session.searchStatus=false;
-                }).catch((err) => {
-                    console.log(err);
-                    res.status(500).send('An error occurred');
-                });
+                    
+                  
+                   
+                    
+                
                 
             }).catch((err) => {
                 console.log(err);
                 res.status(500).send('An error occurred');
             });
             
-        }).catch((err) => {
+           }).catch((err) => {
             console.log(err);
             res.status(500).send('An error occurred');
-        });
+           });
        
+           } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+          }
     },
     getCategoryList:(req,res)=>{
         req.session.categoryName=req.params.name;
-        user.getCategoryProducts(req.params.name).then((result) => {
+            req.session.searchStatus=false;
             req.session.catgStatus=true;
-            req.session.catgData=result;
-            res.redirect('back')     
-        }).catch((err) => {
-            console.log(err);
-            res.status(500).send('An error occurred');
-        });
+            req.session.sortStatus=false  
+            res.redirect('/shop-page')     
+             
+        
 
     },
     getSortProduct:(req,res)=>{
-        user.sortProduct(req.params.sort,req.session.categoryName).then((result) => {
+        
             req.session.sortStatus=true;
-            req.session.sortData=result;
-            res.redirect('back')  
-        }).catch((err) => {
-            console.log(err);
-            res.status(500).send('An error occurred');
-        });
+            req.session.catgStatus=false
+            req.session.sortData=req.params.sort;
+            res.redirect('/shop-page')  
+         
     },
     getSearchProduct:(req,res)=>{
-      
-        user.searchProduct(req.query).then((result) => {
+        req.session.sortStatus=false
+        req.session.catgStatus=false
+        req.session.searchQuery=req.query
+        user.searchProduct(req.query,req.session.pageNum,req.session.perpage).then((result) => {
             if(result.length==0){
                 res.render('searchErrorPage')
             }else{
@@ -394,16 +443,6 @@ module.exports={
             res.status(500).send('An error occurred');
         });
 
-    },
-    getBrandList:(req,res)=>{
-        user.brandDetails(req.params.name).then((brand) => {
-            req.session.brandStatus=true;
-            req.session.brandData=brand;
-            res.redirect('back')  
-        }).catch((err) => {
-            console.log(err);
-            res.status(500).send('An error occurred');
-        });
     },
     getProductDetails:(req,res)=>{
         user.productDetails(req.params.id).then((result) => {
@@ -587,7 +626,9 @@ module.exports={
 
     },
     getCart:(req,res)=>{
-         
+        req.session.catgStatus=false
+        req.session.sortStatus=false
+        req.session.searchStatus=false
           user.cartProducts(req.session.userID).then((result)=>{
               cItem=result;
               let cartQuantities={}
@@ -653,6 +694,9 @@ module.exports={
    
 
     getWishlist:(req,res)=>{
+        req.session.catgStatus=false
+        req.session.sortStatus=false
+        req.session.searchStatus=false
         user.wishlistProducts(req.session.userID).then((result) => {
             user.viewWishlist(result).then((result) => {
                 req.session.wlCount=result.length;

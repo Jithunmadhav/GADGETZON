@@ -76,10 +76,15 @@ module.exports={
 
     },
      //Get product Details
-     getProduct:()=>{
+     getProduct:(pageNum,perpage)=>{
+      let docCount;
         return new Promise(async(resolve, reject) => {
-          let result= await productModel.find({productStatus:false}).lean()
-          resolve(result)
+          let result= await productModel.find({productStatus:false}).countDocuments().then(documentCount=>{
+            docCount=documentCount
+            return productModel.find({productStatus:false}).skip((pageNum-1)*perpage).limit(perpage).lean()
+          })
+         
+          resolve({result,docCount})
         });
       },
 
@@ -91,73 +96,115 @@ module.exports={
         });
       },
 
-    getCategoryProducts:(categy)=>{
+    getCategoryProducts:(categy,pageNum,perpage)=>{
         let val="all"
+        let docCount;
         if(categy==val){
             return new Promise(async(resolve, reject) => {
-                let result= await productModel.find().lean()
-                resolve(result)
+                let result= await productModel.find().countDocuments().then(documentCount=>{
+                  docCount=documentCount
+                  return productModel.find().skip((pageNum-1)*perpage).limit(perpage).lean()
+                }) 
+                resolve({result,docCount})
               });
         }else{
             return new Promise(async(resolve, reject) => {
-                let result= await productModel.find({category:categy}).lean()
-                resolve(result)
+                let result= await productModel.find({category:categy}).countDocuments().then(documentCount=>{
+                  docCount=documentCount
+                  return productModel.find({category:categy}).skip((pageNum-1)*perpage).limit(perpage).lean()
+                }) 
+                
+                resolve({result,docCount})
               });
         }
        
     } ,
-    sortProduct:(data,category)=>{
+    sortProduct:(data,category,{productname},pageNum,perpage)=>{
         return new Promise(async(resolve, reject) => {
             high="high";
             low="low";
+      
+            let docCount;
+           if(productname==undefined){
             if(category=='all')
             {
               if(data==high){
-                let result= await productModel.find().sort({price:-1}).lean()
-               resolve(result)
+                let result= await productModel.find().sort({price:-1}).countDocuments().then(documentCount=>{
+                  docCount=documentCount
+                  return productModel.find().sort({price:-1}).skip((pageNum-1)*perpage).limit(perpage).lean()
+                }) 
+                
+               resolve({result,docCount})
             }else if(data==low){
-               let result= await productModel.find().sort({price:1}).lean()
-               resolve(result)  
+               let result= await productModel.find().sort({price:1}).countDocuments().then(documentCount=>{
+                docCount=documentCount
+                return productModel.find().sort({price:1}).skip((pageNum-1)*perpage).limit(perpage).lean()
+              }) 
+               resolve({result,docCount})  
             }
             }else if(category==undefined){
               if(data==high){
-                let result= await productModel.find().sort({price:-1}).lean()
-               resolve(result)
+                let result= await productModel.find().sort({price:-1}).countDocuments().then(documentCount=>{
+                  docCount=documentCount
+                  return productModel.find().sort({price:-1}).skip((pageNum-1)*perpage).limit(perpage).lean()
+                }) 
+               resolve({result,docCount})
             }else if(data==low){
-               let result= await productModel.find().sort({price:1}).lean()
-               resolve(result)  
+               let result= await productModel.find().sort({price:1}).countDocuments().then(documentCount=>{
+                docCount=documentCount
+                return productModel.find().sort({price:1}).skip((pageNum-1)*perpage).limit(perpage).lean()
+              }) 
+               resolve({result,docCount})  
             }
             }else{
               if(data==high){
-                let result= await productModel.find({category:category}).sort({price:-1}).lean()
-               resolve(result)
+                let result= await productModel.find({category:category}).sort({price:-1}).countDocuments().then(documentCount=>{
+                  docCount=documentCount
+                  return productModel.find({category:category}).sort({price:-1}).skip((pageNum-1)*perpage).limit(perpage).lean()
+                }) 
+               resolve({result,docCount})
             }else if(data==low){
-               let result= await productModel.find({category:category}).sort({price:1}).lean()
-               resolve(result)  
+               let result= await productModel.find({category:category}).sort({price:1}).countDocuments().then(documentCount=>{
+                docCount=documentCount
+                return productModel.find({category:category}).sort({price:1}).skip((pageNum-1)*perpage).limit(perpage).lean()
+              }) 
+               resolve({result,docCount})  
             }
             }
+           }else{
+            if(data==high){
+              let result= await productModel.find({productname:new RegExp(productname,'i')}).sort({price:-1}).countDocuments().then(documentCount=>{
+                docCount=documentCount
+                return productModel.find({productname:new RegExp(productname,'i')}).sort({price:-1}).skip((pageNum-1)*perpage).limit(perpage).lean()
+              })  
+             resolve({result,docCount})
+             
+          }else if(data==low){
+             let result= await productModel.find({productname:new RegExp(productname,'i')}).sort({price:1}).countDocuments().then(documentCount=>{
+              docCount=documentCount
+              return productModel.find({productname:new RegExp(productname,'i')}).sort({price:1}).skip((pageNum-1)*perpage).limit(perpage).lean()
+            })
+             resolve({result,docCount})  
+          }
+           }
+
+     
           
         });
     } ,  //Search Product
-    searchProduct:({productname})=>{
+    searchProduct:({productname},pageNum,perpage)=>{
+      let docCount;
       return new Promise(async(resolve, reject) => {
-        let result=await productModel.find({productname:new RegExp(productname,'i')}).lean()
-        resolve(result)
+        let result=await productModel.find({productname:new RegExp(productname,'i')}).countDocuments().then(documentCount=>{
+          docCount=documentCount
+          return productModel.find({productname:new RegExp(productname,'i')}).skip((pageNum-1)*perpage).limit(perpage).lean()
+        })
+        resolve({result,docCount})
       });
     },
    
-    listBrand:()=>{
-        return new Promise(async(resolve, reject) => {
-         let result= await productModel.aggregate([{$group:{_id:'$brand'}}])
-         resolve(result)
-        });
-      },
-    brandDetails:(data)=>{
-        return new Promise(async(resolve, reject) => {
-            let result=await productModel.find({brand:data}).lean()
-            resolve(result)
-        });
-    },
+
+
     productDetails:(id)=>{
         return new Promise( async(resolve, reject) => {
          let result= await productModel.findOne({_id:id})
