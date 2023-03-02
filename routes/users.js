@@ -1,14 +1,8 @@
 const { response } = require('express')
 const express =require('express')
-const user = require('../Services/user')
 const userController=require('../controllers/userController')
-const sentOTP = require('../helpers/sentOTP')
-const adminController = require('../controllers/adminController')
 const verifyUser = require('../middlewares/userSession')
 const banUserAccount = require('../middlewares/banUser')
- 
-
-
 const router=express.Router()
 
 

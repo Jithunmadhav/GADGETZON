@@ -57,15 +57,11 @@ module.exports={
                response.status=status;
                response.ban=user.ban;
                response.user=user
-               console.log("Login successfull");
-               
                resolve(response)
               }else{
-                console.log("Login Denied");
                 resolve({status:false})
               }
             }else{
-                console.log("Login failed");
                 resolve({status:false})
             }
         });
@@ -195,10 +191,7 @@ module.exports={
       quantityInc:(userId,productId)=>{
        
         return new Promise(async(resolve, reject) => {
-          // let quantity=2;
           let result= await productModel.findOne({_id:productId},{quandity:1})
-         
-          
           if(result.quandity>=1){
             await userModel.updateOne({_id:userId,cart:{$elemMatch:{productId:productId}} },{
               $inc:{
@@ -243,11 +236,6 @@ module.exports={
             resolve(found.quantity)
              
           }
-          
-          
-        
-         
-        
         });
       },
       cartStockStatus:(productId)=>{
@@ -266,7 +254,6 @@ module.exports={
       },
 
       viewCart:(productID)=>{
-     
         const cartItems=productID.map(item=>{
           return item.productId
          })
@@ -287,7 +274,6 @@ module.exports={
       },
 
       // Wishlist
-
       productAddWishlist:(userId,productId)=>{
         return new Promise(async(resolve, reject) => {
           
@@ -301,7 +287,6 @@ module.exports={
         return new Promise(async(resolve, reject) => {
          const {wishlist} = await userModel.findOne({_id:userID},{wishlist:1})
          resolve(wishlist)
-        
         });
       },
       viewWishlist:(productID)=>{
@@ -318,14 +303,12 @@ module.exports={
         });
       },
 
-
       verifyAddress:(userId,data)=>{
         console.log(data);
         return new Promise(async(resolve, reject) => {
           const {address} = await userModel.findOne({_id:userId},{address:1})
           let addressStatus=address.find(e=>e.address==data.address)
-          let cityStatus=address.find(e=>e.city==data.city)
-          
+          let cityStatus=address.find(e=>e.city==data.city)      
           if(addressStatus==undefined || cityStatus==undefined){
             stat=false
             resolve(stat)
@@ -412,8 +395,6 @@ module.exports={
             payAmount:amount,
             totalPrice:parseInt(order.totalPrice)
           }).then((result)=>{
-            
-             
             resolve(result)
           })
           if(order.wallet=='walletapplied'){
@@ -422,9 +403,7 @@ module.exports={
             }else{
               await userModel.updateOne({_id:userID},{$set:{"wallet":balance}}) 
             }
-
           }
-
           await productModel.updateOne({_id:products[i]._id},{$inc:{"quandity":-products[i].cartQuantity}})
           await userModel.findByIdAndUpdate( userID, { $set: { cart: [] } })
         }

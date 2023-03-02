@@ -1,5 +1,4 @@
 const { response } = require('express');
-const collection = require('../models/collection');
 const productModel=require('../models/productModel')
 const adminModel=require('../models/adminModel')
 const categoryModel=require('../models/categoryModel')
@@ -223,8 +222,6 @@ module.exports={
       resolve(result)
     });
   },
-
-
   //****** USER MANAGEMENT ******
 
   getUserdata:()=>{

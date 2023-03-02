@@ -3,7 +3,7 @@ const { response } = require('express')
 const express=require('express')
 const adminController = require('../controllers/adminController')
 const adminVerify = require('../middlewares/adminSession')
-const multipleUpload = require('../middlewares/multer')
+const multipleUpload = require('../helpers/multer')
 const router=express.Router()
 
 

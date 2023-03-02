@@ -2,11 +2,9 @@ const { response } = require('express')
 const express =require('express')
 const helper=require('../helpers/sentOTP')
 const { use } = require('../routes/admins')
-const admin = require('../Services/admin')
 const user = require('../Services/user')
 const successMail=require('../helpers/successMail')
-
-const router=express.Router()            
+      
 
 module.exports={
     // Home-page
@@ -27,6 +25,9 @@ module.exports={
                 res.render('homepage',{userstatus,username,banner,mac,iphone,realme})
             }
             req.session.homeSearchStatus=false;
+            }).catch(err=>{
+                console.log(err);
+                res.status(500).send('An error occurred');
             })
             // res.redirect('/home')
             
@@ -42,6 +43,9 @@ module.exports={
                 }
                 req.session.homeSearchStatus=false;
                     // req.session.userStatus=false;
+            }).catch(err=>{
+                console.log(err);
+                res.status(500).send('An error occurred');
             })
             // let userstatus= req.session.userStatus;
             // let username=req.session.username;
@@ -98,47 +102,90 @@ module.exports={
                 res.redirect('/login')
                 
             }
-        }).catch((err)=>{
+        }).catch(err=>{
             console.log(err);
+            res.status(500).send('An error occurred');
         })
     
     },
     getLoginVerify:(req,res)=>{
-        res.render('login-verify',{result:req.session.loginEmail})
+        try {
+            res.render('login-verify',{result:req.session.loginEmail})
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
+      
     },
     postLoginVerify:(req,res)=>{
-        if( req.session.loginOTP==req.body.Otp){
-            res.redirect('/home')
-        }else{
-            res.redirect('/loginVerify')
+        try {
+            if( req.session.loginOTP==req.body.Otp){
+                res.redirect('/home')
+            }else{
+                res.redirect('/loginVerify')
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
         }
+        
     },
     getForgotPassword:(req,res)=>{
-        res.render('forgotPassword')
+        try {
+            res.render('forgotPassword')  
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
+        
     },
     postForgotPassword:(req,res)=>{
+        try {
+            let Otp=Math.floor(Math.random()*1000000)
+            req.session.forgotPassOTP=Otp;
+            req.session.forgotPassEmail=req.body.email;
+            helper.sentOTP(req.body.email,Otp);
+            res.redirect('/verifyPassword')
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
         
-        let Otp=Math.floor(Math.random()*1000000)
-        req.session.forgotPassOTP=Otp;
-        req.session.forgotPassEmail=req.body.email;
-        helper.sentOTP(req.body.email,Otp);
-        res.redirect('/verifyPassword')
+     
 
     },
     getVerifyPassword:(req,res)=>{
-        res.render('verifyPassword',{result: req.session.forgotPassEmail,status:req.session.OTPstat})
+        try {
+            res.render('verifyPassword',{result: req.session.forgotPassEmail,status:req.session.OTPstat})
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
+        
     },
 
     postVerifyPassword:(req,res)=>{
-        if( req.session.forgotPassOTP==req.body.otp){
-            res.redirect('/passwordSetting')
-        }else{
-            req.session.OTPstat=true;
-            res.redirect('/verifyPassword')
+        try {
+            if( req.session.forgotPassOTP==req.body.otp){
+                res.redirect('/passwordSetting')
+            }else{
+                req.session.OTPstat=true;
+                res.redirect('/verifyPassword')
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
         }
+        
     },
     getpasswordSetting:(req,res)=>{
-        res.render('passwordSetting')
+        try {
+            res.render('passwordSetting')
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
+       
     },
     postPasswordSetting:(req,res)=>{
     
@@ -148,24 +195,30 @@ module.exports={
                 res.redirect('/login')
             }).catch((err) => {
                 console.log(err);
-                
+                res.status(500).send('An error occurred');
             });
         }else{
-            res.send("error")
+            res.redirect('back')
         }
 
     },
 
        // user-signup-page
     getSignup:(req,res)=>{
-        if( req.session.userexcist==true||req.session.ban==true ){
-            res.render('userSignup',{title:"User already exists"})
-            req.session.userexcist=false
-            req.session.ban=false
+        try {
+            if( req.session.userexcist==true||req.session.ban==true ){
+                res.render('userSignup',{title:"User already exists"})
+                req.session.userexcist=false
+                req.session.ban=false
+            }
+            else{
+                res.render('userSignup')
+            } 
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
         }
-        else{
-            res.render('userSignup')
-        }
+ 
     },
     postSignup:(req,res)=>{
       
@@ -190,48 +243,74 @@ module.exports={
               res.redirect('/signup')
             }
     
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
         
     }, 
     getResendOtp:(req,res)=>{
-     
-        let otp=Math.floor(Math.random()*1000000)
+     try {
+           let otp=Math.floor(Math.random()*1000000)
             req.session.signupOTP=otp
             helper.sentOTP(req.session.signupEmail,otp)
             req.session.userStatus=true;
-               res.redirect('/signupVerify')
+            res.redirect('/signupVerify')
+     } catch (error) {
+        console.log(error);
+        res.status(500).send('An error occurred');
+     }
+        
  
 
     },
     getResendOTP:(req,res)=>{
+       try {
         let otp=Math.floor(Math.random()*1000000)
         req.session.loginOTP=otp;
         req.session.loginEmail;
-            helper.sentOTP(req.session.loginEmail,otp)
-            req.session.userStatus=true;
-               res.redirect('/loginVerify')
+        helper.sentOTP(req.session.loginEmail,otp)
+        req.session.userStatus=true;
+        res.redirect('/loginVerify')
+       } catch (error) {
+        console.log(error);
+        res.status(500).send('An error occurred');
+       }
 
     },
     getResendOTp:(req,res)=>{
-        let otp=Math.floor(Math.random()*1000000)
-        req.session.forgotPassOTP=otp
-        helper.sentOTP( req.session.forgotPassEmail,otp)
-        req.session.userStat=true;
-           res.redirect('/verifyPassword')
+        try {
+            let otp=Math.floor(Math.random()*1000000)
+            req.session.forgotPassOTP=otp
+            helper.sentOTP( req.session.forgotPassEmail,otp)
+            req.session.userStat=true;
+            res.redirect('/verifyPassword')
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
+       
     },
 
     getSignupVerify:(req,res)=>{
-        
-        res.render('otpVerify',{result:req.session.signupEmail,status:req.session.OTPstatus})
-        req.session.OTPstatus=false;
+        try {
+            res.render('otpVerify',{result:req.session.signupEmail,status:req.session.OTPstatus})
+            req.session.OTPstatus=false;  
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
+       
     },
     postSignupVerify:(req,res)=>{
-
-       
+ 
         if(req.session.signupOTP==req.body.Otp){
             user.userSignup(req.session.userData).then((data)=>{
                 res.redirect('/home')
-            })
+            }).catch((err=>{
+                console.log(err);
+                res.status(500).send('An error occurred');
+            }))
             
         }else{
             req.session.OTPstatus=true;
@@ -261,12 +340,19 @@ module.exports={
                     req.session.sortStatus=false  
                     req.session.brandStatus=false
                     req.session.searchStatus=false;
-                })
+                }).catch((err) => {
+                    console.log(err);
+                    res.status(500).send('An error occurred');
+                });
                 
-            })
+            }).catch((err) => {
+                console.log(err);
+                res.status(500).send('An error occurred');
+            });
             
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
        
     },
@@ -278,6 +364,7 @@ module.exports={
             res.redirect('back')     
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
 
     },
@@ -288,6 +375,7 @@ module.exports={
             res.redirect('back')  
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
     },
     getSearchProduct:(req,res)=>{
@@ -303,6 +391,7 @@ module.exports={
             }  
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
 
     },
@@ -312,7 +401,8 @@ module.exports={
             req.session.brandData=brand;
             res.redirect('back')  
         }).catch((err) => {
-            
+            console.log(err);
+            res.status(500).send('An error occurred');
         });
     },
     getProductDetails:(req,res)=>{
@@ -320,6 +410,7 @@ module.exports={
             res.render('productDetails',{result})
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
         
     },
@@ -337,6 +428,7 @@ module.exports={
 
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
 
     },
@@ -352,7 +444,10 @@ module.exports={
                  res.json({success:true,count})
                })
                 
-             })
+             }).catch((err) => {
+                console.log(err);
+                res.status(500).send('An error occurred');
+            });
 
         }catch(err){
             res.status(501).json({err})
@@ -401,11 +496,23 @@ module.exports={
                      let cartQty=req.session.total;
                     
                      res.json({success:true,cartQty,calc})
-                   })
-               })
-                 })
+                     }).catch((err) => {
+                        console.log(err);
+                        res.status(500).send('An error occurred');
+                    });
+                   }).catch((err) => {
+                    console.log(err);
+                    res.status(500).send('An error occurred');
+                });
+                 }).catch((err) => {
+                    console.log(err);
+                    res.status(500).send('An error occurred');
+                });
             }
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
 
         
 
@@ -454,15 +561,27 @@ module.exports={
                       
                     
                       res.json({success:true,cartQty,calc})
-                    })
-                })
+                    }).catch((err) => {
+                        console.log(err);
+                        res.status(500).send('An error occurred');
+                    });
+                }).catch((err) => {
+                    console.log(err);
+                    res.status(500).send('An error occurred');
+                });
                    
                 
                      
                  
-                 })
+                 }).catch((err) => {
+                    console.log(err);
+                    res.status(500).send('An error occurred');
+                });
             }
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
 
       
 
@@ -498,8 +617,14 @@ module.exports={
           
            
             req.session.productStock=false;
-          })
-        })
+          }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
        
     },
     getDeleteCart:(req,res)=>{
@@ -509,6 +634,7 @@ module.exports={
             res.redirect('/cart')
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
     },
     
@@ -520,7 +646,8 @@ module.exports={
            
             res.redirect('back')
         }).catch((err) => {
-           console.log(err); 
+            console.log(err);
+            res.status(500).send('An error occurred');
         });
     },
    
@@ -533,9 +660,11 @@ module.exports={
                 res.render('wishlist',{result,count,wlCount: req.session.wlCount})
             }).catch((err) => {
                 console.log(err);
+                res.status(500).send('An error occurred');
             });
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
 
     },
@@ -543,11 +672,15 @@ module.exports={
         user.productAddCart(req.session.userID,req.params.id).then(()=>{
             user.deleteWishlistProduct(req.session.userID,req.params.id).then(()=>{
                 res.redirect('back')
-            }).catch(err=>{
+            }).catch((err) => {
                 console.log(err);
-            })
+                res.status(500).send('An error occurred');
+            });
             
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
        
     },
 
@@ -557,13 +690,17 @@ module.exports={
             res.redirect('back')
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
     },
     getCheckout:(req,res)=>{
         req.session.userProfileStatus=false;
         user.userDetails(req.session.userID).then((result)=>{
            req.session.walletBal=result.wallet;
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
         user.cartProducts(req.session.userID).then((result)=>{
             cItem=result;
             let cartQuantities={}
@@ -620,9 +757,16 @@ module.exports={
                   if(req.session.couponStatus ==true && totalPrice>req.session.minPurchaseAmt){
                       totalPrice=totalPrice-req.session.discountAmt;
                      
-                      res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:req.session.discountAmt,products,couponStat:req.session.couponStatus,wallet })
+                      res.render('checkout',{result:req.session.selectedAddress,
+                        status:req.session.addressStatus,
+                        totalPrice,discount:req.session.discountAmt,
+                        products,couponStat:req.session.couponStatus,wallet })
                   }else{
-                      res.render('checkout',{result:req.session.selectedAddress,status:req.session.addressStatus,totalPrice,discount:'00',products,validCoupon: req.session.validCoupon,invalidCoupon: req.session.invalidCoupon,wallet}) 
+                      res.render('checkout',{result:req.session.selectedAddress,
+                        status:req.session.addressStatus
+                        ,totalPrice,discount:'00',products,
+                        validCoupon: req.session.validCoupon,
+                        invalidCoupon: req.session.invalidCoupon,wallet}) 
                   }
                   req.session.validCoupon=false;
                   req.session.invalidCoupon=false;
@@ -637,8 +781,14 @@ module.exports={
              
 
 
-          })
-        })
+          }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
        
     },
     getAddAdress:(req,res)=>{
@@ -658,10 +808,14 @@ module.exports={
                     res.redirect('/editAddress')
                 }    
             }).catch((err) => {
-                console.log(err);       
+                console.log(err);
+                res.status(500).send('An error occurred');
             });
             }
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
         
     },
     getCheckoutAddress:(req,res)=>{
@@ -670,6 +824,7 @@ module.exports={
             res.render('checkoutAddress',{result})
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
     },
 
@@ -684,6 +839,7 @@ module.exports={
            
         }).catch((err) => {
             console.log(err);
+            res.status(500).send('An error occurred');
         });
     },
     getSelectedAddress:(req,res)=>{
@@ -691,13 +847,19 @@ module.exports={
             req.session.selectedAddress=result;
             req.session.addressStatus=true;
             res.redirect('/checkout')
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
     },
     getDeletedAddress:(req,res)=>{
         user.deletedAddress(req.session.userID,req.params.id).then((result)=>{
             req.session.selectedAddress=result;
             res.redirect('back')
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
     },
 
     getRedeemCoupon:(req,res)=>{ 
@@ -724,12 +886,14 @@ module.exports={
         
 
           
-        })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send('An error occurred');
+        });
     },
     postCheckoutOrder:(req,res)=>{
-        req.session.order=req.body;
-       
-      
+        try {
+            req.session.order=req.body;
         if(req.body.payment=='COD'){
             if(req.body.wallet=='walletapplied'){
                 console.log("wallet applied");
@@ -745,7 +909,10 @@ module.exports={
                     user.orderCheckout(req.body,req.session.amount,req.session.orderProduct, req.session.selectedAddress,req.session.userID,wallet).then((result)=>{
                         res.json({codSuccess:true})
                     })
-                    
+                    .catch((err) => {
+                        console.log(err);
+                        res.status(500).send('An error occurred');
+                    });
                 })
             }else{
                 console.log("wallet not applied");
@@ -793,6 +960,11 @@ module.exports={
         }else{
            res.json({err:true})
         }
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
+        
     },
     getVerifyPayment:(req,res)=>{
         user.verifyPayment(req.body).then(()=>{
@@ -801,17 +973,27 @@ module.exports={
             })
         }).catch(err=>{
             console.log(err);
+            res.status(500).send('An error occurred');
         })
     },
     getOrderSuccess:(req,res)=>{
-        res.render('orderSuccess',{email:req.session.user})
-        //successMail.successMail(req.session.user,req.session.username)
+        try {
+            res.render('orderSuccess',{email:req.session.user})
+            //successMail.successMail(req.session.user,req.session.username)
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('An error occurred');
+        }
+      
     }, 
     
 
     getEditUser:(req,res)=>{
         user.editUserDetails(req.session.userID).then((result)=>{
             res.render('editUser',{result})
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
       
     },
@@ -819,11 +1001,17 @@ module.exports={
        
         user.updateUserDetails(req.session.userID,req.body).then((result)=>{
             res.redirect('/userProfile')
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
     },
     getEditAddressDetails:(req,res)=>{
         user.selectedAddress(req.session.userID,req.params.id).then((result)=>{
             res.render('editAddress',{result})
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
        
     },
@@ -836,6 +1024,9 @@ module.exports={
                 res.redirect('/userProfile')
             }
            
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
     },
     getOrderHistory:(req,res)=>{
@@ -850,6 +1041,9 @@ module.exports={
                 res.render('orderHistory',{result,count})
             }
            
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
        
     },
@@ -859,6 +1053,9 @@ module.exports={
          let date=result.orderDate.toDateString();
         res.render('orderedProduct',{result,date,status:req.session.returnStatus})
         req.session.returnStatus=false;
+    }).catch(err=>{
+        console.log(err);
+        res.status(500).send('An error occurred');
     })
        
     },
@@ -867,12 +1064,18 @@ module.exports={
             let date=result[0].orderDate.toLocaleDateString();
              
             res.json({result,date})
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
     },
     postCancelOrder:(req,res)=>{
         user.cancelOrder(req.body,req.session.userID).then(()=>{
             // res.redirect('/orderHistory')
             res.json({success:true})
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
     },
     getReturnOrder:(req,res)=>{
@@ -884,6 +1087,9 @@ module.exports={
                 res.redirect('back')
             }
             
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
     },
     getOrderList:(req,res)=>{
@@ -891,6 +1097,9 @@ module.exports={
             req.session.orderListStatus=true;
             req.session.orderList=result;
             res.redirect('back')
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send('An error occurred');
         })
     },
  
