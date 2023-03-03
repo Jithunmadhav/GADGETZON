@@ -412,10 +412,15 @@ searchCoupon:({couponName})=>{
    resolve(result)
   });
 },
-productOrderDetail:()=>{
+productOrderDetail:(pageNum,perpage)=>{
   return new Promise(async(resolve, reject) => {
-   let result= await orderModel.find().lean()
-   resolve(result)
+   let docCount;
+   let result= await orderModel.find().countDocuments().then(documentCount=>{
+    docCount=documentCount
+    return orderModel.find().skip((pageNum-1)*perpage).limit(perpage).lean()
+  }) 
+   resolve({result,docCount})  
+    
   });
 },
 editOrderStatus:(Id)=>{

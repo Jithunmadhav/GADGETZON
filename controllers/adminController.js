@@ -452,14 +452,21 @@ module.exports = {
       });
   },
   getOrderManagement: (req, res) => {
-    admin.productOrderDetail().then((result) => {
-     
-      for(i=0;i<result.length;i++){
-        result.map((item, index)=>{
-          result[i].date=result[i].orderDate.toDateString();
+    req.session.pageNum=parseInt(req.query.page??1) 
+        req.session.perpage=8;
+    admin.productOrderDetail(req.session.pageNum,req.session.perpage).then((result) => {
+      let pageCount=Math.ceil(result.docCount/req.session.perpage)
+      let pagination=[]
+      for(i=1;i<=pageCount;i++){
+      pagination.push(i)
+      }
+     let orderResult=result.result;
+      for(i=0;i<orderResult.length;i++){
+        orderResult.map((item, index)=>{
+          orderResult[i].date=orderResult[i].orderDate.toDateString();
           })
       }
-      res.render("orderMangement", { result });
+      res.render("orderMangement", { orderResult,pagination });
     }).catch((err) => {
       console.log(err);
        res.status(500).send('An error occurred');
