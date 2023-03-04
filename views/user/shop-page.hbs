@@ -77,17 +77,7 @@
     {{/each}}
   </div>
 </div>
-{{!-- <div style="width: auto; float: left; margin-top: 5px;"  class="dropdown show">
-  <a   class=" drop-size  btn border border-dark  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-   Brand
-  </a>
 
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="background-color: rgba(225, 227, 226, 0.9);">
-   {{#each brand }}
-    <a class="dropdown-item" href="/brandList/{{this._id}}"> {{this._id}}</a>
-    {{/each}}
-  </div>
-</div> --}}
 
 <div style="width: auto; float: left; margin-top: 5px;"  class="dropdown show" >
   <a   class=" drop-size  btn border border-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -97,7 +87,6 @@
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="background-color: rgba(225, 227, 226, 0.9);">
     <a class="dropdown-item" href="/sortProduct/high">price high to low</a>
     <a class="dropdown-item" href="/sortProduct/low">price low to high</a>
-    {{!-- <a class="dropdown-item" href="#">Something else here</a> --}}
   </div>
 </div>
 
@@ -115,7 +104,7 @@
     <a style="text-decoration: none; color: black;" href="/productDetails/{{this._id}}"> 
     <div style="    border-radius: 11px; border-color: rgb(12, 12, 14);"  class="card h-100">
       <div style="display: flex;justify-content: center;">
-       <img  src="/product_img/{{this.main_image.[0].filename}}" class="card-img1 " alt="Hollywood Sign on The Hill" />
+       <img  src="{{this.main_image.[0].url}}" class="card-img1 " alt="Hollywood Sign on The Hill" />
       </div></a>
       <div class="card-body">
         <h5 style=" text-align: center;  height: 30px;" class="card-title">{{this.productname}}</h5>
@@ -146,13 +135,9 @@
 </div>
  <!-- Modal End -->
 
-       {{#if this.wlStatus}}
-        {{!-- <span id="deleteWl" onclick="deleteWl('{{this._id}}')"><i style="font-size: 25px; margin-top: -10px; color: red;" class="bi bi-heart-fill btn pl-3" ></i></span> --}}
-
+       {{#if this.wishlist}}
         <a href="/deleteWishlist/{{this._id}}"><i style="font-size: 25px; margin-top: -10px; color: red;" class="bi bi-heart-fill btn pl-3" ></i>
        {{else}}
-        {{!-- <span id="addwl" onclick="addToWish('{{this._id}}')"><i style="font-size: 25px; margin-top: -10px;" class="bi bi-heart btn pl-3" ></i></span> --}}
-
         <a href="/addToWishlist/{{this._id}}"><i style="font-size: 25px; margin-top: -10px;" class="bi bi-heart btn pl-3" ></i>
         {{/if}}
       </div>
@@ -171,7 +156,7 @@
     <a style="text-decoration: none; color: black;" href="/productDetails/{{this._id}}"> 
     <div style="    border-radius: 11px; border-color: rgb(12, 12, 14);"  class="card h-100">
       <div style="display: flex;justify-content: center;">
-       <img  src="/product_img/{{this.main_image.[0].filename}}" class="card-img1 " alt="Hollywood Sign on The Hill" />
+       <img  src="{{this.main_image.[0].url}}" class="card-img1 " alt="Hollywood Sign on The Hill" />
       </div></a>
       <div class="card-body">
         <h5 style=" text-align: center;  height: 30px;" class="card-title">{{this.productname}}</h5>

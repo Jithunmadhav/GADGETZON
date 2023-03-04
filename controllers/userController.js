@@ -322,22 +322,53 @@ module.exports={
 
     },
     getShopPage:(req,res)=>{
-        try {         
+        try {       
+            user.wishlistProducts(req.session.userID).then((result) => {
+               req.session.wlProduct=result;
+              
+            })     
         let count=req.session.cartCount;
         req.session.pageNum=parseInt(req.query.page??1) 
         req.session.perpage=4;
+    
         user.getProduct(req.session.pageNum,req.session.perpage).then((result) => {
+             
+            let data=result.result
+            for(let i=0;i<req.session.wlProduct.length;i++){
+                for(let j=0;j<data.length;j++){
+                    if(data[j]._id==req.session.wlProduct[i]){
+                        data.map((item, index)=>{
+                            data[j].wishlist=true;
+                            })
+                    }
+                    
+                }
+               
+            }
+            req.session.data=data;
             user.listCategory().then((catg)=>{
                  
                     if(req.session.catgStatus){
                         try {
                             user.getCategoryProducts(req.session.categoryName,req.session.pageNum,req.session.perpage).then((result) => {
+                                let data=result.result
+                                for(let i=0;i<req.session.wlProduct.length;i++){
+                                    for(let j=0;j<data.length;j++){
+                                        if(data[j]._id==req.session.wlProduct[i]){
+                                            data.map((item, index)=>{
+                                                data[j].wishlist=true;
+                                                })
+                                        }
+                                        
+                                    }
+                                   
+                                }
                                 let pageCount=Math.ceil(result.docCount/req.session.perpage)
                                 let pagination=[]
                                 for(i=1;i<=pageCount;i++){
                                     pagination.push(i)
                                 }
-                                res.render('shop-page',{result:result.result,catg,count,session:req.session.userID,pagination})  
+                                res.render('shop-page',{result:data,catg,count,session:req.session.userID,pagination})  
             
                             })
                         } catch (error) {
@@ -349,42 +380,78 @@ module.exports={
                         if(req.session.searchStatus){
                          
                             user.sortProduct(req.session.sortData,req.session.categoryName,req.session.searchQuery,req.session.pageNum,req.session.perpage).then((result) => {
-                                 
+                                let data=result.result
+                                for(let i=0;i<req.session.wlProduct.length;i++){
+                                    for(let j=0;j<data.length;j++){
+                                        if(data[j]._id==req.session.wlProduct[i]){
+                                            data.map((item, index)=>{
+                                                data[j].wishlist=true;
+                                                })
+                                        }
+                                        
+                                    }
+                                   
+                                }
                                 let pageCount=Math.ceil(result.docCount/req.session.perpage)
                                 let pagination=[]
                                 for(i=1;i<=pageCount;i++){
                                     pagination.push(i)
                                 }
-                                res.render('shop-page',{result:result.result,catg,count,session:req.session.userID,pagination})  
+                                res.render('shop-page',{result:data,catg,count,session:req.session.userID,pagination})  
                             })
                         }else{
                            
                             req.session.searchQuery="null";
                             user.sortProduct(req.session.sortData,req.session.categoryName,req.session.searchQuery,req.session.pageNum,req.session.perpage).then((result) => {
+                                let data=result.result
+                                for(let i=0;i<req.session.wlProduct.length;i++){
+                                    for(let j=0;j<data.length;j++){
+                                        if(data[j]._id==req.session.wlProduct[i]){
+                                            data.map((item, index)=>{
+                                                data[j].wishlist=true;
+                                                })
+                                        }
+                                        
+                                    }
+                                   
+                                }
                                 let pageCount=Math.ceil(result.docCount/req.session.perpage)
                                 let pagination=[]
                                 for(i=1;i<=pageCount;i++){
                                     pagination.push(i)
                                 }
-                                res.render('shop-page',{result:result.result,catg,count,session:req.session.userID,pagination})  
+                                res.render('shop-page',{result:data,catg,count,session:req.session.userID,pagination})  
                             })
                         }
                        
                     }else if(req.session.searchStatus){
+                        let data=req.session.searchData.result;
+                        for(let i=0;i<req.session.wlProduct.length;i++){
+                            for(let j=0;j<data.length;j++){
+                                if(data[j]._id==req.session.wlProduct[i]){
+                                    data.map((item, index)=>{
+                                        data[j].wishlist=true;
+                                        })
+                                }
+                                
+                            }
+                           
+                        }
                         let pageCount=Math.ceil(req.session.searchData.docCount/req.session.perpage)
                                 let pagination=[]
                                 for(i=1;i<=pageCount;i++){
                                     pagination.push(i)
                                 }
-                        res.render('shop-page',{result:req.session.searchData.result,catg,count,session:req.session.userID,pagination}) 
+                        res.render('shop-page',{result:data,catg,count,session:req.session.userID,pagination}) 
                     }
                     else{
+                        
                         let pageCount=Math.ceil(result.docCount/req.session.perpage)
                         let pagination=[]
                         for(i=1;i<=pageCount;i++){
                             pagination.push(i)
                         }
-                        res.render('shop-page',{result:result.result,catg,count,session:req.session.userID,pagination})
+                        res.render('shop-page',{result:req.session.data,catg,count,session:req.session.userID,pagination})
                     }
                     
                   
@@ -430,7 +497,7 @@ module.exports={
         req.session.catgStatus=false
         req.session.searchQuery=req.query
         user.searchProduct(req.query,req.session.pageNum,req.session.perpage).then((result) => {
-            if(result.length==0){
+            if(result.result.length==0){
                 res.render('searchErrorPage')
             }else{
             req.session.searchStatus=true;
@@ -453,24 +520,7 @@ module.exports={
         });
         
     },
-    getSearchPdt:(req,res)=>{
-        user.searchProduct(req.query).then((result) => {
-            if(result.length==0){
-                res.render('searchErrorPage')
-            }else{
-                req.session.homeSearch=result;
-                req.session.homeSearchStatus=true;
-                
-                res.redirect('/home')
-            }
-           
-
-        }).catch((err) => {
-            console.log(err);
-            res.status(500).send('An error occurred');
-        });
-
-    },
+  
 
     //Add to cart
     getAddCart:(req,res)=>{

@@ -9,6 +9,7 @@
      <link rel="shortcut icon" href="\images\online-shopping.png">
     <link rel="stylesheet" href="/stylesheets/user/wishlist.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.2/css/boxicons.min.css">
@@ -26,7 +27,7 @@
 
     <ul class="navbar-nav ml-auto d-block d-md-none">
       <li class="nav-item">
-        <a class="btn btn-link" href="#"><i class="bx bxs-cart icon-single"></i> <span class="badge badge-danger">3</span></a>
+        <a class="btn btn-link" href="/cart"><i style="color: white; font-size: 25px;"  class="bx bxs-cart icon-single"></i></a>
     </li>
     </ul>
 
@@ -38,7 +39,7 @@
 
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a style="color: white;" class="btn btn-link" href="#"><i class="bx bxs-cart icon-single"></i></a>
+          <a style="color: white;" class="btn btn-link" href="/cart"><i style="color: white; font-size: 25px;"  class="bx bxs-cart icon-single"></i></a>
         </li>
        
       </ul>
@@ -92,7 +93,7 @@
 					        		<td width="45%">
 					        			<div class="display-flex align-center">
 		                                    <div class="img-product">
-                                         <img style="width: 70px; height: 70px;" src="/product_img/{{this.main_image.[0].filename}}" alt="" class="img-fluid">
+                                         <img style="width: 70px; height: 70px;" src="{{this.main_image.[0].url}}" alt="" class="img-fluid">
 
 		                                    </div>
 		                                    <div class="name-product">
@@ -103,7 +104,7 @@
 					        		<td width="15%" class="price">{{this.price}}</td>
 					        		{{!-- <td width="15%"><span class="in-stock-box">{{this.status}}</span></td> --}}
 					        		<td width="15%">
-                        <a href="/addCartDeleteWl/{{this._id}}"><button class="round-black-btn small-btn">Add to Cart</button></a></td>
+                        <a href="/addCartDeleteWl/{{this._id}}"><span style="color: black; font-size: 25px;" class="bi bi-cart-plus-fill"></span></a></td>
 					        		<td width="10%" class="text-center"><a href="/deleteWishlist/{{this._id}}"   class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
 					        	</tr>
 								{{/each}}
@@ -114,7 +115,7 @@
 			</div>
 		</div>
 	</div>
-	     <a style="text-decoration: none; display: flex;" href="/home"><i style="    margin-top: 6px;" class="fas fa-arrow-left mr-2"></i> Continue Shopping</a>
+	     <a style="text-decoration: none; display: flex;" href="/shop-page"><i style="    margin-top: 6px;" class="fas fa-arrow-left mr-2"></i> Continue Shopping</a>
 
 </section>
 {{/if}}

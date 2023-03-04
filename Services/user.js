@@ -324,7 +324,7 @@ module.exports={
       productAddWishlist:(userId,productId)=>{
         return new Promise(async(resolve, reject) => {
           
-         await productModel.updateOne({_id:productId},{$set:{wlStatus:true}})
+        //  await productModel.updateOne({_id:productId},{$set:{wlStatus:true}})
         let result= await userModel.updateOne({_id:userId},{$addToSet:{wishlist:productId}})        
         resolve(result) 
         });
@@ -344,7 +344,7 @@ module.exports={
       },
       deleteWishlistProduct:(userID,productID)=>{
         return new Promise(async(resolve, reject) => {
-           await productModel.updateOne({_id:productID},{$set:{wlStatus:false}})
+          //  await productModel.updateOne({_id:productID},{$set:{wlStatus:false}})
          let result=  await userModel.updateOne({_id:userID},{$pull:{wishlist:productID}})
          resolve(result)
         });
@@ -564,10 +564,10 @@ module.exports={
    
       return new Promise(async(resolve, reject) => {
         if(data=='delivered'){
-        let result=  await orderModel.find({orderStatus:true}).lean()
+        let result=  await orderModel.find({orderStatus:'Delivered'},{returnConfirm:false}).lean()
         resolve(result)
         }else if(data=='notDelivered'){
-          let result=  await orderModel.find({$and:[{orderStatus:false},{cancelStatus:false}]}).lean()
+          let result=  await orderModel.find({$and:[{orderStatus:'pending'},{cancelStatus:false}]}).lean()
         resolve(result)
         }else if(data=='cancelled'){
           let result=  await orderModel.find({cancelStatus:true}).lean()

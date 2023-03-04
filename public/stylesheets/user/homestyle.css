@@ -9,7 +9,7 @@ a{
   text-decoration: none;
 }
 .bg-img{
-    background-image:url('/images/banner-bg.png');
+    background-image:url('https://res.cloudinary.com/dz6kbpucd/image/upload/v1677940740/banner-bg_zofbmd.png');
     /* background-color: blue; */
     background-size: cover;
     width: 100%;

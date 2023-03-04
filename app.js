@@ -44,7 +44,7 @@ app.use(session({
   resave:false,
   cookie:{maxAge:oneDay},
   saveUninitialized:true,
-  store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/gadgetzon" })
+  store: MongoStore.create({ mongoUrl: process.env.MONGOOSE_CONNECT })    
 }));
 app.use('/admin',adminRoute)
 app.use(function(req, res, next) {

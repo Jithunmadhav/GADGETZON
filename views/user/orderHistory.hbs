@@ -22,10 +22,10 @@
        <title>GadgetZon</title>
      <link rel="shortcut icon" href="\images\online-shopping.png">
   </head>
-  <body>
+  <body style="min-height: 100%; background-color: #eee;">
   
-    <section style="background-color: #eee;">
-      <div class="container vh-100  py-5">
+    <section  >
+      <div class="container  py-5">
         <div class="row">
           <div class="col">
             <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
@@ -58,16 +58,16 @@
     <h4 style="text-align: center; font-weight: bold; font-family: cursive;">You have no orders</h4>
     {{else}}
 
-        <table class="table align-middle mb-0 bg-white container">
+        <table   class="table align-middle mb-0 bg-white container table-responsive">
 
           <thead class="bg-light">
             <tr>
-              <th>Order ID</th>
+              <th style="width:18%">Order ID</th>
 
-              <th>Product</th>
+              <th style="width:23%">Product</th>
 
-              <th>order status</th>
-              <th></th>
+              <th style="width:9%">order status</th>
+              <th style="width:14%"></th>
 
             </tr>
           </thead>
@@ -78,13 +78,13 @@
 
                 <td>
 
-                  <p class="fw-normal mb-1">{{this._id}}</p>
+                  <p class="fw-normal mb-1">{{this.orderID}}</p>
                 </td>
 
                 <td>
                   <p class="fw-normal mb-1"><img
                       style="width: 50px; height: 50px;"
-                      src="/product_img/{{this.products.0.main_image.0.filename}}"
+                      src="{{this.products.0.main_image.0.url}}"
                       alt=""
                     />
                     {{this.products.0.productname}}</p>
@@ -166,7 +166,8 @@
 
             </tbody>
           {{/each}}
-        </table>
+        </table><br>
+        <a href="/userProfile" class="btn btn-primary">Back</a>
       </div>
     </section>
     {{/if}}

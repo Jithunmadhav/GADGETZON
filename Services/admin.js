@@ -6,6 +6,12 @@ const couponModel=require('../models/couponModel')
 const userModel=require('../models/userModel')
 const orderModel=require('../models/orderModel')
 const bannerModel=require('../models/bannerModel')
+const cloudinary=require('cloudinary')
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_SECRET
+});
 module.exports={
 
   //***** ADMIN LOGIN ******
@@ -80,6 +86,15 @@ module.exports={
     
     productData:(pdtData,fname)=>{
       return new Promise(async(resolve, reject) => {
+    let main_image=fname.main_image[0]
+    let sub_image=fname.sub_image
+    let imageFile=await cloudinary.uploader.upload(main_image.path,{folder:'gadgetzon'})
+    let product=imageFile
+
+    for(let i in sub_image){
+        let imageFile=await cloudinary.uploader.upload(sub_image[i].path,{folder:'gadgetzon'})
+        sub_image[i]=imageFile
+    }
       
    await productModel.create({
             productname:pdtData.productname,
@@ -89,8 +104,8 @@ module.exports={
             brand:pdtData.brand,
             discription:pdtData.discription,
             discription2:pdtData.discription2,
-            main_image:fname.main_image,
-            sub_image:fname.sub_image,
+            main_image:product,
+            sub_image:sub_image,
             productStatus:false,
             wlStatus:false,
             stockStatus:false
@@ -124,6 +139,16 @@ module.exports={
     //Update Product
     updateProduct:(pdtData,id,fname)=>{
       return new Promise(async(resolve, reject) => {
+    let main_image=fname.main_image[0]
+    let sub_image=fname.sub_image
+    let imageFile=await cloudinary.uploader.upload(main_image.path,{folder:'gadgetzon'})
+    let product=imageFile
+
+    for(let i in sub_image){
+        let imageFile=await cloudinary.uploader.upload(sub_image[i].path,{folder:'gadgetzon'})
+        sub_image[i]=imageFile
+    }
+      
         if(fname.main_image && fname.sub_image){
         let result=  await productModel.updateOne({_id:id},
           {$set:{
@@ -134,8 +159,8 @@ module.exports={
             brand:pdtData.brand,
             discription:pdtData.discription,
             discription2:pdtData.discription2,
-            main_image:fname.main_image,
-            sub_image:fname.sub_image
+            main_image:product,
+            sub_image:sub_image
            
           }})
           resolve(result)
@@ -150,7 +175,7 @@ module.exports={
             brand:pdtData.brand,
             discription:pdtData.discription,
             discription2:pdtData.discription2,
-            main_image:fname.main_image
+            main_image:product
           }})
           resolve(result)
         }
@@ -164,7 +189,7 @@ module.exports={
             brand:pdtData.brand,
             discription:pdtData.discription,
             discription2:pdtData.discription2,
-            sub_image:fname.sub_image
+            sub_image:sub_image
           }})
           resolve(result)
 
@@ -457,9 +482,14 @@ updateOrderStatus:(Id,data)=>{
 },
 bannerAdd:(data,file)=>{
   return new Promise(async(resolve, reject) => {
+    let main_image=file.main_image 
+    for(let i in main_image){
+    let imageFile=await cloudinary.uploader.upload(main_image[i].path,{folder:'gadgetzon'})
+    main_image[i]=imageFile
+  }
     await bannerModel.create({
       bannerName:data.bannerName,
-      main_image:file.main_image,
+      main_image:main_image,
       bannerStatus:false
     }).then((result)=>{
       resolve(result)

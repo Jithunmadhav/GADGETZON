@@ -54,7 +54,6 @@ router.post('/pwdSetting',userController.postPasswordSetting)
 // Home-page
 router.get('/home',userController.getHome)
 
-router.get('/searchProduct',userController.getSearchPdt)
 
 
 
