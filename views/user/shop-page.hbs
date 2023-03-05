@@ -17,13 +17,13 @@
   <nav  class="navbar navbar-expand-md   navbar-dark bg-dark main-menu sticky-top" style=" box-shadow:none;;
   width: 100%; z-index:100;">
   <div class="container">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="/home">
       <h4 class="font-weight-bold"><h3>Gadget<font color="#FFD523">Zon</font></h3></h4>
     </a>
 
     <ul class="navbar-nav ml-auto d-block d-md-none">
       <li class="nav-item">
-      <a style="color: white;" class="btn btn-link" href="/cart"><i class="bx bxs-cart icon-single"></i></a>
+        <a style="color: white;" class="btn btn-link" href="/cart"><i style="font-size: 30px;" class="bx bxs-cart icon-single" ></i><span id="count"   class="badge badge-warning">{{count}}</span></a>
       <a style="color: white;" class="btn btn-link" href="/wishlist"><i class="bi bi-bag-heart-fill"></i></a>
     </li>
     </ul>
@@ -54,7 +54,7 @@
     <div class="row">
       <div class="col-12">
         <form class="form-inline mb-3 mx-auto" action="/search-product" role="search">
-          <input class="form-control" name="productname" type="search" placeholder="Search for products..." aria-label="Search"  style="width: 318px;">
+          <input class="form-control" name="productname" type="search" placeholder="Search for products..." aria-label="Search"  style="width: 288px;">
           <button  style="background-color: #F26522;" class="btn " type="submit"><i class="bx bx-search"></i></button>
         </form>
       </div>
@@ -98,7 +98,7 @@
  </section>
 
  {{#if session}}   
- <div  class=" row row-cols-1 row-cols-md-4 g-4 mt-5" style=" width: 100%; margin-left: 5px;">
+ <div  class=" row row-cols-1 row-cols-md-4 row-cols-lg-4 g-4 mt-5" style=" width: 100%; margin-left: 5px;">
   {{#each result}}
   <div  class="col mb-4" >
     <a style="text-decoration: none; color: black;" href="/productDetails/{{this._id}}"> 
@@ -122,7 +122,7 @@
       <div class="modal-body">
         <div>    <h5 style="text-align: center; font-weight: bold; font-family: cursive;" class="modal-title" id="exampleModalLongTitle">Product Added to cart successfully</h5>
        </div>
-       <div style="height: 50px;"></div>
+       <div style="height: 18px;"></div>
        <div style="display: flex; justify-content: center;">
         <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>&emsp;
          
@@ -150,7 +150,7 @@
 </div>
  
 {{else}}
-<div  class=" row row-cols-1 row-cols-md-4 g-4 mt-5" style=" width: 100%; margin-left: 5px;">
+<div  class=" row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4 mt-5" style=" width: 100%; margin-left: 5px;">
   {{#each result}}
   <div  class="col mb-4" >
     <a style="text-decoration: none; color: black;" href="/productDetails/{{this._id}}"> 

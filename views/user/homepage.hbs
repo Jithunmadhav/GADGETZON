@@ -16,12 +16,13 @@
   width: 100%; z-index:100;">
   <div class="container">
     <a class="navbar-brand" href="#">
-      <h4 class="font-weight-bold"><h3>Gadget<font color="#FFD523">Zon</font></h3></h4>
+      <h4 class="font-weight-bold"><h3 style="font-size: 20px;">Gadget<font color="#FFD523">Zon</font></h3></h4>
     </a>
 
     <ul class="navbar-nav ml-auto d-block d-md-none">
       <li class="nav-item">
-      <a style="color: white;" class="btn btn-link" href="#"><i class="bx bxs-cart icon-single"></i></a>
+      <a style="color: white; font-weight: bold; font-family: cursive; text-decoration: none;" class="btn btn-link" href="/shop-page"><i class="bi bi-handbag"></i></a>
+      <a style="color: white;" class="btn btn-link" href="/cart"><i class="bx bxs-cart icon-single"></i></a>
       <a style="color: white;" class="btn btn-link" href="/wishlist"><i class="bi bi-bag-heart-fill"></i></a>
    
         {{#if userstatus}}
@@ -73,9 +74,9 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <form class="form-inline mb-3 mx-auto">
-          <input class="form-control" type="search" placeholder="Search for products..." aria-label="Search"  style="width: 318px;">
-          <button  style="background-color: #F26522;" class="btn " type="submit"><i class="bx bx-search"></i></button>
+        <form class="form-inline mb-3 mx-auto" action="/search-product" role="search">
+          <input class="form-control" type="search" placeholder="Search for products..." aria-label="Search" name="productname"  style="width: 288px;">
+          <button  style="background-color: #F26522;" class="btn "   type="submit"><i class="bx bx-search"></i></button>
         </form>
       </div>
     </div>
@@ -140,10 +141,10 @@
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
   <a href="/shop-page"><div class="carousel-inner">
     <div class="carousel-item active">
-      <img style="height: 600px;" class="d-block w-100" src="{{mac.main_image.[0].url}}" alt="First slide">
+      <img   class="d-block w-100 carousel-height" src="{{mac.main_image.[0].url}}" alt="First slide">
     </div>
     <div class="carousel-item">
-      <img style="height: 600px;" class="d-block w-100" src="{{mac.main_image.[1].url}}" alt="Second slide">
+      <img   class="d-block w-100 carousel-height" src="{{mac.main_image.[1].url}}" alt="Second slide">
     </div>
    
   </div></a>
@@ -158,20 +159,20 @@
 </div></div>
 
  
-<section class="container" style="height: 100px;"></section>
+<section class="container" style="height: 40px;"></section>
 
 <div class="container" >
  <a href="#"><img class="img-fluid" style="border-radius: 5px;" src="{{iphone.main_image.[0].url}}"></a>
 </div>
 
 
-<section class="container" style="height: 100px;"></section>
+<section class="container" style="height: 40px;"></section>
 
 <div class="container" >
  <a href="#"><img class="img-fluid" style="border-radius: 5px;" src="{{realme.main_image.[0].url}}"></a>
 </div>
 
-<section class="container" style="height: 100px;"></section>
+<section class="container" style="height: 40px;"></section>
 
 
 </section>

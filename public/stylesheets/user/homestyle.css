@@ -34,6 +34,7 @@ a{
         font-size: 50px;
     }
   }
+  
 
   @media(max-width: 600px) {
     .header-font h1{
@@ -41,6 +42,14 @@ a{
     }
     .bg-img{
       height: 600px;
+    }
+  }  
+  @media(max-width: 400px) {
+    .header-font h1{
+        font-size: 30px;
+    }
+    .bg-img{
+      height: 500px;
     }
   }  
 
@@ -109,6 +118,24 @@ a{
       width: 200px;
       height: 40px;
     border-radius: 5px;
+    }
+  }
+  .carousel-height{
+    height: 600px;
+  }
+
+  @media(max-width:900px ) {
+    .carousel-height{
+      
+      height: 450px;
+    
+    }
+  }
+  @media(max-width:600px ) {
+    .carousel-height{
+      
+      height: 250px;
+    
     }
   }
 /* shop-page style */

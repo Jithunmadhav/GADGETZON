@@ -57,15 +57,16 @@
           </ul>
 
           <div class="collapse navbar-collapse">
-            <form class="form-inline my-2 my-lg-0 mx-auto">
+            <form class="form-inline my-2 my-lg-0 mx-auto"  action="/search-product" role="search">
               <input
                 class="form searchsize"
                 type="search"
+                 name="productname"
                 placeholder="  Search for products..."
                 aria-label="Search"
               />
               <button
-                style="background-color: #F26522;"
+                style="background-color: #F26522; height: 38px;"
                 class="btn my-2 my-sm-0"
                 type="submit"
               ><i class="bx bx-search"></i></button>
@@ -99,16 +100,17 @@
         <div class="container">
           <div class="row">
             <div class="col-12">
-              <form class="form-inline mb-3 mx-auto">
+              <form class="form-inline mb-3 mx-auto" action="/search-product" role="search">
                 <input
                   class="form-control"
                   type="search"
+                   name="productname"
                   placeholder="Search for products..."
                   aria-label="Search"
-                  style="width: 318px;"
+                  style="width: 288px;"
                 />
                 <button
-                  style="background-color: #F26522;"
+                  style="background-color: #F26522; height: 38px;"
                   class="btn"
                   type="submit"
                 ><i class="bx bx-search"></i></button>
@@ -127,7 +129,7 @@
             <div><img
                 style="width: 400px; height: 400px; margin-top: 100px;"
                 class="img-fluid"
-                src="/product_img/{{result.products.0.main_image.0.filename}}"
+                src="{{result.products.0.main_image.0.url}}"
                 alt=""
               /></div>
 

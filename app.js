@@ -9,7 +9,7 @@ const session=require('express-session')
 const adminVerify = require('./middlewares/adminSession')
 const dbConnect = require('./config/dbConfig')
 const process = require('process')
-const MongoStore = require('connect-mongo');
+// const MongoStore = require('connect-mongo');
 const hbs = require("hbs");
 
 
@@ -32,11 +32,6 @@ hbs.registerHelper("inc", function (value, options) {
 });
 //session
 const oneDay=1000*60*60*24;
-// app.get("/check",async(req, res)=>{
-//   const users = await userModel.find().lean()
-//   console.log(users)
-// })
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
@@ -44,7 +39,7 @@ app.use(session({
   resave:false,
   cookie:{maxAge:oneDay},
   saveUninitialized:true,
-  store: MongoStore.create({ mongoUrl: process.env.MONGOOSE_CONNECT })    
+  // store: MongoStore.create({ mongoUrl: process.env.MONGOOSE_CONNECT })    
 }));
 app.use('/admin',adminRoute)
 app.use(function(req, res, next) {
@@ -52,15 +47,9 @@ app.use(function(req, res, next) {
 next();
 });
 
-dbConnect();
-// app.get("/check", (req, res)=>{
-//   console.log(req.query);
-//   res.json({success:true})
-// })
-app.get("/sample", (req, res)=>{
-  
-  res.render("sample")
-})
+dbConnect();  
+
+
 app.use('/',userRoute)
 
 // app.use(express.static(__dirname + '/public'));

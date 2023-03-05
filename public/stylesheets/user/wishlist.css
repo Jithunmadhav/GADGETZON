@@ -138,3 +138,23 @@
     font-size: 20px;
     color: #212529;
 }
+.searchsize{
+    width: 650px;
+    height: 40px;
+    border-radius: 5px;
+  }
+  @media(max-width:1200px) {
+    .searchsize{
+      width: 384px;
+      height: 40px;
+    border-radius: 5px;
+    }
+  }
+  
+ @media(max-width:1000px ) {
+    .searchsize{
+      width: 250px;
+      height: 40px;
+    border-radius: 5px;
+    }
+  }

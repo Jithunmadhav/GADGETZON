@@ -15,22 +15,22 @@
       <title>GadgetZon</title>
      <link rel="shortcut icon" href="\images\online-shopping.png">
   </head>
-  <body>
-    <section class="h-100 gradient-custom">
+  <body style="min-height: 100%; background-color: black;">
+     
       <div class="container py-5">
         <div class="row d-flex justify-content-center align-items-center">
           <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-            {{!-- <h2
+            <h2
               style="justify-content: center;
                display: flex;"
               class="fw-bold mb-3 text-white-50"
-            >Gadget<font color="#FFD523">Zon</font></h2> --}}
-
+            >Gadget<font color="#FFD523">Zon</font></h2>
+          
             <div
-              class="card text-white signup-form-size"  >
-              <div class="card-body p-5 text-center">
+              class="card text-white signup-form-size " style="height: 581px;" >
+              <div class="card-body p-4 text-center">
 
-                <div class="mb-md-5 h-100 mt-md-1 pb-5">
+                <div class="mb-md-5  mt-md-1 pb-5">
                   <form action="/updateAddress/{{result.id}}" method="POST">
                     <h1 style="color: black;">Address</h1><br />
                     <div class="row">
@@ -118,7 +118,7 @@
                     </div><br>
 
                     <input
-                      style="width: 38%;"
+                       
                       class="btn btn-warning btn-lg px-5"
                       name="submit"
                       type="submit"
@@ -134,7 +134,7 @@
           </div>
         </div>
       </div>
-    </section>
+    
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

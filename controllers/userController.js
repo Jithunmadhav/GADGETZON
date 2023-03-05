@@ -309,7 +309,7 @@ module.exports={
  
         if(req.session.signupOTP==req.body.Otp){
             user.userSignup(req.session.userData).then((data)=>{
-                res.redirect('/home')
+                res.redirect('/login')
             }).catch((err=>{
                 console.log(err);
                 res.status(500).send('An error occurred');
@@ -323,19 +323,24 @@ module.exports={
     },
     getShopPage:(req,res)=>{
         try {       
-            user.wishlistProducts(req.session.userID).then((result) => {
-               req.session.wlProduct=result;
-              
-            })     
+             
+             if(req.session.user){
+                user.wishlistProducts(req.session.userID).then((result) => {
+                    req.session.wlProduct=result;
+                   
+                 }) 
+             }
+               
         let count=req.session.cartCount;
         req.session.pageNum=parseInt(req.query.page??1) 
         req.session.perpage=4;
     
         user.getProduct(req.session.pageNum,req.session.perpage).then((result) => {
-             
             let data=result.result
-            for(let i=0;i<req.session.wlProduct.length;i++){
-                for(let j=0;j<data.length;j++){
+            if(req.session.user){
+            let data=result.result
+            for(let i=0;i<req.session.wlProduct.length??0;i++){
+                for(let j=0;j<data.length??0;j++){
                     if(data[j]._id==req.session.wlProduct[i]){
                         data.map((item, index)=>{
                             data[j].wishlist=true;
@@ -345,15 +350,18 @@ module.exports={
                 }
                
             }
+        }
             req.session.data=data;
+     
             user.listCategory().then((catg)=>{
                  
                     if(req.session.catgStatus){
                         try {
                             user.getCategoryProducts(req.session.categoryName,req.session.pageNum,req.session.perpage).then((result) => {
                                 let data=result.result
-                                for(let i=0;i<req.session.wlProduct.length;i++){
-                                    for(let j=0;j<data.length;j++){
+                                if(req.session.user){
+                                for(let i=0;i<req.session.wlProduct.length??0;i++){
+                                    for(let j=0;j<data.length??0;j++){
                                         if(data[j]._id==req.session.wlProduct[i]){
                                             data.map((item, index)=>{
                                                 data[j].wishlist=true;
@@ -362,7 +370,7 @@ module.exports={
                                         
                                     }
                                    
-                                }
+                                }}
                                 let pageCount=Math.ceil(result.docCount/req.session.perpage)
                                 let pagination=[]
                                 for(i=1;i<=pageCount;i++){
@@ -381,8 +389,9 @@ module.exports={
                          
                             user.sortProduct(req.session.sortData,req.session.categoryName,req.session.searchQuery,req.session.pageNum,req.session.perpage).then((result) => {
                                 let data=result.result
-                                for(let i=0;i<req.session.wlProduct.length;i++){
-                                    for(let j=0;j<data.length;j++){
+                                if(req.session.user){
+                                for(let i=0;i<req.session.wlProduct.length??0;i++){
+                                    for(let j=0;j<data.length??0;j++){
                                         if(data[j]._id==req.session.wlProduct[i]){
                                             data.map((item, index)=>{
                                                 data[j].wishlist=true;
@@ -391,7 +400,7 @@ module.exports={
                                         
                                     }
                                    
-                                }
+                                }}
                                 let pageCount=Math.ceil(result.docCount/req.session.perpage)
                                 let pagination=[]
                                 for(i=1;i<=pageCount;i++){
@@ -404,8 +413,9 @@ module.exports={
                             req.session.searchQuery="null";
                             user.sortProduct(req.session.sortData,req.session.categoryName,req.session.searchQuery,req.session.pageNum,req.session.perpage).then((result) => {
                                 let data=result.result
-                                for(let i=0;i<req.session.wlProduct.length;i++){
-                                    for(let j=0;j<data.length;j++){
+                                if(req.session.user){
+                                for(let i=0;i<req.session.wlProduct.length??0;i++){
+                                    for(let j=0;j<data.length??0;j++){
                                         if(data[j]._id==req.session.wlProduct[i]){
                                             data.map((item, index)=>{
                                                 data[j].wishlist=true;
@@ -414,7 +424,7 @@ module.exports={
                                         
                                     }
                                    
-                                }
+                                }}
                                 let pageCount=Math.ceil(result.docCount/req.session.perpage)
                                 let pagination=[]
                                 for(i=1;i<=pageCount;i++){
@@ -425,9 +435,10 @@ module.exports={
                         }
                        
                     }else if(req.session.searchStatus){
-                        let data=req.session.searchData.result;
-                        for(let i=0;i<req.session.wlProduct.length;i++){
-                            for(let j=0;j<data.length;j++){
+                        let data=req.session.search.result;
+                        if(req.session.user){
+                        for(let i=0;i<req.session.wlProduct.length??0;i++){
+                            for(let j=0;j<data.length??0;j++){
                                 if(data[j]._id==req.session.wlProduct[i]){
                                     data.map((item, index)=>{
                                         data[j].wishlist=true;
@@ -435,9 +446,9 @@ module.exports={
                                 }
                                 
                             }
-                           
-                        }
-                        let pageCount=Math.ceil(req.session.searchData.docCount/req.session.perpage)
+                              
+                        }}
+                        let pageCount=Math.ceil(req.session.search.docCount/req.session.perpage)
                                 let pagination=[]
                                 for(i=1;i<=pageCount;i++){
                                     pagination.push(i)
@@ -475,7 +486,7 @@ module.exports={
           }
     },
     getCategoryList:(req,res)=>{
-        req.session.categoryName=req.params.name;
+        req.session.categoryName=req.params.name;                                                                                    
             req.session.searchStatus=false;
             req.session.catgStatus=true;
             req.session.sortStatus=false  
@@ -493,16 +504,17 @@ module.exports={
          
     },
     getSearchProduct:(req,res)=>{
+         
         req.session.sortStatus=false
         req.session.catgStatus=false
         req.session.searchQuery=req.query
         user.searchProduct(req.query,req.session.pageNum,req.session.perpage).then((result) => {
+           
             if(result.result.length==0){
                 res.render('searchErrorPage')
             }else{
             req.session.searchStatus=true;
-           
-            req.session.searchData=result;
+            req.session.search=result;
             res.redirect('/shop-page')
             }  
         }).catch((err) => {
