@@ -9,7 +9,9 @@ const banUserAccount=(req,res,next)=>{
         // let user=await db.get().collection(collection.USER_COLLECTION).findOne({email:req.session.user})
         if(user.ban){
            
-           req.session.destroy();
+        //    req.session.destroy();
+           req.session.userID=null;
+           req.session.user=null;
            res.redirect('/login')
             
         }else{

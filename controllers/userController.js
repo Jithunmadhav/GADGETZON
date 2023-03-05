@@ -339,7 +339,7 @@ module.exports={
             let data=result.result
             if(req.session.user){
             let data=result.result
-            for(let i=0;i<req.session.wlProduct.length??0;i++){
+            for(let i=0;i<req.session.wlProduct.length ?? 0;i++){
                 for(let j=0;j<data.length??0;j++){
                     if(data[j]._id==req.session.wlProduct[i]){
                         data.map((item, index)=>{
@@ -1211,8 +1211,9 @@ module.exports={
  
 
     getLogout:(req,res)=>{
-        req.session.destroy();
-        // req.session.user=null;
+        // req.session.destroy();
+        req.session.user=null;
+        req.session.userID=null
         res.redirect('/login')
     }
    

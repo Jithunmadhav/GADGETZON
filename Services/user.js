@@ -324,7 +324,7 @@ module.exports={
       productAddWishlist:(userId,productId)=>{
         return new Promise(async(resolve, reject) => {
           
-        //  await productModel.updateOne({_id:productId},{$set:{wlStatus:true}})
+         
         let result= await userModel.updateOne({_id:userId},{$addToSet:{wishlist:productId}})        
         resolve(result) 
         });
