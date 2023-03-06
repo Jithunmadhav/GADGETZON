@@ -52,7 +52,7 @@ router.post('/pwdSetting',userController.postPasswordSetting)
 
 
 // Home-page
-router.get('/home',userController.getHome)
+router.get('/',userController.getHome)
 
 
 

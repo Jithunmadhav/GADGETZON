@@ -62,7 +62,7 @@ module.exports={
     getLogin:(req,res)=>{
 
         if(req.session.userID){
-            res.redirect('/home')
+            res.redirect('/')
         }else{
             let resultBan=req.session.ban
             let resultInvalid=req.session.status
@@ -97,7 +97,7 @@ module.exports={
             //         res.redirect('/loginVerify')
 
 
-                    res.redirect('/home')
+                    res.redirect('/')
             }else{
              
                 req.session.status=true;
@@ -123,7 +123,7 @@ module.exports={
     postLoginVerify:(req,res)=>{
         try {
             if( req.session.loginOTP==req.body.Otp){
-                res.redirect('/home')
+                res.redirect('/')
             }else{
                 res.redirect('/loginVerify')
             }

@@ -56,8 +56,8 @@ app.use('/',userRoute)
 
 
 
-app.listen(8000,()=>{
-    console.log('Server running  on http://localhost:8000/home');
+app.listen(7000,()=>{
+    console.log('Server running  on http://localhost:7000');
     
 })
 
