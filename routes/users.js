@@ -12,11 +12,6 @@ router.get('/login',userController.getLogin)
 
 router.post('/loginpost',userController.postLogin)
 
-// router.get('/loginVerify',userController.getLoginVerify)
-
-// router.get('/resendOTP',userController.getResendOTP)
-
-// router.post('/postLoginVerify',userController.postLoginVerify)
 
 // user-signup-page
 router.get('/signup',userController.getSignup)

@@ -30,7 +30,7 @@ module.exports={
             req.session.homeSearchStatus=false;
             }).catch(err=>{
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             })
             // res.redirect('/home')
             
@@ -48,7 +48,7 @@ module.exports={
                     // req.session.userStatus=false;
             }).catch(err=>{
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             })
             // let userstatus= req.session.userStatus;
             // let username=req.session.username;
@@ -107,7 +107,7 @@ module.exports={
             }
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
     
     },
@@ -116,7 +116,7 @@ module.exports={
             res.render('login-verify',{result:req.session.loginEmail})
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
       
     },
@@ -129,7 +129,7 @@ module.exports={
             }
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
         
     },
@@ -138,7 +138,7 @@ module.exports={
             res.render('forgotPassword')  
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
         
     },
@@ -151,7 +151,7 @@ module.exports={
             res.redirect('/verifyPassword')
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
         
      
@@ -162,7 +162,7 @@ module.exports={
             res.render('verifyPassword',{result: req.session.forgotPassEmail,status:req.session.OTPstat})
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
         
     },
@@ -177,7 +177,7 @@ module.exports={
             }
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
         
     },
@@ -186,7 +186,7 @@ module.exports={
             res.render('passwordSetting')
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
        
     },
@@ -198,7 +198,7 @@ module.exports={
                 res.redirect('/login')
             }).catch((err) => {
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             });
         }else{
             res.redirect('back')
@@ -219,7 +219,7 @@ module.exports={
             } 
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
  
     },
@@ -248,7 +248,7 @@ module.exports={
     
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
         
     }, 
@@ -261,7 +261,7 @@ module.exports={
             res.redirect('/signupVerify')
      } catch (error) {
         console.log(error);
-        res.status(500).send('An error occurred');
+        res.render('error404')
      }
         
  
@@ -277,7 +277,7 @@ module.exports={
         res.redirect('/loginVerify')
        } catch (error) {
         console.log(error);
-        res.status(500).send('An error occurred');
+        res.render('error404')
        }
 
     },
@@ -290,7 +290,7 @@ module.exports={
             res.redirect('/verifyPassword')
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
        
     },
@@ -301,7 +301,7 @@ module.exports={
             req.session.OTPstatus=false;  
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
        
     },
@@ -312,7 +312,7 @@ module.exports={
                 res.redirect('/login')
             }).catch((err=>{
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             }))
             
         }else{
@@ -472,17 +472,17 @@ module.exports={
                 
             }).catch((err) => {
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             });
             
            }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
            });
        
            } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
           }
     },
     getCategoryList:(req,res)=>{
@@ -519,7 +519,7 @@ module.exports={
             }  
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
 
     },
@@ -528,7 +528,7 @@ module.exports={
             res.render('productDetails',{result})
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
         
     },
@@ -547,7 +547,7 @@ module.exports={
                 
              }).catch((err) => {
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             });
 
         }catch(err){
@@ -599,20 +599,20 @@ module.exports={
                      res.json({success:true,cartQty,calc})
                      }).catch((err) => {
                         console.log(err);
-                        res.status(500).send('An error occurred');
+                        res.render('error404')
                     });
                    }).catch((err) => {
                     console.log(err);
-                    res.status(500).send('An error occurred');
+                    res.render('error404')
                 });
                  }).catch((err) => {
                     console.log(err);
-                    res.status(500).send('An error occurred');
+                    res.render('error404')
                 });
             }
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
 
         
@@ -664,11 +664,11 @@ module.exports={
                       res.json({success:true,cartQty,calc})
                     }).catch((err) => {
                         console.log(err);
-                        res.status(500).send('An error occurred');
+                        res.render('error404')
                     });
                 }).catch((err) => {
                     console.log(err);
-                    res.status(500).send('An error occurred');
+                    res.render('error404')
                 });
                    
                 
@@ -676,12 +676,12 @@ module.exports={
                  
                  }).catch((err) => {
                     console.log(err);
-                    res.status(500).send('An error occurred');
+                    res.render('error404')
                 });
             }
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
 
       
@@ -722,11 +722,11 @@ module.exports={
             req.session.productStock=false;
           }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
        
     },
@@ -737,7 +737,7 @@ module.exports={
             res.redirect('/cart')
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
     },
     
@@ -750,7 +750,7 @@ module.exports={
             res.redirect('back')
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
     },
    
@@ -766,11 +766,11 @@ module.exports={
                 res.render('wishlist',{result,count,wlCount: req.session.wlCount})
             }).catch((err) => {
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             });
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
 
     },
@@ -780,12 +780,12 @@ module.exports={
                 res.redirect('back')
             }).catch((err) => {
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             });
             
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
        
     },
@@ -796,7 +796,7 @@ module.exports={
             res.redirect('back')
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
     },
     getCheckout:(req,res)=>{
@@ -805,7 +805,7 @@ module.exports={
            req.session.walletBal=result.wallet;
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
         user.cartProducts(req.session.userID).then((result)=>{
             cItem=result;
@@ -889,11 +889,11 @@ module.exports={
 
           }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
        
     },
@@ -915,12 +915,12 @@ module.exports={
                 }    
             }).catch((err) => {
                 console.log(err);
-                res.status(500).send('An error occurred');
+                res.render('error404')
             });
             }
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
         
     },
@@ -930,7 +930,7 @@ module.exports={
             res.render('checkoutAddress',{result})
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
     },
 
@@ -945,7 +945,7 @@ module.exports={
            
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
     },
     getSelectedAddress:(req,res)=>{
@@ -955,7 +955,7 @@ module.exports={
             res.redirect('/checkout')
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
     },
     getDeletedAddress:(req,res)=>{
@@ -964,7 +964,7 @@ module.exports={
             res.redirect('back')
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
     },
 
@@ -994,7 +994,7 @@ module.exports={
           
         }).catch((err) => {
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         });
     },
     postCheckoutOrder:(req,res)=>{
@@ -1017,7 +1017,7 @@ module.exports={
                     })
                     .catch((err) => {
                         console.log(err);
-                        res.status(500).send('An error occurred');
+                        res.render('error404')
                     });
                 })
             }else{
@@ -1068,7 +1068,7 @@ module.exports={
         }
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
         
     },
@@ -1079,7 +1079,7 @@ module.exports={
             })
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
     },
     getOrderSuccess:(req,res)=>{
@@ -1088,7 +1088,7 @@ module.exports={
             //successMail.successMail(req.session.user,req.session.username)
         } catch (error) {
             console.log(error);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         }
       
     }, 
@@ -1099,7 +1099,7 @@ module.exports={
             res.render('editUser',{result})
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
       
     },
@@ -1109,7 +1109,7 @@ module.exports={
             res.redirect('/userProfile')
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
     },
     getEditAddressDetails:(req,res)=>{
@@ -1117,7 +1117,7 @@ module.exports={
             res.render('editAddress',{result})
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
        
     },
@@ -1132,7 +1132,7 @@ module.exports={
            
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
     },
     getOrderHistory:(req,res)=>{
@@ -1149,7 +1149,7 @@ module.exports={
            
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
        
     },
@@ -1161,7 +1161,7 @@ module.exports={
         req.session.returnStatus=false;
     }).catch(err=>{
         console.log(err);
-        res.status(500).send('An error occurred');
+        res.render('error404')
     })
        
     },
@@ -1172,7 +1172,7 @@ module.exports={
             res.json({result,date})
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
     },
     postCancelOrder:(req,res)=>{
@@ -1181,7 +1181,7 @@ module.exports={
             res.json({success:true})
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
     },
     getReturnOrder:(req,res)=>{
@@ -1195,7 +1195,7 @@ module.exports={
             
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
     },
     getOrderList:(req,res)=>{
@@ -1205,7 +1205,7 @@ module.exports={
             res.redirect('back')
         }).catch(err=>{
             console.log(err);
-            res.status(500).send('An error occurred');
+            res.render('error404')
         })
     },
  
