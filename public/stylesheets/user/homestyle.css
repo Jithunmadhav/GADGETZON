@@ -13,7 +13,7 @@ a{
     /* background-color: blue; */
     background-size: cover;
     width: 100%;
-    height: 800px;
+    height: 900px;
     /* background-attachment: fixed; */
     background-position: center;
     /* background-repeat: no-repeat; */
@@ -21,17 +21,23 @@ a{
 .header-font{
     display: flex;
     justify-content: center;
-    margin-top: 160px;
+    margin-top: 200px;
     color: #f8f9fa;
     font-family: cursive;
+    height: 270px;
     letter-spacing: 3px;
 }
 .header-font h1{
-    font-size: 80px;
+    font-size: 85px;
+    font-family: 'Crimson Text', serif;
+font-family: 'Monomaniac One', sans-serif;
+font-family: 'Pacifico', cursive;
 }
 @media(max-width: 1000px) {
     .header-font h1{
         font-size: 50px;
+        height: 0px;
+
     }
   }
   
@@ -39,6 +45,7 @@ a{
   @media(max-width: 600px) {
     .header-font h1{
         font-size: 30px;
+        
     }
     .bg-img{
       height: 600px;
